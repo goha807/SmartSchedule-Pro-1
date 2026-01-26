@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ultimate Schedule Pro</title>
+    <style>
+        :root {
+            --bg: #0f172a;
+            --card-bg: rgba(30, 41, 59, 0.7);
+            --accent: #38bdf8;
+            --danger: #ef4444;
+            --success: #22c55e;
+            --text: #f1f5f9;
+        }
+
+        body {
+            font-family: 'Inter', system-ui, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            margin: 0;
+            padding: 20px;
+            padding-bottom: 100px; /* Місце для віджета */
+            min-height: 100vh;
+        }
+
+        /* Glass effect */
+        .glass {
+            background: var(--card-bg);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 16px;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .controls { display: flex; gap: 10px; }
+
+        .btn {
+            padding: 10px 18px;
+            border-radius: 10px;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary { background: var(--accent); color: #000; }
+        .btn-outline { background: transparent; border: 1px solid var(--accent); color: var(--accent); }
+        .btn-outline.active { background: var(--accent); color: #000; }
+
+        /* Grid */
+        .schedule-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+        }
+
+        .day-column { padding: 15px; }
+        .day-title {
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            color: var(--accent);
+            text-align: center;
+            border-bottom: 2px solid rgba(56, 189, 248, 0.2);
+            padding-bottom: 10px;
+        }
+
+        .lesson-card {
+            margin-bottom: 15px;
+            padding: 15px;
+            position: relative;
+            transition: transform 0.2s;
+            border-left: 4px solid transparent;
+            overflow: hidden; /* Щоб прогрес-бар не вилазив */
+        }
+
+        .lesson-card.active {
+            border-left-color: var(--success);
+            box-shadow: 0 0 20px rgba(34, 197, 94, 0.2);
+            background: rgba(34, 197, 94, 0.1);
+        }
+
+        /* Прогрес бар всередині картки */
+        .card-progress-track {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            height: 4px;
+            width: 100%;
+            background: rgba(255,255,255,0.1);
+            display: none;
+        }
+        .lesson-card.active .card-progress-track { display: block; }
+        
+        .card-progress-fill {
+            height: 100%;
+            background: var(--success);
+            width: 0%;
+            transition: width 1s linear;
+        }
+
+        .time-badge {
+            font-size: 0.8rem;
+            background: rgba(0,0,0,0.3);
+            padding: 4px 8px;
+            border-radius: 6px;
+            margin-bottom: 8px;
+            display: inline-block;
+        }
+
+        .status-msg {
+            font-size: 0.85rem;
+            font-weight: bold;
+            margin-top: 8px;
+            color: var(--success);
+        }
+
+        .edit-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            display: none;
+            background: rgba(255,255,255,0.1);
+            border: none;
+            color: white;
+            padding: 5px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        [data-edit-mode="true"] .edit-btn { display: block; }
+        [data-edit-mode="true"] .lesson-card:hover { transform: translateY(-3px); }
+
+        /* Modal */
+        .modal-backdrop {
+            position: fixed; top:0; left:0; width:100%; height:100%;
+            background: rgba(0,0,0,0.8);
+            display: none; justify-content: center; align-items: center;
+            z-index: 100;
+        }
+
+        .modal {
+            width: 90%; max-width: 450px; padding: 25px;
+            display: flex; flex-direction: column; gap: 15px;
+        }
+
+        .form-group { display: flex; flex-direction: column; gap: 5px; }
+        input {
+            background: #0f172a; border: 1px solid #334155;
+            color: white; padding: 12px; border-radius: 8px;
+        }
+
+        .time-inputs { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+
+        /* НОВИЙ ВІДЖЕТ (Знизу зліва) */
+        .current-widget {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            width: 300px;
+            z-index: 90;
+            border-left: 4px solid var(--accent);
+            transform: translateY(150%);
+            transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+
+        .current-widget.visible {
+            transform: translateY(0);
+        }
+
+        .widget-header {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--accent);
+            margin-bottom: 5px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .widget-body {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .widget-title {
+            font-size: 1.1rem;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .widget-timer {
+            font-family: monospace;
+            font-size: 1.2rem;
+            color: var(--success);
+        }
+
+        @media (max-width: 600px) {
+            header { flex-direction: column; align-items: stretch; }
+            .current-widget {
+                left: 10px; right: 10px; width: auto; bottom: 10px;
+            }
+        }
+    </style>
+</head>
+<body data-edit-mode="false">
+
+<header>
+    <h1>📅 Schedule<span style="color:var(--accent)">Pro</span></h1>
+    <div class="controls">
+        <button class="btn btn-outline" id="toggleEdit" onclick="toggleEditMode()">
+            ✏️ Режим редагування
+        </button>
+        <button class="btn btn-primary" onclick="share()">🔗 Поділитися</button>
+    </div>
+</header>
+
+<div class="schedule-grid" id="grid"></div>
+
+<div class="current-widget glass" id="activeWidget">
+    <div style="padding: 15px;">
+        <div class="widget-header">
+            <span>🔴 Зараз йде</span>
+            <span id="widgetTimes"></span>
+        </div>
+        <div class="widget-body">
+            <div class="widget-title" id="widgetName">Назва предмету</div>
+            <div style="display:flex; align-items:center; gap:10px;">
+                <span>Залишилось:</span>
+                <span class="widget-timer" id="widgetCountdown">00 хв</span>
+            </div>
+            <a id="widgetLink" href="#" target="_blank" style="margin-top:8px; font-size:0.8rem; color:var(--accent); display:none;">🔗 Підключитися</a>
+        </div>
+    </div>
+</div>
+
+<div class="modal-backdrop" id="modal">
+    <div class="modal glass">
+        <h2 id="modalTitle">Налаштувати урок</h2>
+        <div class="form-group">
+            <label>Назва предмету</label>
+            <input type="text" id="nameInp" placeholder="Напр: Математика">
+        </div>
+        <div class="time-inputs">
+            <div class="form-group">
+                <label>Початок</label>
+                <input type="time" id="startInp">
+            </div>
+            <div class="form-group">
+                <label>Кінець</label>
+                <input type="time" id="endInp">
+            </div>
+        </div>
+        <div class="form-group">
+            <label>Посилання/Коментар</label>
+            <input type="text" id="linkInp" placeholder="https://zoom.us/...">
+        </div>
+        <div style="display:flex; gap:10px; margin-top:10px;">
+            <button class="btn btn-primary" style="flex:2" onclick="save()">Зберегти</button>
+            <button class="btn" style="flex:1; background:#334155; color:white;" onclick="closeModal()">Закрити</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    const days = ["Понеділок", "Вівторок", "Середа", "Четвер", "П'ятниця", "Субота", "Неділя"];
+    let schedule = JSON.parse(localStorage.getItem('gh-schedule')) || {};
+    let currentEditKey = null;
+    let activeLessonGlobal = null; // Для віджета
+
+    function init() {
+        const params = new URLSearchParams(window.location.search);
+        if (params.get('data')) {
+            try {
+                schedule = JSON.parse(atob(params.get('data')));
+                localStorage.setItem('gh-schedule', JSON.stringify(schedule));
+            } catch(e) { console.error("Data error"); }
+        }
+        render();
+        // Оновлюємо кожні 5 секунд для більш плавного прогрес-бару
+        setInterval(render, 5000); 
+    }
+
+    function toggleEditMode() {
+        const body = document.body;
+        const isEdit = body.getAttribute('data-edit-mode') === 'true';
+        body.setAttribute('data-edit-mode', !isEdit);
+        document.getElementById('toggleEdit').classList.toggle('active', !isEdit);
+    }
+
+    function render() {
+        const grid = document.getElementById('grid');
+        grid.innerHTML = '';
+        activeLessonGlobal = null; // Скидаємо перед рендером
+        
+        const now = new Date();
+        const currentTime = now.getHours() * 60 + now.getMinutes();
+        const currentDay = (now.getDay() + 6) % 7; // Пн = 0
+
+        days.forEach((day, dIdx) => {
+            const dayCol = document.createElement('div');
+            dayCol.className = 'day-column';
+            dayCol.innerHTML = `<div class="day-title">${day}</div>`;
+
+            // Створюємо 8 слотів для кожного дня
+            for(let sIdx = 0; sIdx < 8; sIdx++) {
+                const key = `${dIdx}-${sIdx}`;
+                const data = schedule[key] || null;
+                dayCol.appendChild(createLessonCard(data, key, dIdx === currentDay, currentTime));
+            }
+            grid.appendChild(dayCol);
+        });
+
+        updateWidget(currentTime);
+    }
+
+    function createLessonCard(data, key, isToday, currentTime) {
+        const card = document.createElement('div');
+        card.className = 'lesson-card glass';
+        
+        if (!data) {
+            card.innerHTML = `<div style="opacity:0.3; font-size:0.8rem;">Порожньо</div>
+                              <button class="edit-btn" onclick="openModal('${key}')">➕</button>`;
+            return card;
+        }
+
+        const start = timeToMin(data.start);
+        const end = timeToMin(data.end);
+        let statusHtml = '';
+        let progressBarHtml = '';
+
+        if (isToday) {
+            if (currentTime >= start && currentTime < end) {
+                // Активний урок
+                card.classList.add('active');
+                
+                // Розрахунок прогресу
+                const duration = end - start;
+                const elapsed = currentTime - start;
+                const percent = Math.min(100, Math.max(0, (elapsed / duration) * 100));
+                
+                statusHtml = `<div class="status-msg">⏱️ Йде урок (${end - currentTime} хв до кінця)</div>`;
+                
+                // Додаємо смужку прогресу
+                progressBarHtml = `
+                    <div class="card-progress-track">
+                        <div class="card-progress-fill" style="width: ${percent}%"></div>
+                    </div>
+                `;
+
+                // Зберігаємо дані для віджета
+                activeLessonGlobal = {
+                    name: data.name,
+                    start: data.start,
+                    end: data.end,
+                    remaining: end - currentTime,
+                    link: data.link
+                };
+
+            } else if (currentTime < start && start - currentTime <= 60) {
+                statusHtml = `<div class="status-msg" style="color:var(--accent)">🔔 Через ${start - currentTime} хв</div>`;
+            }
+        }
+
+        card.innerHTML = `
+            <button class="edit-btn" onclick="openModal('${key}')">⚙️</button>
+            <div class="time-badge">🕒 ${data.start} - ${data.end}</div>
+            <div style="font-weight:bold; font-size:1.1rem;">${data.name}</div>
+            ${data.link ? `<a href="${data.link}" target="_blank" style="color:var(--accent); font-size:0.8rem; text-decoration:none;">🔗 Перейти</a>` : ''}
+            ${statusHtml}
+            ${progressBarHtml}
+        `;
+        return card;
+    }
+
+    function updateWidget(currentTime) {
+        const widget = document.getElementById('activeWidget');
+        
+        if (activeLessonGlobal) {
+            widget.classList.add('visible');
+            document.getElementById('widgetName').textContent = activeLessonGlobal.name;
+            document.getElementById('widgetTimes').textContent = `${activeLessonGlobal.start} - ${activeLessonGlobal.end}`;
+            document.getElementById('widgetCountdown').textContent = `${activeLessonGlobal.remaining} хв`;
+            
+            const linkBtn = document.getElementById('widgetLink');
+            if(activeLessonGlobal.link) {
+                linkBtn.style.display = 'inline-block';
+                linkBtn.href = activeLessonGlobal.link;
+            } else {
+                linkBtn.style.display = 'none';
+            }
+        } else {
+            widget.classList.remove('visible');
+        }
+    }
+
+    function timeToMin(t) {
+        if(!t) return 0;
+        const [h, m] = t.split(':').map(Number);
+        return h * 60 + m;
+    }
+
+    function openModal(key) {
+        currentEditKey = key;
+        const data = schedule[key] || {name:'', start:'08:00', end:'09:00', link:''};
+        document.getElementById('nameInp').value = data.name;
+        document.getElementById('startInp').value = data.start;
+        document.getElementById('endInp').value = data.end;
+        document.getElementById('linkInp').value = data.link;
+        document.getElementById('modal').style.display = 'flex';
+    }
+
+    function closeModal() { document.getElementById('modal').style.display = 'none'; }
+
+    function save() {
+        schedule[currentEditKey] = {
+            name: document.getElementById('nameInp').value,
+            start: document.getElementById('startInp').value,
+            end: document.getElementById('endInp').value,
+            link: document.getElementById('linkInp').value
+        };
+        localStorage.setItem('gh-schedule', JSON.stringify(schedule));
+        render();
+        closeModal();
+    }
+
+    function share() {
+        const data = btoa(JSON.stringify(schedule));
+        const url = window.location.origin + window.location.pathname + '?data=' + data;
+        navigator.clipboard.writeText(url);
+        alert("Посилання для друзів скопійовано!");
+    }
+
+    init();
+</script>
+</body>
+</html>
