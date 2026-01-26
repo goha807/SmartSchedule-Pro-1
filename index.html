@@ -163,7 +163,7 @@
         .current-widget.visible { transform: translateY(0); }
         .widget-timer { font-family: monospace; font-size: 1.2rem; color: var(--success); font-weight: bold; }
 
-        /* Theme Selector in Modal */
+        /* Theme Selector */
         .theme-options { display: flex; gap: 10px; margin-top: 5px; }
         .theme-circle {
             width: 30px; height: 30px; border-radius: 50%; cursor: pointer;
@@ -243,7 +243,6 @@
 <div class="modal-backdrop" id="settingsModal">
     <div class="modal glass">
         <h2>🎨 Налаштування вигляду</h2>
-        
         <div class="form-group">
             <label>Колір акценту</label>
             <div class="theme-options">
@@ -254,7 +253,6 @@
                 <div class="theme-circle" style="background:#22c55e" onclick="setAccent('#22c55e')"></div>
             </div>
         </div>
-
         <div class="form-group">
             <label>Фон сторінки</label>
             <select id="bgSelect" onchange="changeBackground(this.value)">
@@ -265,7 +263,6 @@
                 <option value="black">Чистий чорний (OLED)</option>
             </select>
         </div>
-
         <div style="margin-top:10px;">
             <button class="btn btn-primary" style="width:100%" onclick="closeModal('settingsModal')">Готово</button>
         </div>
@@ -284,31 +281,111 @@
     function init() {
         applySettings();
         
-        // Перевірка URL параметрів (імпорт розкладу)
+        // Перевірка URL параметрів
         const params = new URLSearchParams(window.location.search);
         if (params.get('data')) {
             try {
-                // Використовуємо decoding для кирилиці
-                const jsonString = decodeURIComponent(escape(atob(params.get('data'))));
-                const importedSchedule = JSON.parse(jsonString);
-                
+                // Новий, надійний метод декодування
+                const rawData = fromBinary(params.get('data'));
+                // Якщо це масив (стиснутий формат), розпакуємо його
+                const importedSchedule = Array.isArray(rawData) ? decompressSchedule(rawData) : rawData;
+
                 if(confirm("Знайдено розклад у посиланні! Завантажити його? (Ваш поточний буде замінено)")) {
                     schedule = importedSchedule;
                     localStorage.setItem('gh-schedule', JSON.stringify(schedule));
-                    // Очистити URL щоб не питало знову при оновленні
+                    // Очистити URL
                     window.history.replaceState({}, document.title, window.location.pathname);
                 }
             } catch(e) { 
                 console.error("Data error", e); 
-                alert("Помилка читання посилання");
+                alert("Помилка читання посилання. Можливо, воно було обрізане при копіюванні.");
             }
         }
 
         render();
-        setInterval(render, 5000); // Оновлення часу
+        setInterval(render, 5000);
     }
 
-    // --- RENDERING ---
+    // --- DATA COMPRESSION & ENCODING (ВИПРАВЛЕНО) ---
+    
+    // 1. Конвертуємо об'єкт у масив, щоб зекономити місце в URL
+    function compressSchedule(sched) {
+        // Format: [key, name, start, end, link]
+        let compressed = [];
+        for (let key in sched) {
+            let item = sched[key];
+            compressed.push([key, item.name, item.start, item.end, item.link]);
+        }
+        return compressed;
+    }
+
+    // 2. Розпаковуємо масив назад у об'єкт
+    function decompressSchedule(compressedArr) {
+        let sched = {};
+        compressedArr.forEach(item => {
+            sched[item[0]] = {
+                name: item[1],
+                start: item[2],
+                end: item[3],
+                link: item[4]
+            };
+        });
+        return sched;
+    }
+
+    // 3. Надійне кодування Base64 з підтримкою Unicode (Кирилиці)
+    function toBinary(string) {
+        const codeUnits = new Uint16Array(string.length);
+        for (let i = 0; i < codeUnits.length; i++) {
+            codeUnits[i] = string.charCodeAt(i);
+        }
+        const charCodes = new Uint8Array(codeUnits.buffer);
+        let result = '';
+        for (let i = 0; i < charCodes.byteLength; i++) {
+            result += String.fromCharCode(charCodes[i]);
+        }
+        return btoa(result);
+    }
+
+    function fromBinary(binary) {
+        const bytes = atob(binary);
+        const source = new Uint8Array(bytes.length);
+        for (let i = 0; i < bytes.length; i++) {
+            source[i] = bytes.charCodeAt(i);
+        }
+        const buffer = new Uint16Array(source.buffer);
+        let result = '';
+        for (let i = 0; i < buffer.length; i++) {
+            result += String.fromCharCode(buffer[i]);
+        }
+        return JSON.parse(result);
+    }
+
+    // --- SHARE FUNCTION ---
+    function share() {
+        try {
+            // Стискаємо дані перед відправкою
+            const compressed = compressSchedule(schedule);
+            const jsonStr = JSON.stringify(compressed);
+            const encoded = toBinary(jsonStr);
+            
+            const url = window.location.origin + window.location.pathname + '?data=' + encoded;
+            
+            if (url.length > 2000) {
+                alert("Увага! Ваш розклад дуже великий. Якщо посилання не спрацює, спробуйте скоротити назви або посилання.");
+            }
+
+            navigator.clipboard.writeText(url).then(() => {
+                alert("✅ Посилання скопійовано! Відправте його другу.");
+            }).catch(err => {
+                prompt("Не вдалося скопіювати автоматично. Скопіюйте це посилання вручну:", url);
+            });
+        } catch (e) {
+            alert("Помилка при створенні посилання: " + e.message);
+        }
+    }
+
+    // --- RENDER & LOGIC ---
     function render() {
         const grid = document.getElementById('grid');
         grid.innerHTML = '';
@@ -316,14 +393,13 @@
         
         const now = new Date();
         const currentTime = now.getHours() * 60 + now.getMinutes();
-        const currentDay = (now.getDay() + 6) % 7; // Пн = 0
+        const currentDay = (now.getDay() + 6) % 7; 
 
         days.forEach((day, dIdx) => {
             const dayCol = document.createElement('div');
             dayCol.className = 'day-column';
             dayCol.innerHTML = `<div class="day-title">${day}</div>`;
 
-            // 8 слотів для уроків
             for(let sIdx = 0; sIdx < 8; sIdx++) {
                 const key = `${dIdx}-${sIdx}`;
                 const data = schedule[key] || null;
@@ -356,7 +432,6 @@
 
         if (isToday) {
             if (currentTime >= start && currentTime < end) {
-                // ACTIVE LESSON
                 card.classList.add('active');
                 const duration = end - start;
                 const percent = Math.min(100, Math.max(0, ((currentTime - start) / duration) * 100));
@@ -374,14 +449,13 @@
             <button class="edit-btn" onclick="event.stopPropagation(); openEditModal('${key}')">⚙️</button>
             <div class="time-badge">🕒 ${data.start} - ${data.end}</div>
             <div style="font-weight:bold; font-size:1.1rem; margin-bottom:5px;">${data.name}</div>
-            ${data.link ? `<a href="${data.link}" target="_blank" onclick="event.stopPropagation()" style="color:var(--accent); font-size:0.85rem; text-decoration:none;">🔗 Вхід на урок</a>` : ''}
+            ${data.link ? `<a href="${data.link}" target="_blank" onclick="event.stopPropagation()" style="color:var(--accent); font-size:0.85rem; text-decoration:none;">🔗 Вхід</a>` : ''}
             ${statusHtml}
             ${progressBarHtml}
         `;
         return card;
     }
 
-    // --- WIDGET ---
     function updateWidget(currentTime) {
         const widget = document.getElementById('activeWidget');
         if (activeLessonGlobal) {
@@ -401,35 +475,25 @@
         }
     }
 
-    // --- LOGIC & HELPERS ---
     function timeToMin(t) {
         if(!t) return 0;
         const [h, m] = t.split(':').map(Number);
         return h * 60 + m;
     }
 
-    // Розумний пошук часу
     function suggestTime(slotIndex) {
-        // Перевіряємо інші дні для цього ж слота (наприклад, 1-й урок)
         for(let d = 0; d < 7; d++) {
             const checkKey = `${d}-${slotIndex}`;
-            if(schedule[checkKey]) {
-                return { start: schedule[checkKey].start, end: schedule[checkKey].end };
-            }
+            if(schedule[checkKey]) return { start: schedule[checkKey].start, end: schedule[checkKey].end };
         }
-        return { start: '08:00', end: '08:45' }; // Дефолт
+        return { start: '08:00', end: '08:45' };
     }
 
-    // Розумний пошук посилання
     function autoFillLink() {
         const name = document.getElementById('nameInp').value.trim();
         if(!name) return;
-        
-        // Шукаємо цей предмет у всьому розкладі
         const foundKey = Object.keys(schedule).find(k => schedule[k].name === name && schedule[k].link);
-        if(foundKey) {
-            document.getElementById('linkInp').value = schedule[foundKey].link;
-        }
+        if(foundKey) document.getElementById('linkInp').value = schedule[foundKey].link;
     }
 
     function updateDatalist() {
@@ -444,19 +508,15 @@
         });
     }
 
-    // --- MODALS ---
     function openEditModal(key) {
         currentEditKey = key;
         const slotIdx = key.split('-')[1];
-        
         const data = schedule[key];
         const suggestions = suggestTime(slotIdx);
-
         document.getElementById('nameInp').value = data ? data.name : '';
         document.getElementById('startInp').value = data ? data.start : suggestions.start;
         document.getElementById('endInp').value = data ? data.end : suggestions.end;
         document.getElementById('linkInp').value = data ? data.link : '';
-        
         document.getElementById('modal').style.display = 'flex';
         setTimeout(() => document.getElementById('modal').classList.add('open'), 10);
     }
@@ -495,38 +555,15 @@
         document.getElementById('toggleEdit').classList.toggle('active', !isEdit);
     }
 
-    // --- SHARING ---
-    function share() {
-        // btoa не підтримує кирилицю напряму, тому використовуємо трюк з unescape(encodeURIComponent)
-        const jsonStr = JSON.stringify(schedule);
-        const encoded = btoa(unescape(encodeURIComponent(jsonStr)));
-        const url = window.location.origin + window.location.pathname + '?data=' + encoded;
-        
-        navigator.clipboard.writeText(url).then(() => {
-            alert("Посилання скопійовано! Відправ його друзям, і вони зможуть завантажити твій розклад.");
-        }).catch(err => {
-            alert("Не вдалося скопіювати. Спробуй вручну з адресного рядка (після натискання ОК)");
-            window.location.search = '?data=' + encoded;
-        });
-    }
-
-    // --- SETTINGS & THEMES ---
     function openSettings() {
         document.getElementById('settingsModal').style.display = 'flex';
         setTimeout(() => document.getElementById('settingsModal').classList.add('open'), 10);
         document.getElementById('bgSelect').value = userSettings.bg;
     }
 
-    function setAccent(color) {
-        userSettings.accent = color;
-        saveSettings();
-    }
-
-    function changeBackground(type) {
-        userSettings.bg = type;
-        saveSettings();
-    }
-
+    function setAccent(color) { userSettings.accent = color; saveSettings(); }
+    function changeBackground(type) { userSettings.bg = type; saveSettings(); }
+    
     function saveSettings() {
         localStorage.setItem('gh-settings', JSON.stringify(userSettings));
         applySettings();
@@ -534,7 +571,6 @@
 
     function applySettings() {
         document.documentElement.style.setProperty('--accent', userSettings.accent);
-        
         let bgStyle = '';
         switch(userSettings.bg) {
             case 'space': bgStyle = 'linear-gradient(to bottom, #000000, #434343)'; break;
@@ -546,7 +582,6 @@
         document.documentElement.style.setProperty('--bg-image', bgStyle);
     }
 
-    // Запуск
     init();
 </script>
 </body>
