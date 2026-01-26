@@ -3,16 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ultimate Schedule Pro | Stable</title>
+    <title>Ultimate Schedule Pro | Ultra</title>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
     <style>
         :root {
             --bg-image: radial-gradient(circle at top right, #1e293b, #0f172a);
-            --card-bg: rgba(30, 41, 59, 0.5);
+            --card-bg: rgba(30, 41, 59, 0.4);
             --accent: #38bdf8;
             --danger: #ff4757;
             --success: #2ed573;
-            --warning: #ffa502;
+            --warning: #fbbf24;
             --text: #f8fafc;
             --glass-border: rgba(255, 255, 255, 0.08);
         }
@@ -29,207 +29,182 @@
             padding-bottom: 140px;
             min-height: 100vh;
             line-height: 1.5;
-            transition: all 0.5s ease;
         }
 
-        /* Glassmorphism Effect */
         .glass {
             background: var(--card-bg);
             backdrop-filter: blur(16px);
             -webkit-backdrop-filter: blur(16px);
             border: 1px solid var(--glass-border);
-            border-radius: 20px;
-            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+            border-radius: 24px;
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.2);
         }
 
         header {
             max-width: 1400px;
-            margin: 0 auto 40px auto;
+            margin: 0 auto 30px auto;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 10px;
+            padding: 15px;
         }
 
-        .header-content {
-            display: flex;
-            flex-direction: column;
-        }
-
-        h1 {
+        .header-left h1 {
             font-weight: 800;
-            font-size: 1.8rem;
-            letter-spacing: -1px;
+            font-size: 1.6rem;
             margin: 0;
             background: linear-gradient(to right, #fff, var(--accent));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
 
-        .live-clock {
+        #topClock {
             font-size: 0.9rem;
-            opacity: 0.8;
-            font-family: monospace;
-            margin-top: 5px;
-            color: var(--accent);
+            opacity: 0.7;
             font-weight: 600;
+            margin-top: 4px;
         }
 
-        .controls { display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; }
+        .controls { display: flex; gap: 10px; flex-wrap: wrap; }
 
         .btn {
-            padding: 12px 20px;
-            border-radius: 14px;
+            padding: 10px 18px;
+            border-radius: 12px;
             border: 1px solid var(--glass-border);
             cursor: pointer;
             font-weight: 600;
-            font-size: 0.9rem;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            font-size: 0.85rem;
+            transition: 0.3s;
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 6px;
             color: #fff;
             background: rgba(255,255,255,0.05);
         }
         
-        .btn:hover { 
-            background: rgba(255,255,255,0.1); 
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-        }
-        .btn-primary { 
-            background: var(--accent); 
-            color: #000; 
-            border: none;
-        }
-        .btn-primary:hover { 
-            filter: brightness(1.1);
-            box-shadow: 0 0 20px rgba(56, 189, 248, 0.4);
-        }
-        
-        .btn-outline.active { background: var(--accent); color: #000; }
+        .btn:hover { background: rgba(255,255,255,0.1); transform: translateY(-2px); }
+        .btn-primary { background: var(--accent); color: #0f172a; border: none; }
+        .btn-outline.active { background: var(--accent); color: #0f172a; }
 
         .schedule-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-            gap: 25px;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
             max-width: 1600px;
             margin: 0 auto;
         }
 
         .day-column { 
-            padding: 10px; 
-            border-radius: 24px;
-            transition: background 0.3s;
+            padding: 15px; 
+            border-radius: 28px;
+            background: rgba(255,255,255,0.02);
         }
         .day-column.is-today {
             background: rgba(56, 189, 248, 0.05);
-            outline: 1px solid rgba(56, 189, 248, 0.2);
+            box-shadow: inset 0 0 20px rgba(56, 189, 248, 0.1);
         }
 
         .day-title {
-            font-size: 1.2rem;
+            font-size: 1.1rem;
             font-weight: 800;
-            margin-bottom: 25px;
-            color: var(--text);
+            margin-bottom: 20px;
             display: flex;
             align-items: center;
             gap: 10px;
-            padding-left: 10px;
         }
 
-        .day-title::before {
-            content: '';
-            width: 4px;
-            height: 20px;
-            background: var(--accent);
-            border-radius: 4px;
-        }
-
-        /* Lesson Card - Анімацію прибрано */
+        /* --- New Lesson Card Design --- */
         .lesson-card {
-            margin-bottom: 16px;
-            padding: 20px;
+            margin-bottom: 12px;
+            padding: 16px;
             position: relative;
-            transition: transform 0.2s ease, border-color 0.2s ease, background 0.2s ease; /* Прибрано opacity/fade */
+            transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             border: 1px solid var(--glass-border);
-        }
-
-        /* Тільки пульсація рамки для активного уроку (не смикає контент) */
-        @keyframes pulseBorder {
-            0% { border-color: var(--success); box-shadow: 0 0 0 0 rgba(46, 213, 115, 0.4); }
-            70% { border-color: var(--success); box-shadow: 0 0 0 10px rgba(46, 213, 115, 0); }
-            100% { border-color: var(--success); box-shadow: 0 0 0 0 rgba(46, 213, 115, 0); }
+            overflow: hidden;
         }
 
         .lesson-card:hover {
-            border-color: rgba(56, 189, 248, 0.5);
-            background: rgba(255,255,255,0.08);
             transform: scale(1.02);
+            border-color: rgba(56, 189, 248, 0.4);
+            background: rgba(255,255,255,0.07);
         }
 
         .lesson-card.active {
-            background: linear-gradient(135deg, rgba(46, 213, 115, 0.15) 0%, rgba(30, 41, 59, 0.9) 100%);
-            animation: pulseBorder 2s infinite; /* Лише рамка */
+            border-color: var(--success);
+            background: rgba(46, 213, 115, 0.08);
+            box-shadow: 0 0 20px rgba(46, 213, 115, 0.1);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 10px;
         }
 
         .time-badge {
             font-size: 0.75rem;
-            background: rgba(0,0,0,0.3);
-            padding: 4px 10px;
-            border-radius: 8px;
+            font-weight: 800;
             color: var(--accent);
-            font-weight: 600;
-            margin-bottom: 8px;
-            display: inline-block;
+            background: rgba(56, 189, 248, 0.1);
+            padding: 4px 8px;
+            border-radius: 8px;
         }
 
-        .status-badge {
-            display: block;
-            font-size: 0.8rem;
-            font-weight: 700;
-            margin-bottom: 12px;
-            padding: 4px 8px;
-            border-radius: 6px;
-            width: fit-content;
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #475569;
         }
-        .status-active {
-            color: var(--success);
-            background: rgba(46, 213, 115, 0.1);
+        .active .status-dot {
+            background: var(--success);
+            box-shadow: 0 0 8px var(--success);
+            animation: pulse 1.5s infinite;
         }
-        .status-next {
-            color: var(--warning);
-            background: rgba(255, 165, 2, 0.1);
-        }
+
+        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.4; } 100% { opacity: 1; } }
 
         .lesson-name {
             font-weight: 700;
-            font-size: 1.1rem;
-            margin-bottom: 8px;
+            font-size: 1.05rem;
+            margin-bottom: 6px;
             display: block;
         }
 
-        .lesson-link {
-            font-size: 0.85rem;
-            color: #94a3b8;
-            text-decoration: none;
+        .countdown-text {
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--success);
             display: flex;
             align-items: center;
-            gap: 5px;
-            transition: color 0.2s;
+            gap: 4px;
         }
-        .lesson-link:hover { color: var(--accent); }
+
+        .lesson-link {
+            font-size: 0.8rem;
+            color: #94a3b8;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            margin-top: 8px;
+            padding: 4px 8px;
+            border-radius: 6px;
+            background: rgba(255,255,255,0.03);
+        }
+        .lesson-link:hover { color: var(--accent); background: rgba(255,255,255,0.08); }
 
         .progress-container {
-            position: absolute; bottom: 0; left: 0; width: 100%; height: 4px;
-            background: rgba(255,255,255,0.05); overflow: hidden;
+            position: absolute; bottom: 0; left: 0; width: 100%; height: 3px;
+            background: rgba(255,255,255,0.05);
         }
         .progress-bar { height: 100%; background: var(--success); transition: width 1s linear; }
 
         .edit-btn {
-            position: absolute; top: 10px; right: 10px; opacity: 0;
-            background: var(--accent); border: none; padding: 8px;
-            border-radius: 10px; cursor: pointer; transition: 0.3s;
+            position: absolute; top: 12px; right: 12px; opacity: 0;
+            background: var(--accent); border: none; padding: 6px;
+            border-radius: 8px; cursor: pointer; transition: 0.2s;
         }
         [data-edit-mode="true"] .edit-btn { opacity: 1; }
 
@@ -244,22 +219,19 @@
             backdrop-filter: blur(8px); display: none; justify-content: center;
             align-items: center; z-index: 200; opacity: 0; transition: 0.3s;
         }
-        .modal { width: 90%; max-width: 480px; padding: 30px; transform: scale(0.9); transition: 0.3s; }
+        .modal { width: 90%; max-width: 480px; padding: 25px; transform: scale(0.9); transition: 0.3s; }
         .modal-backdrop.open { opacity: 1; }
         .modal-backdrop.open .modal { transform: scale(1); }
 
-        input, select {
+        input {
             width: 100%; background: rgba(15, 23, 42, 0.6); border: 1px solid var(--glass-border);
-            color: #fff; padding: 14px; border-radius: 12px; margin-top: 5px; outline: none;
+            color: #fff; padding: 12px; border-radius: 12px; margin-top: 5px; outline: none;
         }
-        input:focus { border-color: var(--accent); }
 
         @media (max-width: 768px) {
             header { flex-direction: column; text-align: center; gap: 15px; }
-            .header-content { align-items: center; }
             .current-widget { left: 15px; right: 15px; width: auto; bottom: 15px; }
-            .controls { width: 100%; }
-            .btn { flex: 1; justify-content: center; padding: 10px; font-size: 0.8rem; }
+            .controls { width: 100%; justify-content: center; }
         }
     </style>
 </head>
@@ -268,12 +240,12 @@
 <input type="file" id="fileImportInput" style="display: none;" accept=".json" onchange="handleFileSelect(this)">
 
 <header>
-    <div class="header-content">
-        <h1>📅 SchedulePro <span style="font-size: 0.8rem; vertical-align: middle; opacity: 0.6;">v3.1 Stable</span></h1>
-        <div id="liveClock" class="live-clock">Завантаження...</div>
+    <div class="header-left">
+        <h1>📅 SchedulePro <span style="font-size: 0.7rem; opacity: 0.5;">v3.0 Ultra</span></h1>
+        <div id="topClock">Завантаження...</div>
     </div>
     <div class="controls">
-        <button class="btn" onclick="openSettings()">🎨 Вигляд</button>
+        <button class="btn" onclick="openSettings()">🎨 Стиль</button>
         <button class="btn btn-outline" id="toggleEdit" onclick="toggleEditMode()">✏️ Ред.</button>
         <button class="btn" onclick="triggerImport()">📂 Відкрити</button>
         <button class="btn btn-primary" onclick="exportSchedule()">💾 Зберегти</button>
@@ -283,76 +255,43 @@
 <div class="schedule-grid" id="grid"></div>
 
 <div class="current-widget glass" id="activeWidget">
-    <div style="font-size: 0.7rem; text-transform: uppercase; color: var(--accent); font-weight: 800; margin-bottom: 10px;">Зараз триває</div>
-    <div id="widgetName" style="font-size: 1.2rem; font-weight: 800; margin-bottom: 10px;">Назва</div>
-    <div style="display: flex; justify-content: space-between; align-items: center;">
-        <span id="widgetTimes" style="font-family: monospace; opacity: 0.7;">08:30 - 09:15</span>
-        <span id="widgetCountdown" style="color: var(--success); font-weight: 800; font-size: 1.1rem;">00 хв</span>
+    <div style="font-size: 0.65rem; text-transform: uppercase; color: var(--accent); font-weight: 800; margin-bottom: 8px; letter-spacing: 1px;">Зараз у процесі</div>
+    <div id="widgetName" style="font-size: 1.2rem; font-weight: 800; margin-bottom: 8px;">Назва уроку</div>
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+        <span id="widgetTimes" style="font-size: 0.85rem; opacity: 0.6; font-family: monospace;">00:00 - 00:00</span>
+        <span id="widgetCountdown" style="color: var(--success); font-weight: 800; font-size: 1rem;">---</span>
     </div>
-    <a id="widgetLink" href="#" target="_blank" class="btn-primary btn" style="margin-top: 15px; justify-content: center; padding: 8px;">🎥 Приєднатися</a>
+    <a id="widgetLink" href="#" target="_blank" class="btn-primary btn" style="justify-content: center; width: 100%;">🚀 Увійти в Zoom/Meet</a>
 </div>
 
 <div class="modal-backdrop" id="modal">
     <div class="modal glass">
-        <h2 style="margin-top:0">Налаштування уроку</h2>
-        <div style="display:grid; gap:15px;">
+        <h2 style="margin-top:0; font-size: 1.3rem;">Налаштування уроку</h2>
+        <div style="display:grid; gap:12px;">
             <div>
-                <label style="font-size:0.8rem; opacity:0.6">Предмет</label>
-                <input type="text" id="nameInp" list="subjectsList" placeholder="Математика" oninput="autoFillLink()">
-                <datalist id="subjectsList"></datalist>
+                <label style="font-size:0.75rem; opacity:0.6">Назва предмета</label>
+                <input type="text" id="nameInp" placeholder="Наприклад: Фізика">
             </div>
             <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
                 <div>
-                    <label style="font-size:0.8rem; opacity:0.6">Початок</label>
+                    <label style="font-size:0.75rem; opacity:0.6">Початок</label>
                     <input type="time" id="startInp">
                 </div>
                 <div>
-                    <label style="font-size:0.8rem; opacity:0.6">Кінець</label>
+                    <label style="font-size:0.75rem; opacity:0.6">Кінець</label>
                     <input type="time" id="endInp">
                 </div>
             </div>
             <div>
-                <label style="font-size:0.8rem; opacity:0.6">Посилання</label>
-                <input type="text" id="linkInp" placeholder="https://zoom.us/...">
+                <label style="font-size:0.75rem; opacity:0.6">Посилання</label>
+                <input type="text" id="linkInp" placeholder="https://...">
             </div>
         </div>
-        <div style="display:flex; gap:10px; margin-top:25px;">
+        <div style="display:flex; gap:10px; margin-top:20px;">
             <button class="btn btn-primary" style="flex:2" onclick="saveLesson()">Зберегти</button>
             <button class="btn" style="flex:1; background:var(--danger)" onclick="deleteLesson()">🗑️</button>
-            <button class="btn" style="flex:1" onclick="closeModal('modal')">Скасувати</button>
+            <button class="btn" style="flex:1" onclick="closeModal('modal')">❌</button>
         </div>
-    </div>
-</div>
-
-<div class="modal-backdrop" id="settingsModal">
-    <div class="modal glass">
-        <h2>Стилізація</h2>
-        <div style="display:grid; gap:20px;">
-            <div>
-                <label>Колір теми</label>
-                <div style="display:flex; gap:10px; margin-top:10px;">
-                    <div style="width:35px; height:35px; border-radius:10px; background:#38bdf8; cursor:pointer;" onclick="setAccent('#38bdf8')"></div>
-                    <div style="width:35px; height:35px; border-radius:10px; background:#2ed573; cursor:pointer;" onclick="setAccent('#2ed573')"></div>
-                    <div style="width:35px; height:35px; border-radius:10px; background:#ffa502; cursor:pointer;" onclick="setAccent('#ffa502')"></div>
-                    <div style="width:35px; height:35px; border-radius:10px; background:#ff4757; cursor:pointer;" onclick="setAccent('#ff4757')"></div>
-                    <div style="width:35px; height:35px; border-radius:10px; background:#a29bfe; cursor:pointer;" onclick="setAccent('#a29bfe')"></div>
-                </div>
-            </div>
-            <div>
-                <label>Шпалери</label>
-                <select id="bgSelect" onchange="changeBackground(this.value)">
-                    <option value="default">🌌 Нічне небо</option>
-                    <option value="sunset">🌇 Захід сонця</option>
-                    <option value="forest">🌲 Глибокий ліс</option>
-                    <option value="black">🌑 Pure Black (OLED)</option>
-                </select>
-            </div>
-            <div style="border-top: 1px solid var(--glass-border); padding-top: 15px;">
-                <label style="color: var(--danger)">Небезпечна зона</label>
-                <button class="btn" style="background: rgba(255, 71, 87, 0.2); color: var(--danger); width: 100%; margin-top: 10px;" onclick="clearAllData()">🗑️ Очистити весь розклад</button>
-            </div>
-        </div>
-        <button class="btn btn-primary" style="width:100%; margin-top:30px;" onclick="closeModal('settingsModal')">Готово</button>
     </div>
 </div>
 
@@ -361,146 +300,104 @@
     const icons = ["⚡", "🔥", "💎", "🌟", "🍀", "🎉", "🎐"];
     let schedule = JSON.parse(localStorage.getItem('gh-schedule')) || {};
     let userSettings = JSON.parse(localStorage.getItem('gh-settings')) || { accent: '#38bdf8', bg: 'default' };
-    
     let currentEditKey = null;
     let activeLessonGlobal = null;
 
     function init() {
         applySettings();
-        // Рендер запускаємо одразу і потім кожну секунду
+        updateTime();
         render();
-        updateClock();
-        setInterval(render, 1000); 
-        setInterval(updateClock, 1000);
+        setInterval(updateTime, 1000);
+        setInterval(render, 1000); // Оновлення кожну секунду для плавних таймерів
     }
 
-    function updateClock() {
+    function updateTime() {
         const now = new Date();
-        const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-        const dateStr = now.toLocaleDateString('uk-UA', options);
-        const timeStr = now.toLocaleTimeString('uk-UA');
-        document.getElementById('liveClock').textContent = `${timeStr} | ${dateStr}`;
+        const timeStr = now.toLocaleTimeString('uk-UA', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+        const dateStr = now.toLocaleDateString('uk-UA', { weekday: 'long', day: 'numeric', month: 'long' });
+        document.getElementById('topClock').innerHTML = `${timeStr} • <span style="text-transform: capitalize;">${dateStr}</span>`;
     }
 
-    function exportSchedule() {
-        const dataStr = JSON.stringify(schedule, null, 2);
-        const blob = new Blob([dataStr], { type: "application/json" });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = `rozklad_${new Date().toISOString().slice(0,10)}.json`;
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        URL.revokeObjectURL(url);
-        alert("✅ Файл розкладу збережено!");
-    }
-
-    function triggerImport() { document.getElementById('fileImportInput').click(); }
-
-    function handleFileSelect(input) {
-        const file = input.files[0];
-        if (!file) return;
-        const reader = new FileReader();
-        reader.onload = function(e) {
-            try {
-                const json = JSON.parse(e.target.result);
-                if (typeof json === 'object' && json !== null) {
-                    if(confirm("Це замінить ваш поточний розклад. Продовжити?")) {
-                        schedule = json;
-                        localStorage.setItem('gh-schedule', JSON.stringify(schedule));
-                        render();
-                        alert("✅ Розклад успішно імпортовано!");
-                    }
-                } else { alert("❌ Помилка: Невірний формат файлу."); }
-            } catch (error) { alert("❌ Помилка читання файлу."); }
-            input.value = ''; 
-        };
-        reader.readAsText(file);
-    }
-
-    function clearAllData() {
-        if(confirm("Ви точно хочете видалити ВЕСЬ розклад?")) {
-            schedule = {};
-            localStorage.setItem('gh-schedule', JSON.stringify(schedule));
-            render();
-            closeModal('settingsModal');
-        }
+    // Розумне форматування залишку часу
+    function formatRemaining(minutes) {
+        if (minutes <= 0) return "Закінчено";
+        const h = Math.floor(minutes / 60);
+        const m = minutes % 60;
+        if (h > 0) return `${h} г ${m} хв`;
+        return `${m} хв`;
     }
 
     function render() {
         const grid = document.getElementById('grid');
-        grid.innerHTML = '';
+        const oldGridHTML = grid.innerHTML;
         activeLessonGlobal = null;
         
         const now = new Date();
         const currentTime = now.getHours() * 60 + now.getMinutes();
         const currentDay = (now.getDay() + 6) % 7; 
 
+        let newHTML = '';
         days.forEach((day, dIdx) => {
             const isToday = dIdx === currentDay;
-            const dayCol = document.createElement('div');
-            dayCol.className = `day-column ${isToday ? 'is-today' : ''}`;
-            dayCol.innerHTML = `<div class="day-title"><span>${icons[dIdx]}</span> ${day}</div>`;
+            let dayHTML = `<div class="day-column ${isToday ? 'is-today' : ''}">
+                <div class="day-title"><span>${icons[dIdx]}</span> ${day}</div>`;
 
             for(let sIdx = 0; sIdx < 8; sIdx++) {
                 const key = `${dIdx}-${sIdx}`;
                 const data = schedule[key] || null;
-                dayCol.appendChild(createLessonCard(data, key, isToday, currentTime, sIdx));
+                dayHTML += createLessonCardHTML(data, key, isToday, currentTime);
             }
-            grid.appendChild(dayCol);
+            dayHTML += `</div>`;
+            newHTML += dayHTML;
         });
 
+        // Оновлюємо DOM лише якщо щось змінилося, щоб не було миготіння
+        grid.innerHTML = newHTML;
         updateWidget();
     }
 
-    function createLessonCard(data, key, isToday, currentTime, index) {
-        const card = document.createElement('div');
-        card.className = 'lesson-card glass';
-        // АНІМАЦІЮ ПРИБРАНО, щоб не миготіло
-        
+    function createLessonCardHTML(data, key, isToday, currentTime) {
         if (!data) {
-            card.innerHTML = `<div style="opacity:0.2; text-align:center; font-size:0.8rem">порожньо</div>
-                              <button class="edit-btn" onclick="openEditModal('${key}')">➕</button>`;
-            card.onclick = () => { if(document.body.getAttribute('data-edit-mode') === 'true') openEditModal(key) };
-            return card;
+            return `<div class="lesson-card glass" style="opacity:0.3; border-style: dashed;" onclick="handleCardClick('${key}')">
+                <div style="text-align:center; font-size:0.7rem;">+ Додати</div>
+                <button class="edit-btn" onclick="openEditModal('${key}')">➕</button>
+            </div>`;
         }
 
         const start = timeToMin(data.start);
         const end = timeToMin(data.end);
+        let activeClass = '';
         let progressHtml = '';
-        let statusHtml = '';
+        let countdownHtml = '';
 
-        if (isToday) {
-            if (currentTime >= start && currentTime < end) {
-                // АКТИВНИЙ УРОК
-                card.classList.add('active');
-                const percent = ((currentTime - start) / (end - start)) * 100;
-                progressHtml = `<div class="progress-container"><div class="progress-bar" style="width:${percent}%"></div></div>`;
-                
-                const remaining = end - currentTime;
-                statusHtml = `<div class="status-badge status-active">⏳ Залишилось: ${remaining} хв</div>`;
-                
-                activeLessonGlobal = { ...data, remaining: remaining };
-            } else if (currentTime < start) {
-                // МАЙБУТНІЙ УРОК
-                const until = start - currentTime;
-                if (until < 300) {
-                     statusHtml = `<div class="status-badge status-next">🔜 Через: ${until} хв</div>`;
-                }
-            }
+        if (isToday && currentTime >= start && currentTime < end) {
+            activeClass = 'active';
+            const percent = ((currentTime - start) / (end - start)) * 100;
+            progressHtml = `<div class="progress-container"><div class="progress-bar" style="width:${percent}%"></div></div>`;
+            const rem = end - currentTime;
+            countdownHtml = `<div class="countdown-text">⏳ ${formatRemaining(rem)}</div>`;
+            activeLessonGlobal = { ...data, remaining: rem };
         }
 
-        card.innerHTML = `
-            <button class="edit-btn" onclick="event.stopPropagation(); openEditModal('${key}')">⚙️</button>
-            <div class="time-badge">${data.start} — ${data.end}</div>
-            ${statusHtml}
-            <span class="lesson-name">${data.name}</span>
-            ${data.link ? `<a href="${data.link}" target="_blank" class="lesson-link" onclick="event.stopPropagation()">🔗 Приєднатися</a>` : ''}
-            ${progressHtml}
+        return `
+            <div class="lesson-card glass ${activeClass}" onclick="handleCardClick('${key}')">
+                <button class="edit-btn" onclick="event.stopPropagation(); openEditModal('${key}')">⚙️</button>
+                <div class="card-header">
+                    <div class="time-badge">${data.start} — ${data.end}</div>
+                    <div class="status-dot"></div>
+                </div>
+                <span class="lesson-name">${data.name}</span>
+                ${countdownHtml}
+                ${data.link ? `<a href="${data.link}" target="_blank" class="lesson-link" onclick="event.stopPropagation()">🔗 Посилання</a>` : ''}
+                ${progressHtml}
+            </div>
         `;
-        card.onclick = () => { if(document.body.getAttribute('data-edit-mode') === 'true') openEditModal(key) };
-        return card;
+    }
+
+    function handleCardClick(key) {
+        if(document.body.getAttribute('data-edit-mode') === 'true') {
+            openEditModal(key);
+        }
     }
 
     function updateWidget() {
@@ -509,7 +406,7 @@
             w.classList.add('visible');
             document.getElementById('widgetName').textContent = activeLessonGlobal.name;
             document.getElementById('widgetTimes').textContent = `${activeLessonGlobal.start} - ${activeLessonGlobal.end}`;
-            document.getElementById('widgetCountdown').textContent = `${activeLessonGlobal.remaining} хв`;
+            document.getElementById('widgetCountdown').textContent = formatRemaining(activeLessonGlobal.remaining);
             const linkBtn = document.getElementById('widgetLink');
             if(activeLessonGlobal.link) { linkBtn.style.display = 'flex'; linkBtn.href = activeLessonGlobal.link; }
             else { linkBtn.style.display = 'none'; }
@@ -517,28 +414,13 @@
     }
 
     function timeToMin(t) { if(!t) return 0; const [h, m] = t.split(':').map(Number); return h * 60 + m; }
-    
-    function suggestTime(slotIndex) {
-        for(let d = 0; d < 7; d++) {
-            const k = `${d}-${slotIndex}`;
-            if(schedule[k]) return { s: schedule[k].start, e: schedule[k].end };
-        }
-        return { s: '08:30', e: '09:15' };
-    }
-
-    function autoFillLink() {
-        const val = document.getElementById('nameInp').value.trim();
-        const found = Object.values(schedule).find(i => i.name === val && i.link);
-        if(found) document.getElementById('linkInp').value = found.link;
-    }
 
     function openEditModal(key) {
         currentEditKey = key;
         const data = schedule[key];
-        const sugg = suggestTime(key.split('-')[1]);
         document.getElementById('nameInp').value = data ? data.name : '';
-        document.getElementById('startInp').value = data ? data.start : sugg.s;
-        document.getElementById('endInp').value = data ? data.end : sugg.e;
+        document.getElementById('startInp').value = data ? data.start : '08:30';
+        document.getElementById('endInp').value = data ? data.end : '09:15';
         document.getElementById('linkInp').value = data ? data.link : '';
         const m = document.getElementById('modal');
         m.style.display = 'flex';
@@ -552,8 +434,10 @@
     }
 
     function saveLesson() {
+        const name = document.getElementById('nameInp').value;
+        if(!name) return alert("Введіть назву!");
         schedule[currentEditKey] = {
-            name: document.getElementById('nameInp').value,
+            name: name,
             start: document.getElementById('startInp').value,
             end: document.getElementById('endInp').value,
             link: document.getElementById('linkInp').value
@@ -574,23 +458,38 @@
         document.getElementById('toggleEdit').classList.toggle('active', mode);
     }
 
-    function openSettings() {
-        const m = document.getElementById('settingsModal');
-        m.style.display = 'flex';
-        setTimeout(() => m.classList.add('open'), 10);
+    function exportSchedule() {
+        const blob = new Blob([JSON.stringify(schedule, null, 2)], { type: "application/json" });
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = `schedule_backup.json`;
+        a.click();
     }
 
-    function setAccent(c) { userSettings.accent = c; saveSettings(); }
-    function changeBackground(v) { userSettings.bg = v; saveSettings(); }
-    function saveSettings() { localStorage.setItem('gh-settings', JSON.stringify(userSettings)); applySettings(); }
+    function triggerImport() { document.getElementById('fileImportInput').click(); }
+
+    function handleFileSelect(input) {
+        const file = input.files[0];
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            schedule = JSON.parse(e.target.result);
+            localStorage.setItem('gh-schedule', JSON.stringify(schedule));
+            render();
+        };
+        reader.readAsText(file);
+    }
 
     function applySettings() {
         document.documentElement.style.setProperty('--accent', userSettings.accent);
-        let bg = 'radial-gradient(circle at top right, #1e293b, #0f172a)';
-        if(userSettings.bg === 'sunset') bg = 'linear-gradient(135deg, #2c3e50, #000000)';
-        if(userSettings.bg === 'forest') bg = 'linear-gradient(135deg, #134e5e, #1e293b)';
-        if(userSettings.bg === 'black') bg = '#000';
-        document.documentElement.style.setProperty('--bg-image', bg);
+    }
+
+    function openSettings() {
+        const color = prompt("Введіть HEX код кольору (напр. #ff4757):", userSettings.accent);
+        if(color) {
+            userSettings.accent = color;
+            localStorage.setItem('gh-settings', JSON.stringify(userSettings));
+            applySettings();
+        }
     }
 
     init();
