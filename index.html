@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ultimate Schedule Pro | Premium</title>
+    <title>Ultimate Schedule Pro | Stable</title>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -12,6 +12,7 @@
             --accent: #38bdf8;
             --danger: #ff4757;
             --success: #2ed573;
+            --warning: #ffa502;
             --text: #f8fafc;
             --glass-border: rgba(255, 255, 255, 0.08);
         }
@@ -50,6 +51,11 @@
             padding: 10px;
         }
 
+        .header-content {
+            display: flex;
+            flex-direction: column;
+        }
+
         h1 {
             font-weight: 800;
             font-size: 1.8rem;
@@ -60,9 +66,17 @@
             -webkit-text-fill-color: transparent;
         }
 
+        .live-clock {
+            font-size: 0.9rem;
+            opacity: 0.8;
+            font-family: monospace;
+            margin-top: 5px;
+            color: var(--accent);
+            font-weight: 600;
+        }
+
         .controls { display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; }
 
-        /* Buttons Style */
         .btn {
             padding: 12px 20px;
             border-radius: 14px;
@@ -95,7 +109,6 @@
         
         .btn-outline.active { background: var(--accent); color: #000; }
 
-        /* Grid */
         .schedule-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
@@ -133,19 +146,20 @@
             border-radius: 4px;
         }
 
-        /* Lesson Card */
+        /* Lesson Card - Анімацію прибрано */
         .lesson-card {
             margin-bottom: 16px;
             padding: 20px;
             position: relative;
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: transform 0.2s ease, border-color 0.2s ease, background 0.2s ease; /* Прибрано opacity/fade */
             border: 1px solid var(--glass-border);
-            animation: fadeIn 0.5s ease backwards;
         }
 
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
+        /* Тільки пульсація рамки для активного уроку (не смикає контент) */
+        @keyframes pulseBorder {
+            0% { border-color: var(--success); box-shadow: 0 0 0 0 rgba(46, 213, 115, 0.4); }
+            70% { border-color: var(--success); box-shadow: 0 0 0 10px rgba(46, 213, 115, 0); }
+            100% { border-color: var(--success); box-shadow: 0 0 0 0 rgba(46, 213, 115, 0); }
         }
 
         .lesson-card:hover {
@@ -155,8 +169,8 @@
         }
 
         .lesson-card.active {
-            border-color: var(--success);
-            background: linear-gradient(135deg, rgba(46, 213, 115, 0.1) 0%, rgba(30, 41, 59, 0.8) 100%);
+            background: linear-gradient(135deg, rgba(46, 213, 115, 0.15) 0%, rgba(30, 41, 59, 0.9) 100%);
+            animation: pulseBorder 2s infinite; /* Лише рамка */
         }
 
         .time-badge {
@@ -166,8 +180,26 @@
             border-radius: 8px;
             color: var(--accent);
             font-weight: 600;
-            margin-bottom: 12px;
+            margin-bottom: 8px;
             display: inline-block;
+        }
+
+        .status-badge {
+            display: block;
+            font-size: 0.8rem;
+            font-weight: 700;
+            margin-bottom: 12px;
+            padding: 4px 8px;
+            border-radius: 6px;
+            width: fit-content;
+        }
+        .status-active {
+            color: var(--success);
+            background: rgba(46, 213, 115, 0.1);
+        }
+        .status-next {
+            color: var(--warning);
+            background: rgba(255, 165, 2, 0.1);
         }
 
         .lesson-name {
@@ -201,14 +233,12 @@
         }
         [data-edit-mode="true"] .edit-btn { opacity: 1; }
 
-        /* Widget */
         .current-widget {
             position: fixed; bottom: 30px; left: 30px; width: 340px; z-index: 100;
             padding: 20px; transform: translateX(-150%); transition: 0.6s cubic-bezier(0.4, 0, 0.2, 1.2);
         }
         .current-widget.visible { transform: translateX(0); }
 
-        /* Modal */
         .modal-backdrop {
             position: fixed; inset: 0; background: rgba(0,0,0,0.7);
             backdrop-filter: blur(8px); display: none; justify-content: center;
@@ -226,6 +256,7 @@
 
         @media (max-width: 768px) {
             header { flex-direction: column; text-align: center; gap: 15px; }
+            .header-content { align-items: center; }
             .current-widget { left: 15px; right: 15px; width: auto; bottom: 15px; }
             .controls { width: 100%; }
             .btn { flex: 1; justify-content: center; padding: 10px; font-size: 0.8rem; }
@@ -237,7 +268,10 @@
 <input type="file" id="fileImportInput" style="display: none;" accept=".json" onchange="handleFileSelect(this)">
 
 <header>
-    <h1>📅 SchedulePro <span style="font-size: 0.8rem; vertical-align: middle; opacity: 0.6;">v2.3 Premium</span></h1>
+    <div class="header-content">
+        <h1>📅 SchedulePro <span style="font-size: 0.8rem; vertical-align: middle; opacity: 0.6;">v3.1 Stable</span></h1>
+        <div id="liveClock" class="live-clock">Завантаження...</div>
+    </div>
     <div class="controls">
         <button class="btn" onclick="openSettings()">🎨 Вигляд</button>
         <button class="btn btn-outline" id="toggleEdit" onclick="toggleEditMode()">✏️ Ред.</button>
@@ -333,58 +367,44 @@
 
     function init() {
         applySettings();
-        // Перевірка на старий метод URL (для зворотної сумісності)
-        const params = new URLSearchParams(window.location.search);
-        if (params.get('data')) {
-            try {
-                const rawData = fromBinary(params.get('data'));
-                const imported = Array.isArray(rawData) ? decompressSchedule(rawData) : rawData;
-                if(confirm("Завантажити імпортований розклад з посилання?")) {
-                    schedule = imported;
-                    localStorage.setItem('gh-schedule', JSON.stringify(schedule));
-                    window.history.replaceState({}, document.title, window.location.pathname);
-                }
-            } catch(e) { console.error("URL Import error"); }
-        }
+        // Рендер запускаємо одразу і потім кожну секунду
         render();
-        setInterval(render, 5000);
+        updateClock();
+        setInterval(render, 1000); 
+        setInterval(updateClock, 1000);
     }
 
-    // --- ФУНКЦІОНАЛ ФАЙЛІВ (НОВЕ) ---
-    
+    function updateClock() {
+        const now = new Date();
+        const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+        const dateStr = now.toLocaleDateString('uk-UA', options);
+        const timeStr = now.toLocaleTimeString('uk-UA');
+        document.getElementById('liveClock').textContent = `${timeStr} | ${dateStr}`;
+    }
+
     function exportSchedule() {
-        // Створюємо JSON файл
         const dataStr = JSON.stringify(schedule, null, 2);
         const blob = new Blob([dataStr], { type: "application/json" });
         const url = URL.createObjectURL(blob);
-        
-        // Створюємо тимчасове посилання для скачування
         const a = document.createElement('a');
         a.href = url;
         a.download = `rozklad_${new Date().toISOString().slice(0,10)}.json`;
         document.body.appendChild(a);
         a.click();
-        
-        // Прибираємо сміття
         document.body.removeChild(a);
         URL.revokeObjectURL(url);
-        
-        alert("✅ Файл розкладу завантажено! Надішли його другу.");
+        alert("✅ Файл розкладу збережено!");
     }
 
-    function triggerImport() {
-        document.getElementById('fileImportInput').click();
-    }
+    function triggerImport() { document.getElementById('fileImportInput').click(); }
 
     function handleFileSelect(input) {
         const file = input.files[0];
         if (!file) return;
-
         const reader = new FileReader();
         reader.onload = function(e) {
             try {
                 const json = JSON.parse(e.target.result);
-                // Проста валідація
                 if (typeof json === 'object' && json !== null) {
                     if(confirm("Це замінить ваш поточний розклад. Продовжити?")) {
                         schedule = json;
@@ -392,56 +412,20 @@
                         render();
                         alert("✅ Розклад успішно імпортовано!");
                     }
-                } else {
-                    alert("❌ Помилка: Невірний формат файлу.");
-                }
-            } catch (error) {
-                alert("❌ Помилка читання файлу.");
-            }
-            // Очистити інпут, щоб можна було завантажити той самий файл знову
+                } else { alert("❌ Помилка: Невірний формат файлу."); }
+            } catch (error) { alert("❌ Помилка читання файлу."); }
             input.value = ''; 
         };
         reader.readAsText(file);
     }
 
     function clearAllData() {
-        if(confirm("Ви точно хочете видалити ВЕСЬ розклад? Це не можна скасувати.")) {
+        if(confirm("Ви точно хочете видалити ВЕСЬ розклад?")) {
             schedule = {};
             localStorage.setItem('gh-schedule', JSON.stringify(schedule));
             render();
             closeModal('settingsModal');
         }
-    }
-
-    // --- Старі функції (трохи оптимізовані) ---
-
-    function toBinary(string) {
-        const codeUnits = new Uint16Array(string.length);
-        for (let i = 0; i < codeUnits.length; i++) codeUnits[i] = string.charCodeAt(i);
-        const charCodes = new Uint8Array(codeUnits.buffer);
-        let result = '';
-        for (let i = 0; i < charCodes.byteLength; i++) result += String.fromCharCode(charCodes[i]);
-        return btoa(result);
-    }
-
-    function fromBinary(binary) {
-        const bytes = atob(binary);
-        const source = new Uint8Array(bytes.length);
-        for (let i = 0; i < bytes.length; i++) source[i] = bytes.charCodeAt(i);
-        const buffer = new Uint16Array(source.buffer);
-        let result = '';
-        for (let i = 0; i < buffer.length; i++) result += String.fromCharCode(buffer[i]);
-        return JSON.parse(result);
-    }
-
-    function compressSchedule(sched) {
-        return Object.keys(sched).map(k => [k, sched[k].name, sched[k].start, sched[k].end, sched[k].link]);
-    }
-
-    function decompressSchedule(arr) {
-        let s = {};
-        arr.forEach(i => s[i[0]] = {name:i[1], start:i[2], end:i[3], link:i[4]});
-        return s;
     }
 
     function render() {
@@ -473,7 +457,7 @@
     function createLessonCard(data, key, isToday, currentTime, index) {
         const card = document.createElement('div');
         card.className = 'lesson-card glass';
-        card.style.animationDelay = `${index * 0.05}s`;
+        // АНІМАЦІЮ ПРИБРАНО, щоб не миготіло
         
         if (!data) {
             card.innerHTML = `<div style="opacity:0.2; text-align:center; font-size:0.8rem">порожньо</div>
@@ -485,17 +469,32 @@
         const start = timeToMin(data.start);
         const end = timeToMin(data.end);
         let progressHtml = '';
+        let statusHtml = '';
 
-        if (isToday && currentTime >= start && currentTime < end) {
-            card.classList.add('active');
-            const percent = ((currentTime - start) / (end - start)) * 100;
-            progressHtml = `<div class="progress-container"><div class="progress-bar" style="width:${percent}%"></div></div>`;
-            activeLessonGlobal = { ...data, remaining: end - currentTime };
+        if (isToday) {
+            if (currentTime >= start && currentTime < end) {
+                // АКТИВНИЙ УРОК
+                card.classList.add('active');
+                const percent = ((currentTime - start) / (end - start)) * 100;
+                progressHtml = `<div class="progress-container"><div class="progress-bar" style="width:${percent}%"></div></div>`;
+                
+                const remaining = end - currentTime;
+                statusHtml = `<div class="status-badge status-active">⏳ Залишилось: ${remaining} хв</div>`;
+                
+                activeLessonGlobal = { ...data, remaining: remaining };
+            } else if (currentTime < start) {
+                // МАЙБУТНІЙ УРОК
+                const until = start - currentTime;
+                if (until < 300) {
+                     statusHtml = `<div class="status-badge status-next">🔜 Через: ${until} хв</div>`;
+                }
+            }
         }
 
         card.innerHTML = `
             <button class="edit-btn" onclick="event.stopPropagation(); openEditModal('${key}')">⚙️</button>
             <div class="time-badge">${data.start} — ${data.end}</div>
+            ${statusHtml}
             <span class="lesson-name">${data.name}</span>
             ${data.link ? `<a href="${data.link}" target="_blank" class="lesson-link" onclick="event.stopPropagation()">🔗 Приєднатися</a>` : ''}
             ${progressHtml}
