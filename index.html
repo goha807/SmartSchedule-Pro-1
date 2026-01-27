@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ultimate Schedule Pro | 2-Week Edition</title>
+    <title>Ultimate Schedule Pro | Mobile Timer Edition</title>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -165,7 +165,8 @@
         .lesson-card.active {
             border-color: var(--success);
             border-left-color: var(--success);
-            background: linear-gradient(135deg, rgba(46, 213, 115, 0.1) 0%, rgba(30, 41, 59, 0.8) 100%);
+            background: linear-gradient(135deg, rgba(46, 213, 115, 0.15) 0%, rgba(30, 41, 59, 0.9) 100%);
+            box-shadow: 0 10px 40px -10px rgba(46, 213, 115, 0.3);
         }
 
         .time-badge {
@@ -178,6 +179,29 @@
             margin-bottom: 12px;
             display: inline-block;
         }
+
+        /* --- НОВИЙ СТИЛЬ ДЛЯ ТАЙМЕРА НА КАРТЦІ --- */
+        .card-timer-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            background: rgba(46, 213, 115, 0.25);
+            color: #2ed573;
+            padding: 4px 10px;
+            border-radius: 8px;
+            font-weight: 800;
+            font-size: 0.8rem;
+            margin-left: 8px;
+            border: 1px solid rgba(46, 213, 115, 0.4);
+            animation: pulse-green 2s infinite;
+        }
+
+        @keyframes pulse-green {
+            0% { box-shadow: 0 0 0 0 rgba(46, 213, 115, 0.4); }
+            70% { box-shadow: 0 0 0 6px rgba(46, 213, 115, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(46, 213, 115, 0); }
+        }
+        /* ----------------------------------------- */
 
         .lesson-name { font-weight: 700; font-size: 1.1rem; margin-bottom: 8px; display: block; }
 
@@ -199,6 +223,7 @@
             position: absolute; top: 10px; right: 10px; opacity: 0;
             background: var(--accent); border: none; padding: 8px;
             border-radius: 10px; cursor: pointer; transition: 0.3s;
+            z-index: 5;
         }
         [data-edit-mode="true"] .edit-btn { opacity: 1; }
 
@@ -229,7 +254,7 @@
 <body data-edit-mode="false">
 
 <header>
-    <h1>📅 SchedulePro <span style="font-size: 0.8rem; vertical-align: middle; opacity: 0.6;">v4.0 Weeks</span></h1>
+    <h1>📅 SchedulePro <span style="font-size: 0.8rem; vertical-align: middle; opacity: 0.6;">v4.1 Timer</span></h1>
     
     <div class="week-switcher">
         <button class="week-btn" onclick="changeWeek(-1)">◀</button>
@@ -323,9 +348,7 @@
     let currentWeekIndex = 0; // 0 = Тиждень А, 1 = Тиждень Б
 
     function init() { 
-        // Міграція старих даних (якщо були без тижнів)
         migrateDataIfNeeded();
-        
         applySettings(); 
         if(document.getElementById('bgSelect')) {
             document.getElementById('bgSelect').value = userSettings.bg || 'default';
@@ -333,15 +356,15 @@
         
         render(); // Малюємо 1 раз
         
-        // Замість перемальовки всього екрану, просто оновлюємо таймер віджета
+        // Оновлюємо таймер щосекунди
         setInterval(updateWidgetTimerOnly, 1000); 
     }
 
     // --- Логіка тижнів ---
     function changeWeek(direction) {
-        currentWeekIndex = (currentWeekIndex + direction + 2) % 2; // Перемикання 0 <-> 1
+        currentWeekIndex = (currentWeekIndex + direction + 2) % 2;
         updateWeekLabel();
-        render(); // Перемальовуємо тільки при зміні тижня вручну
+        render();
     }
 
     function updateWeekLabel() {
@@ -349,13 +372,11 @@
         document.getElementById('currentWeekLabel').textContent = labels[currentWeekIndex];
     }
 
-    // Конвертує старі ключі "0-0" в нові "0-0-0" (тиждень-день-урок)
     function migrateDataIfNeeded() {
         let changed = false;
         Object.keys(schedule).forEach(key => {
-            // Якщо ключ старого формату (наприклад "1-2")
             if (/^\d+-\d+$/.test(key)) {
-                const newKey = `0-${key}`; // Переносимо в Тиждень 0
+                const newKey = `0-${key}`;
                 schedule[newKey] = schedule[key];
                 delete schedule[key];
                 changed = true;
@@ -384,7 +405,7 @@
         reader.onload = (e) => {
             try {
                 schedule = JSON.parse(e.target.result);
-                migrateDataIfNeeded(); // Перевірка імпортованого файлу
+                migrateDataIfNeeded();
                 localStorage.setItem('gh-schedule', JSON.stringify(schedule));
                 render();
             } catch(err) { alert("Помилка файлу"); }
@@ -410,16 +431,12 @@
             dayCol.innerHTML = `<div class="day-title"><span>${icons[dIdx]}</span> ${day}</div>`;
             
             for(let sIdx = 0; sIdx < 8; sIdx++) {
-                // Ключ тепер включає поточний тиждень
                 const key = `${currentWeekIndex}-${dIdx}-${sIdx}`;
-                const rawKey = key; // Для передачі в модальне вікно
-                
-                dayCol.appendChild(createLessonCard(schedule[key], rawKey, isToday, currentTime, sIdx));
+                dayCol.appendChild(createLessonCard(schedule[key], key, isToday, currentTime, sIdx));
             }
             grid.appendChild(dayCol);
         });
         
-        // Оновлюємо віджет одразу після рендеру
         updateWidgetTimerOnly();
     }
 
@@ -440,11 +457,12 @@
 
         const start = timeToMin(data.start), end = timeToMin(data.end);
         let progressHtml = '';
+        let timerHtml = ''; // HTML для таймера на картці
         
-        // Перевірка активності уроку
+        // Перевірка активності
         if (isToday && currentTime >= start && currentTime < end) {
             card.classList.add('active');
-            card.id = 'activeCard'; // ID для живого оновлення
+            card.id = 'activeCard';
             card.dataset.start = start;
             card.dataset.end = end;
             
@@ -452,12 +470,19 @@
             const percent = ((currentTime - start) / (end - start)) * 100;
             progressHtml = `<div class="progress-container"><div class="progress-bar" id="activeProgressBar" style="width:${percent}%"></div></div>`;
             
-            activeLessonGlobal = { ...data, remaining: end - currentTime, startMin: start, endMin: end };
+            // ТАЙМЕР НА КАРТЦІ (Зворотний відлік)
+            const remaining = end - currentTime;
+            timerHtml = `<div id="cardTimer" class="card-timer-badge">⏳ ${remaining} хв</div>`;
+
+            activeLessonGlobal = { ...data, remaining: remaining, startMin: start, endMin: end };
         }
 
         card.innerHTML = `
             ${editBtnHTML}
-            <div class="time-badge">${data.start} — ${data.end}</div>
+            <div style="display:flex; align-items:center;">
+                <div class="time-badge">${data.start} — ${data.end}</div>
+                ${timerHtml}
+            </div>
             <span class="lesson-name">${data.name}</span>
             ${data.link ? `<a href="${data.link}" target="_blank" class="lesson-link" onclick="event.stopPropagation()">🔗 Приєднатися</a>` : ''}
             ${progressHtml}
@@ -466,12 +491,13 @@
         return card;
     }
 
-    // --- "Тихий" таймер (не ламає верстку) ---
+    // --- Оновлення таймерів (на картці та в віджеті) ---
     function updateWidgetTimerOnly() {
         const now = new Date();
         const currentTime = now.getHours() * 60 + now.getMinutes();
         
         const w = document.getElementById('activeWidget');
+        const cardTimer = document.getElementById('cardTimer'); // Елемент таймера на картці
         
         if (activeLessonGlobal) {
             // Перевіряємо, чи урок ще триває
@@ -481,39 +507,44 @@
                 document.getElementById('widgetTimes').textContent = `${activeLessonGlobal.start} - ${activeLessonGlobal.end}`;
                 
                 const remaining = activeLessonGlobal.endMin - currentTime;
+                
+                // Оновлюємо віджет
                 document.getElementById('widgetCountdown').textContent = `${remaining} хв`;
                 
+                // Оновлюємо таймер на картці!
+                if(cardTimer) {
+                    cardTimer.textContent = `⏳ ${remaining} хв`;
+                }
+
                 const linkBtn = document.getElementById('widgetLink');
                 if(activeLessonGlobal.link) { linkBtn.style.display = 'flex'; linkBtn.href = activeLessonGlobal.link; }
                 else { linkBtn.style.display = 'none'; }
 
-                // Оновлюємо прогрес-бар на картці без перемальовки
+                // Оновлюємо прогрес-бар
                 const progressBar = document.getElementById('activeProgressBar');
                 if(progressBar) {
                     const percent = ((currentTime - activeLessonGlobal.startMin) / (activeLessonGlobal.endMin - activeLessonGlobal.startMin)) * 100;
                     progressBar.style.width = `${percent}%`;
                 }
             } else {
-                // Урок закінчився, треба оновити сітку, щоб знайти наступний (але це рідко)
+                // Урок закінчився
                 activeLessonGlobal = null;
                 w.classList.remove('visible');
-                // Можна викликати повний рендер тут, бо урок реально змінився
                 render();
             }
         } else {
-            // Якщо активного немає, спробуємо знайти (на випадок якщо настав час нового уроку)
-            // Робимо "легку" перевірку, чи треба повний рендер
-            // Але щоб не задовбувати, просто залишимо як є до ручного оновлення або наступної дії
             w.classList.remove('visible');
+            // Якщо раптом з'явився новий урок (настала хвилина старту) - можна перевірити:
+            // Але проста логіка - це раз на хвилину робити ререндер, або чекати ручної дії.
+            // Щоб зекономити ресурси, поки залишимо так.
         }
     }
 
     function timeToMin(t) { if(!t) return 0; const [h, m] = t.split(':').map(Number); return h * 60 + m; }
     
-    // --- Розумні підказки (працюють для поточного тижня) ---
     function getSuggestedTimes(slotIndex) {
         for(let d = 0; d < 7; d++) {
-            const checkKey = `${currentWeekIndex}-${d}-${slotIndex}`; // Шукаємо в поточному тижні
+            const checkKey = `${currentWeekIndex}-${d}-${slotIndex}`;
             if (schedule[checkKey] && schedule[checkKey].start) {
                 return { start: schedule[checkKey].start, end: schedule[checkKey].end };
             }
@@ -539,7 +570,7 @@
     function openEditModal(key) {
         currentEditKey = key; 
         const data = schedule[key];
-        const slotIndex = parseInt(key.split('-')[2]); // Індекс слоту тепер третій елемент
+        const slotIndex = parseInt(key.split('-')[2]);
         
         const suggested = getSuggestedTimes(slotIndex);
         updateSubjectsList();
