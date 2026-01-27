@@ -3,16 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ultimate Schedule Pro | Ultra</title>
+    <title>Ultimate Schedule Pro | 2-Week Edition</title>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
     <style>
         :root {
             --bg-image: radial-gradient(circle at top right, #1e293b, #0f172a);
-            --card-bg: rgba(30, 41, 59, 0.4);
+            --card-bg: rgba(30, 41, 59, 0.5);
             --accent: #38bdf8;
             --danger: #ff4757;
             --success: #2ed573;
-            --warning: #fbbf24;
             --text: #f8fafc;
             --glass-border: rgba(255, 255, 255, 0.08);
         }
@@ -23,12 +22,14 @@
             font-family: 'Plus Jakarta Sans', sans-serif;
             background: var(--bg-image);
             background-attachment: fixed;
+            background-size: cover;
             color: var(--text);
             margin: 0;
             padding: 20px;
             padding-bottom: 140px;
             min-height: 100vh;
             line-height: 1.5;
+            transition: background 0.5s ease, color 0.5s ease;
         }
 
         .glass {
@@ -36,175 +37,168 @@
             backdrop-filter: blur(16px);
             -webkit-backdrop-filter: blur(16px);
             border: 1px solid var(--glass-border);
-            border-radius: 24px;
-            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.2);
+            border-radius: 20px;
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
         }
 
         header {
             max-width: 1400px;
             margin: 0 auto 30px auto;
             display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 15px;
+            flex-direction: column;
+            gap: 20px;
+            padding: 10px;
         }
 
-        .header-left h1 {
+        @media(min-width: 768px) {
+            header { flex-direction: row; justify-content: space-between; align-items: center; }
+        }
+
+        h1 {
             font-weight: 800;
-            font-size: 1.6rem;
+            font-size: 1.8rem;
+            letter-spacing: -1px;
             margin: 0;
             background: linear-gradient(to right, #fff, var(--accent));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
 
-        #topClock {
-            font-size: 0.9rem;
-            opacity: 0.7;
-            font-weight: 600;
-            margin-top: 4px;
-        }
-
         .controls { display: flex; gap: 10px; flex-wrap: wrap; }
+        
+        /* Стилі для перемикача тижнів */
+        .week-switcher {
+            display: flex;
+            align-items: center;
+            background: rgba(0,0,0,0.3);
+            border-radius: 14px;
+            padding: 4px;
+            border: 1px solid var(--glass-border);
+        }
+        
+        .week-btn {
+            background: transparent;
+            border: none;
+            color: var(--text);
+            font-size: 1.2rem;
+            padding: 8px 15px;
+            cursor: pointer;
+            border-radius: 10px;
+            transition: 0.2s;
+        }
+        .week-btn:hover { background: rgba(255,255,255,0.1); }
+        
+        .week-label {
+            font-weight: 800;
+            padding: 0 15px;
+            min-width: 120px;
+            text-align: center;
+            color: var(--accent);
+        }
 
         .btn {
             padding: 10px 18px;
-            border-radius: 12px;
+            border-radius: 14px;
             border: 1px solid var(--glass-border);
             cursor: pointer;
             font-weight: 600;
-            font-size: 0.85rem;
-            transition: 0.3s;
+            font-size: 0.9rem;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             display: flex;
             align-items: center;
-            gap: 6px;
+            gap: 8px;
             color: #fff;
             background: rgba(255,255,255,0.05);
         }
         
-        .btn:hover { background: rgba(255,255,255,0.1); transform: translateY(-2px); }
-        .btn-primary { background: var(--accent); color: #0f172a; border: none; }
-        .btn-outline.active { background: var(--accent); color: #0f172a; }
+        .btn:hover { 
+            background: rgba(255,255,255,0.1); 
+            transform: translateY(-2px);
+        }
+        .btn-primary { background: var(--accent); color: #000; border: none; }
+        .btn-outline.active { background: var(--accent); color: #000; }
 
         .schedule-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 20px;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 25px;
             max-width: 1600px;
             margin: 0 auto;
         }
 
-        .day-column { 
-            padding: 15px; 
-            border-radius: 28px;
-            background: rgba(255,255,255,0.02);
-        }
-        .day-column.is-today {
-            background: rgba(56, 189, 248, 0.05);
-            box-shadow: inset 0 0 20px rgba(56, 189, 248, 0.1);
-        }
+        .day-column { padding: 10px; border-radius: 24px; transition: background 0.3s; }
+        .day-column.is-today { background: rgba(56, 189, 248, 0.05); outline: 1px solid rgba(56, 189, 248, 0.2); }
 
         .day-title {
-            font-size: 1.1rem;
+            font-size: 1.2rem;
             font-weight: 800;
-            margin-bottom: 20px;
+            margin-bottom: 25px;
             display: flex;
             align-items: center;
             gap: 10px;
+            padding-left: 10px;
+        }
+        .day-title::before { content: ''; width: 4px; height: 20px; background: var(--accent); border-radius: 4px; }
+
+        .lesson-card {
+            margin-bottom: 16px;
+            padding: 20px;
+            position: relative;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 1px solid var(--glass-border);
+            border-left: 4px solid var(--glass-border);
+            /* Анімація тільки при першому завантаженні */
+            animation: fadeIn 0.5s ease backwards; 
         }
 
-        /* --- New Lesson Card Design --- */
-        .lesson-card {
-            margin-bottom: 12px;
-            padding: 16px;
-            position: relative;
-            transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            border: 1px solid var(--glass-border);
-            overflow: hidden;
+        .lesson-card.has-data {
+            border-left-color: var(--accent);
+            background: rgba(255, 255, 255, 0.03);
         }
 
         .lesson-card:hover {
+            border-color: rgba(56, 189, 248, 0.5);
+            background: rgba(255,255,255,0.08);
             transform: scale(1.02);
-            border-color: rgba(56, 189, 248, 0.4);
-            background: rgba(255,255,255,0.07);
         }
 
         .lesson-card.active {
             border-color: var(--success);
-            background: rgba(46, 213, 115, 0.08);
-            box-shadow: 0 0 20px rgba(46, 213, 115, 0.1);
-        }
-
-        .card-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            margin-bottom: 10px;
+            border-left-color: var(--success);
+            background: linear-gradient(135deg, rgba(46, 213, 115, 0.1) 0%, rgba(30, 41, 59, 0.8) 100%);
         }
 
         .time-badge {
             font-size: 0.75rem;
-            font-weight: 800;
-            color: var(--accent);
-            background: rgba(56, 189, 248, 0.1);
-            padding: 4px 8px;
+            background: rgba(0,0,0,0.3);
+            padding: 4px 10px;
             border-radius: 8px;
-        }
-
-        .status-dot {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            background: #475569;
-        }
-        .active .status-dot {
-            background: var(--success);
-            box-shadow: 0 0 8px var(--success);
-            animation: pulse 1.5s infinite;
-        }
-
-        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.4; } 100% { opacity: 1; } }
-
-        .lesson-name {
-            font-weight: 700;
-            font-size: 1.05rem;
-            margin-bottom: 6px;
-            display: block;
-        }
-
-        .countdown-text {
-            font-size: 0.75rem;
+            color: var(--accent);
             font-weight: 600;
-            color: var(--success);
-            display: flex;
-            align-items: center;
-            gap: 4px;
+            margin-bottom: 12px;
+            display: inline-block;
         }
+
+        .lesson-name { font-weight: 700; font-size: 1.1rem; margin-bottom: 8px; display: block; }
 
         .lesson-link {
-            font-size: 0.8rem;
+            font-size: 0.85rem;
             color: #94a3b8;
             text-decoration: none;
-            display: inline-flex;
+            display: flex;
             align-items: center;
-            gap: 4px;
-            margin-top: 8px;
-            padding: 4px 8px;
-            border-radius: 6px;
-            background: rgba(255,255,255,0.03);
+            gap: 5px;
+            transition: color 0.2s;
         }
-        .lesson-link:hover { color: var(--accent); background: rgba(255,255,255,0.08); }
+        .lesson-link:hover { color: var(--accent); }
 
-        .progress-container {
-            position: absolute; bottom: 0; left: 0; width: 100%; height: 3px;
-            background: rgba(255,255,255,0.05);
-        }
+        .progress-container { position: absolute; bottom: 0; left: 0; width: 100%; height: 4px; background: rgba(255,255,255,0.05); overflow: hidden; }
         .progress-bar { height: 100%; background: var(--success); transition: width 1s linear; }
 
         .edit-btn {
-            position: absolute; top: 12px; right: 12px; opacity: 0;
-            background: var(--accent); border: none; padding: 6px;
-            border-radius: 8px; cursor: pointer; transition: 0.2s;
+            position: absolute; top: 10px; right: 10px; opacity: 0;
+            background: var(--accent); border: none; padding: 8px;
+            border-radius: 10px; cursor: pointer; transition: 0.3s;
         }
         [data-edit-mode="true"] .edit-btn { opacity: 1; }
 
@@ -219,279 +213,392 @@
             backdrop-filter: blur(8px); display: none; justify-content: center;
             align-items: center; z-index: 200; opacity: 0; transition: 0.3s;
         }
-        .modal { width: 90%; max-width: 480px; padding: 25px; transform: scale(0.9); transition: 0.3s; }
+        .modal { width: 90%; max-width: 480px; padding: 30px; transform: scale(0.9); transition: 0.3s; }
         .modal-backdrop.open { opacity: 1; }
         .modal-backdrop.open .modal { transform: scale(1); }
 
-        input {
-            width: 100%; background: rgba(15, 23, 42, 0.6); border: 1px solid var(--glass-border);
-            color: #fff; padding: 12px; border-radius: 12px; margin-top: 5px; outline: none;
-        }
-
-        @media (max-width: 768px) {
-            header { flex-direction: column; text-align: center; gap: 15px; }
-            .current-widget { left: 15px; right: 15px; width: auto; bottom: 15px; }
-            .controls { width: 100%; justify-content: center; }
+        input, select { width: 100%; background: rgba(15, 23, 42, 0.6); border: 1px solid var(--glass-border); color: #fff; padding: 14px; border-radius: 12px; margin-top: 5px; outline: none; }
+        #fileInput { display: none; }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
         }
     </style>
 </head>
 <body data-edit-mode="false">
 
-<input type="file" id="fileImportInput" style="display: none;" accept=".json" onchange="handleFileSelect(this)">
-
 <header>
-    <div class="header-left">
-        <h1>📅 SchedulePro <span style="font-size: 0.7rem; opacity: 0.5;">v3.0 Ultra</span></h1>
-        <div id="topClock">Завантаження...</div>
+    <h1>📅 SchedulePro <span style="font-size: 0.8rem; vertical-align: middle; opacity: 0.6;">v4.0 Weeks</span></h1>
+    
+    <div class="week-switcher">
+        <button class="week-btn" onclick="changeWeek(-1)">◀</button>
+        <div class="week-label" id="currentWeekLabel">Тиждень А</div>
+        <button class="week-btn" onclick="changeWeek(1)">▶</button>
     </div>
+
     <div class="controls">
-        <button class="btn" onclick="openSettings()">🎨 Стиль</button>
+        <button class="btn" onclick="document.getElementById('fileInput').click()">📤 Відкрити</button>
+        <button class="btn" onclick="exportToFile()">📥 Зберегти</button>
+        <button class="btn" onclick="openSettings()">🎨 Вигляд</button>
         <button class="btn btn-outline" id="toggleEdit" onclick="toggleEditMode()">✏️ Ред.</button>
-        <button class="btn" onclick="triggerImport()">📂 Відкрити</button>
-        <button class="btn btn-primary" onclick="exportSchedule()">💾 Зберегти</button>
     </div>
+    <input type="file" id="fileInput" accept=".json" onchange="importFromFile(this)">
 </header>
 
 <div class="schedule-grid" id="grid"></div>
 
 <div class="current-widget glass" id="activeWidget">
-    <div style="font-size: 0.65rem; text-transform: uppercase; color: var(--accent); font-weight: 800; margin-bottom: 8px; letter-spacing: 1px;">Зараз у процесі</div>
-    <div id="widgetName" style="font-size: 1.2rem; font-weight: 800; margin-bottom: 8px;">Назва уроку</div>
-    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
-        <span id="widgetTimes" style="font-size: 0.85rem; opacity: 0.6; font-family: monospace;">00:00 - 00:00</span>
-        <span id="widgetCountdown" style="color: var(--success); font-weight: 800; font-size: 1rem;">---</span>
+    <div style="font-size: 0.7rem; text-transform: uppercase; color: var(--accent); font-weight: 800; margin-bottom: 10px;">Зараз триває</div>
+    <div id="widgetName" style="font-size: 1.2rem; font-weight: 800; margin-bottom: 10px;">Назва</div>
+    <div style="display: flex; justify-content: space-between; align-items: center;">
+        <span id="widgetTimes" style="font-family: monospace; opacity: 0.7;">08:30 - 09:15</span>
+        <span id="widgetCountdown" style="color: var(--success); font-weight: 800; font-size: 1.1rem;">00 хв</span>
     </div>
-    <a id="widgetLink" href="#" target="_blank" class="btn-primary btn" style="justify-content: center; width: 100%;">🚀 Увійти в Zoom/Meet</a>
+    <a id="widgetLink" href="#" target="_blank" class="btn-primary btn" style="margin-top: 15px; justify-content: center; padding: 8px;">🎥 Приєднатися</a>
 </div>
 
 <div class="modal-backdrop" id="modal">
     <div class="modal glass">
-        <h2 style="margin-top:0; font-size: 1.3rem;">Налаштування уроку</h2>
-        <div style="display:grid; gap:12px;">
+        <h2 style="margin-top:0">Налаштування уроку</h2>
+        <div style="display:grid; gap:15px;">
             <div>
-                <label style="font-size:0.75rem; opacity:0.6">Назва предмета</label>
-                <input type="text" id="nameInp" placeholder="Наприклад: Фізика">
+                <label style="font-size:0.8rem; opacity:0.6">Предмет</label>
+                <input type="text" id="nameInp" list="subjectsList" oninput="autoFillLink()" placeholder="Наприклад: Математика">
+                <datalist id="subjectsList"></datalist>
             </div>
             <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
-                <div>
-                    <label style="font-size:0.75rem; opacity:0.6">Початок</label>
-                    <input type="time" id="startInp">
-                </div>
-                <div>
-                    <label style="font-size:0.75rem; opacity:0.6">Кінець</label>
-                    <input type="time" id="endInp">
+                <div><label style="font-size:0.8rem; opacity:0.6">Початок</label><input type="time" id="startInp"></div>
+                <div><label style="font-size:0.8rem; opacity:0.6">Кінець</label><input type="time" id="endInp"></div>
+            </div>
+            <div><label style="font-size:0.8rem; opacity:0.6">Посилання</label><input type="text" id="linkInp" placeholder="Zoom/Meet link"></div>
+        </div>
+        <div style="display:flex; gap:10px; margin-top:25px;">
+            <button class="btn btn-primary" style="flex:2" onclick="saveLesson()">Зберегти</button>
+            <button class="btn" style="flex:1; background:var(--danger)" onclick="deleteLesson()">🗑️</button>
+            <button class="btn" style="flex:1" onclick="closeModal('modal')">Скасувати</button>
+        </div>
+    </div>
+</div>
+
+<div class="modal-backdrop" id="settingsModal">
+    <div class="modal glass">
+        <h2>Стилізація</h2>
+        <div style="display:grid; gap:20px;">
+            <div>
+                <label>Колір теми</label>
+                <div style="display:flex; gap:10px; margin-top:10px;">
+                    <div style="width:35px; height:35px; border-radius:10px; background:#38bdf8; cursor:pointer;" onclick="setAccent('#38bdf8')"></div>
+                    <div style="width:35px; height:35px; border-radius:10px; background:#2ed573; cursor:pointer;" onclick="setAccent('#2ed573')"></div>
+                    <div style="width:35px; height:35px; border-radius:10px; background:#ffa502; cursor:pointer;" onclick="setAccent('#ffa502')"></div>
+                    <div style="width:35px; height:35px; border-radius:10px; background:#ff4757; cursor:pointer;" onclick="setAccent('#ff4757')"></div>
+                    <div style="width:35px; height:35px; border-radius:10px; background:#a29bfe; cursor:pointer;" onclick="setAccent('#a29bfe')"></div>
                 </div>
             </div>
             <div>
-                <label style="font-size:0.75rem; opacity:0.6">Посилання</label>
-                <input type="text" id="linkInp" placeholder="https://...">
+                <label>Шпалери</label>
+                <select id="bgSelect" onchange="changeBackground(this.value)">
+                    <option value="default">🌌 Нічне небо</option>
+                    <option value="sunset">🌇 Захід сонця</option>
+                    <option value="forest">🌲 Глибокий ліс</option>
+                    <option value="black">🌑 Pure Black (OLED)</option>
+                </select>
             </div>
         </div>
-        <div style="display:flex; gap:10px; margin-top:20px;">
-            <button class="btn btn-primary" style="flex:2" onclick="saveLesson()">Зберегти</button>
-            <button class="btn" style="flex:1; background:var(--danger)" onclick="deleteLesson()">🗑️</button>
-            <button class="btn" style="flex:1" onclick="closeModal('modal')">❌</button>
-        </div>
+        <button class="btn btn-primary" style="width:100%; margin-top:30px;" onclick="closeModal('settingsModal')">Готово</button>
     </div>
 </div>
 
 <script>
     const days = ["Понеділок", "Вівторок", "Середа", "Четвер", "П'ятниця", "Субота", "Неділя"];
     const icons = ["⚡", "🔥", "💎", "🌟", "🍀", "🎉", "🎐"];
+    
+    // Дані
     let schedule = JSON.parse(localStorage.getItem('gh-schedule')) || {};
     let userSettings = JSON.parse(localStorage.getItem('gh-settings')) || { accent: '#38bdf8', bg: 'default' };
+    
+    // Стан
     let currentEditKey = null;
     let activeLessonGlobal = null;
+    let currentWeekIndex = 0; // 0 = Тиждень А, 1 = Тиждень Б
 
-    function init() {
-        applySettings();
-        updateTime();
-        render();
-        setInterval(updateTime, 1000);
-        setInterval(render, 1000); // Оновлення кожну секунду для плавних таймерів
+    function init() { 
+        // Міграція старих даних (якщо були без тижнів)
+        migrateDataIfNeeded();
+        
+        applySettings(); 
+        if(document.getElementById('bgSelect')) {
+            document.getElementById('bgSelect').value = userSettings.bg || 'default';
+        }
+        
+        render(); // Малюємо 1 раз
+        
+        // Замість перемальовки всього екрану, просто оновлюємо таймер віджета
+        setInterval(updateWidgetTimerOnly, 1000); 
     }
 
-    function updateTime() {
-        const now = new Date();
-        const timeStr = now.toLocaleTimeString('uk-UA', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
-        const dateStr = now.toLocaleDateString('uk-UA', { weekday: 'long', day: 'numeric', month: 'long' });
-        document.getElementById('topClock').innerHTML = `${timeStr} • <span style="text-transform: capitalize;">${dateStr}</span>`;
+    // --- Логіка тижнів ---
+    function changeWeek(direction) {
+        currentWeekIndex = (currentWeekIndex + direction + 2) % 2; // Перемикання 0 <-> 1
+        updateWeekLabel();
+        render(); // Перемальовуємо тільки при зміні тижня вручну
     }
 
-    // Розумне форматування залишку часу
-    function formatRemaining(minutes) {
-        if (minutes <= 0) return "Закінчено";
-        const h = Math.floor(minutes / 60);
-        const m = minutes % 60;
-        if (h > 0) return `${h} г ${m} хв`;
-        return `${m} хв`;
+    function updateWeekLabel() {
+        const labels = ["Тиждень А (Перший)", "Тиждень Б (Другий)"];
+        document.getElementById('currentWeekLabel').textContent = labels[currentWeekIndex];
     }
 
+    // Конвертує старі ключі "0-0" в нові "0-0-0" (тиждень-день-урок)
+    function migrateDataIfNeeded() {
+        let changed = false;
+        Object.keys(schedule).forEach(key => {
+            // Якщо ключ старого формату (наприклад "1-2")
+            if (/^\d+-\d+$/.test(key)) {
+                const newKey = `0-${key}`; // Переносимо в Тиждень 0
+                schedule[newKey] = schedule[key];
+                delete schedule[key];
+                changed = true;
+            }
+        });
+        if (changed) {
+            localStorage.setItem('gh-schedule', JSON.stringify(schedule));
+        }
+    }
+
+    // --- Файли ---
+    function exportToFile() {
+        const data = JSON.stringify(schedule, null, 2);
+        const blob = new Blob([data], {type: "application/json"});
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = "schedule_pro.json";
+        a.click();
+    }
+
+    function importFromFile(input) {
+        const file = input.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            try {
+                schedule = JSON.parse(e.target.result);
+                migrateDataIfNeeded(); // Перевірка імпортованого файлу
+                localStorage.setItem('gh-schedule', JSON.stringify(schedule));
+                render();
+            } catch(err) { alert("Помилка файлу"); }
+        };
+        reader.readAsText(file);
+    }
+
+    // --- Рендер ---
     function render() {
+        updateWeekLabel();
         const grid = document.getElementById('grid');
-        const oldGridHTML = grid.innerHTML;
+        grid.innerHTML = ''; 
         activeLessonGlobal = null;
         
         const now = new Date();
         const currentTime = now.getHours() * 60 + now.getMinutes();
         const currentDay = (now.getDay() + 6) % 7; 
 
-        let newHTML = '';
         days.forEach((day, dIdx) => {
             const isToday = dIdx === currentDay;
-            let dayHTML = `<div class="day-column ${isToday ? 'is-today' : ''}">
-                <div class="day-title"><span>${icons[dIdx]}</span> ${day}</div>`;
-
+            const dayCol = document.createElement('div');
+            dayCol.className = `day-column ${isToday ? 'is-today' : ''}`;
+            dayCol.innerHTML = `<div class="day-title"><span>${icons[dIdx]}</span> ${day}</div>`;
+            
             for(let sIdx = 0; sIdx < 8; sIdx++) {
-                const key = `${dIdx}-${sIdx}`;
-                const data = schedule[key] || null;
-                dayHTML += createLessonCardHTML(data, key, isToday, currentTime);
+                // Ключ тепер включає поточний тиждень
+                const key = `${currentWeekIndex}-${dIdx}-${sIdx}`;
+                const rawKey = key; // Для передачі в модальне вікно
+                
+                dayCol.appendChild(createLessonCard(schedule[key], rawKey, isToday, currentTime, sIdx));
             }
-            dayHTML += `</div>`;
-            newHTML += dayHTML;
+            grid.appendChild(dayCol);
         });
-
-        // Оновлюємо DOM лише якщо щось змінилося, щоб не було миготіння
-        grid.innerHTML = newHTML;
-        updateWidget();
+        
+        // Оновлюємо віджет одразу після рендеру
+        updateWidgetTimerOnly();
     }
 
-    function createLessonCardHTML(data, key, isToday, currentTime) {
+    function createLessonCard(data, key, isToday, currentTime, index) {
+        const card = document.createElement('div');
+        card.className = 'lesson-card glass';
+        if(data) card.classList.add('has-data');
+        card.style.animationDelay = `${index * 0.05}s`;
+        
+        // Кнопка редагування
+        const editBtnHTML = `<button class="edit-btn" onclick="event.stopPropagation(); openEditModal('${key}')">${data ? '⚙️' : '➕'}</button>`;
+
         if (!data) {
-            return `<div class="lesson-card glass" style="opacity:0.3; border-style: dashed;" onclick="handleCardClick('${key}')">
-                <div style="text-align:center; font-size:0.7rem;">+ Додати</div>
-                <button class="edit-btn" onclick="openEditModal('${key}')">➕</button>
-            </div>`;
+            card.innerHTML = `<div style="opacity:0.2; text-align:center; font-size:0.8rem">порожньо</div>${editBtnHTML}`;
+            card.onclick = () => { if(document.body.getAttribute('data-edit-mode') === 'true') openEditModal(key) };
+            return card;
         }
 
-        const start = timeToMin(data.start);
-        const end = timeToMin(data.end);
-        let activeClass = '';
+        const start = timeToMin(data.start), end = timeToMin(data.end);
         let progressHtml = '';
-        let countdownHtml = '';
-
+        
+        // Перевірка активності уроку
         if (isToday && currentTime >= start && currentTime < end) {
-            activeClass = 'active';
+            card.classList.add('active');
+            card.id = 'activeCard'; // ID для живого оновлення
+            card.dataset.start = start;
+            card.dataset.end = end;
+            
+            // Прогрес бар
             const percent = ((currentTime - start) / (end - start)) * 100;
-            progressHtml = `<div class="progress-container"><div class="progress-bar" style="width:${percent}%"></div></div>`;
-            const rem = end - currentTime;
-            countdownHtml = `<div class="countdown-text">⏳ ${formatRemaining(rem)}</div>`;
-            activeLessonGlobal = { ...data, remaining: rem };
+            progressHtml = `<div class="progress-container"><div class="progress-bar" id="activeProgressBar" style="width:${percent}%"></div></div>`;
+            
+            activeLessonGlobal = { ...data, remaining: end - currentTime, startMin: start, endMin: end };
         }
 
-        return `
-            <div class="lesson-card glass ${activeClass}" onclick="handleCardClick('${key}')">
-                <button class="edit-btn" onclick="event.stopPropagation(); openEditModal('${key}')">⚙️</button>
-                <div class="card-header">
-                    <div class="time-badge">${data.start} — ${data.end}</div>
-                    <div class="status-dot"></div>
-                </div>
-                <span class="lesson-name">${data.name}</span>
-                ${countdownHtml}
-                ${data.link ? `<a href="${data.link}" target="_blank" class="lesson-link" onclick="event.stopPropagation()">🔗 Посилання</a>` : ''}
-                ${progressHtml}
-            </div>
+        card.innerHTML = `
+            ${editBtnHTML}
+            <div class="time-badge">${data.start} — ${data.end}</div>
+            <span class="lesson-name">${data.name}</span>
+            ${data.link ? `<a href="${data.link}" target="_blank" class="lesson-link" onclick="event.stopPropagation()">🔗 Приєднатися</a>` : ''}
+            ${progressHtml}
         `;
+        card.onclick = () => { if(document.body.getAttribute('data-edit-mode') === 'true') openEditModal(key) };
+        return card;
     }
 
-    function handleCardClick(key) {
-        if(document.body.getAttribute('data-edit-mode') === 'true') {
-            openEditModal(key);
-        }
-    }
-
-    function updateWidget() {
+    // --- "Тихий" таймер (не ламає верстку) ---
+    function updateWidgetTimerOnly() {
+        const now = new Date();
+        const currentTime = now.getHours() * 60 + now.getMinutes();
+        
         const w = document.getElementById('activeWidget');
+        
         if (activeLessonGlobal) {
-            w.classList.add('visible');
-            document.getElementById('widgetName').textContent = activeLessonGlobal.name;
-            document.getElementById('widgetTimes').textContent = `${activeLessonGlobal.start} - ${activeLessonGlobal.end}`;
-            document.getElementById('widgetCountdown').textContent = formatRemaining(activeLessonGlobal.remaining);
-            const linkBtn = document.getElementById('widgetLink');
-            if(activeLessonGlobal.link) { linkBtn.style.display = 'flex'; linkBtn.href = activeLessonGlobal.link; }
-            else { linkBtn.style.display = 'none'; }
-        } else { w.classList.remove('visible'); }
+            // Перевіряємо, чи урок ще триває
+            if (currentTime >= activeLessonGlobal.startMin && currentTime < activeLessonGlobal.endMin) {
+                w.classList.add('visible');
+                document.getElementById('widgetName').textContent = activeLessonGlobal.name;
+                document.getElementById('widgetTimes').textContent = `${activeLessonGlobal.start} - ${activeLessonGlobal.end}`;
+                
+                const remaining = activeLessonGlobal.endMin - currentTime;
+                document.getElementById('widgetCountdown').textContent = `${remaining} хв`;
+                
+                const linkBtn = document.getElementById('widgetLink');
+                if(activeLessonGlobal.link) { linkBtn.style.display = 'flex'; linkBtn.href = activeLessonGlobal.link; }
+                else { linkBtn.style.display = 'none'; }
+
+                // Оновлюємо прогрес-бар на картці без перемальовки
+                const progressBar = document.getElementById('activeProgressBar');
+                if(progressBar) {
+                    const percent = ((currentTime - activeLessonGlobal.startMin) / (activeLessonGlobal.endMin - activeLessonGlobal.startMin)) * 100;
+                    progressBar.style.width = `${percent}%`;
+                }
+            } else {
+                // Урок закінчився, треба оновити сітку, щоб знайти наступний (але це рідко)
+                activeLessonGlobal = null;
+                w.classList.remove('visible');
+                // Можна викликати повний рендер тут, бо урок реально змінився
+                render();
+            }
+        } else {
+            // Якщо активного немає, спробуємо знайти (на випадок якщо настав час нового уроку)
+            // Робимо "легку" перевірку, чи треба повний рендер
+            // Але щоб не задовбувати, просто залишимо як є до ручного оновлення або наступної дії
+            w.classList.remove('visible');
+        }
     }
 
     function timeToMin(t) { if(!t) return 0; const [h, m] = t.split(':').map(Number); return h * 60 + m; }
+    
+    // --- Розумні підказки (працюють для поточного тижня) ---
+    function getSuggestedTimes(slotIndex) {
+        for(let d = 0; d < 7; d++) {
+            const checkKey = `${currentWeekIndex}-${d}-${slotIndex}`; // Шукаємо в поточному тижні
+            if (schedule[checkKey] && schedule[checkKey].start) {
+                return { start: schedule[checkKey].start, end: schedule[checkKey].end };
+            }
+        }
+        return { start: '08:30', end: '09:15' };
+    }
 
+    function updateSubjectsList() {
+        const list = document.getElementById('subjectsList');
+        list.innerHTML = '';
+        const subjects = new Set();
+        Object.values(schedule).forEach(item => {
+            if(item.name) subjects.add(item.name);
+        });
+        subjects.forEach(subj => {
+            const opt = document.createElement('option');
+            opt.value = subj;
+            list.appendChild(opt);
+        });
+    }
+
+    // --- Редагування ---
     function openEditModal(key) {
-        currentEditKey = key;
+        currentEditKey = key; 
         const data = schedule[key];
+        const slotIndex = parseInt(key.split('-')[2]); // Індекс слоту тепер третій елемент
+        
+        const suggested = getSuggestedTimes(slotIndex);
+        updateSubjectsList();
+
         document.getElementById('nameInp').value = data ? data.name : '';
-        document.getElementById('startInp').value = data ? data.start : '08:30';
-        document.getElementById('endInp').value = data ? data.end : '09:15';
+        document.getElementById('startInp').value = data ? data.start : suggested.start;
+        document.getElementById('endInp').value = data ? data.end : suggested.end;
         document.getElementById('linkInp').value = data ? data.link : '';
-        const m = document.getElementById('modal');
-        m.style.display = 'flex';
+        
+        const m = document.getElementById('modal'); m.style.display = 'flex';
         setTimeout(() => m.classList.add('open'), 10);
     }
 
-    function closeModal(id) {
-        const m = document.getElementById(id);
-        m.classList.remove('open');
-        setTimeout(() => m.style.display = 'none', 300);
-    }
-
+    function closeModal(id) { const m = document.getElementById(id); m.classList.remove('open'); setTimeout(() => m.style.display = 'none', 300); }
+    
     function saveLesson() {
-        const name = document.getElementById('nameInp').value;
-        if(!name) return alert("Введіть назву!");
-        schedule[currentEditKey] = {
-            name: name,
-            start: document.getElementById('startInp').value,
-            end: document.getElementById('endInp').value,
-            link: document.getElementById('linkInp').value
+        schedule[currentEditKey] = { 
+            name: document.getElementById('nameInp').value, 
+            start: document.getElementById('startInp').value, 
+            end: document.getElementById('endInp').value, 
+            link: document.getElementById('linkInp').value 
         };
-        localStorage.setItem('gh-schedule', JSON.stringify(schedule));
-        render(); closeModal('modal');
+        localStorage.setItem('gh-schedule', JSON.stringify(schedule)); 
+        render(); 
+        closeModal('modal');
     }
-
-    function deleteLesson() {
-        delete schedule[currentEditKey];
-        localStorage.setItem('gh-schedule', JSON.stringify(schedule));
-        render(); closeModal('modal');
+    
+    function deleteLesson() { 
+        delete schedule[currentEditKey]; 
+        localStorage.setItem('gh-schedule', JSON.stringify(schedule)); 
+        render(); 
+        closeModal('modal'); 
     }
-
+    
     function toggleEditMode() {
         const mode = document.body.getAttribute('data-edit-mode') === 'false';
         document.body.setAttribute('data-edit-mode', mode);
         document.getElementById('toggleEdit').classList.toggle('active', mode);
     }
-
-    function exportSchedule() {
-        const blob = new Blob([JSON.stringify(schedule, null, 2)], { type: "application/json" });
-        const a = document.createElement('a');
-        a.href = URL.createObjectURL(blob);
-        a.download = `schedule_backup.json`;
-        a.click();
+    
+    function openSettings() { const m = document.getElementById('settingsModal'); m.style.display = 'flex'; setTimeout(() => m.classList.add('open'), 10); }
+    function setAccent(c) { userSettings.accent = c; saveSettings(); }
+    function changeBackground(v) { userSettings.bg = v; saveSettings(); }
+    function saveSettings() { localStorage.setItem('gh-settings', JSON.stringify(userSettings)); applySettings(); }
+    
+    function applySettings() { 
+        document.documentElement.style.setProperty('--accent', userSettings.accent); 
+        let bg = 'radial-gradient(circle at top right, #1e293b, #0f172a)';
+        if(userSettings.bg === 'sunset') bg = 'linear-gradient(135deg, #2c3e50, #000000)';
+        if(userSettings.bg === 'forest') bg = 'linear-gradient(135deg, #134e5e, #1e293b)';
+        if(userSettings.bg === 'black') bg = '#000';
+        document.documentElement.style.setProperty('--bg-image', bg);
     }
 
-    function triggerImport() { document.getElementById('fileImportInput').click(); }
-
-    function handleFileSelect(input) {
-        const file = input.files[0];
-        const reader = new FileReader();
-        reader.onload = (e) => {
-            schedule = JSON.parse(e.target.result);
-            localStorage.setItem('gh-schedule', JSON.stringify(schedule));
-            render();
-        };
-        reader.readAsText(file);
+    function autoFillLink() {
+        const val = document.getElementById('nameInp').value.trim();
+        const found = Object.values(schedule).find(i => i.name === val && i.link);
+        if(found) document.getElementById('linkInp').value = found.link;
     }
-
-    function applySettings() {
-        document.documentElement.style.setProperty('--accent', userSettings.accent);
-    }
-
-    function openSettings() {
-        const color = prompt("Введіть HEX код кольору (напр. #ff4757):", userSettings.accent);
-        if(color) {
-            userSettings.accent = color;
-            localStorage.setItem('gh-settings', JSON.stringify(userSettings));
-            applySettings();
-        }
-    }
-
     init();
 </script>
 </body>
