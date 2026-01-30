@@ -3,8 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ultimate Schedule Pro | Mobile Timer Edition</title>
+    <title>Ultimate Schedule Pro</title>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
+    
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📅</text></svg>">
+
     <style>
         :root {
             --bg-image: radial-gradient(circle at top right, #1e293b, #0f172a);
@@ -66,7 +69,6 @@
 
         .controls { display: flex; gap: 10px; flex-wrap: wrap; }
         
-        /* Стилі для перемикача тижнів */
         .week-switcher {
             display: flex;
             align-items: center;
@@ -117,6 +119,19 @@
         }
         .btn-primary { background: var(--accent); color: #000; border: none; }
         .btn-outline.active { background: var(--accent); color: #000; }
+        
+        .btn-notify { border-color: rgba(255,255,255,0.2); }
+        .btn-notify.active { 
+            background: rgba(46, 213, 115, 0.2); 
+            color: #2ed573; 
+            border-color: #2ed573; 
+            box-shadow: 0 0 15px rgba(46, 213, 115, 0.2);
+        }
+        .btn-notify.denied {
+            background: rgba(255, 71, 87, 0.2);
+            color: #ff4757;
+            border-color: #ff4757;
+        }
 
         .schedule-grid {
             display: grid;
@@ -147,7 +162,6 @@
             transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
             border: 1px solid var(--glass-border);
             border-left: 4px solid var(--glass-border);
-            /* Анімація тільки при першому завантаженні */
             animation: fadeIn 0.5s ease backwards; 
         }
 
@@ -180,7 +194,6 @@
             display: inline-block;
         }
 
-        /* --- НОВИЙ СТИЛЬ ДЛЯ ТАЙМЕРА НА КАРТЦІ --- */
         .card-timer-badge {
             display: inline-flex;
             align-items: center;
@@ -201,7 +214,6 @@
             70% { box-shadow: 0 0 0 6px rgba(46, 213, 115, 0); }
             100% { box-shadow: 0 0 0 0 rgba(46, 213, 115, 0); }
         }
-        /* ----------------------------------------- */
 
         .lesson-name { font-weight: 700; font-size: 1.1rem; margin-bottom: 8px; display: block; }
 
@@ -233,6 +245,26 @@
         }
         .current-widget.visible { transform: translateX(0); }
 
+        .ad-corner {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 200px;
+            z-index: 90;
+            padding: 15px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            text-decoration: none;
+            color: #fff;
+            transition: transform 0.3s ease, background 0.3s;
+            cursor: pointer;
+        }
+        .ad-corner:hover {
+            transform: translateY(-5px);
+            background: rgba(255, 255, 255, 0.15);
+        }
+
         .modal-backdrop {
             position: fixed; inset: 0; background: rgba(0,0,0,0.7);
             backdrop-filter: blur(8px); display: none; justify-content: center;
@@ -254,7 +286,7 @@
 <body data-edit-mode="false">
 
 <header>
-    <h1>📅 SchedulePro <span style="font-size: 0.8rem; vertical-align: middle; opacity: 0.6;">v4.1 Timer</span></h1>
+    <h1>📅 SchedulePro</h1>
     
     <div class="week-switcher">
         <button class="week-btn" onclick="changeWeek(-1)">◀</button>
@@ -263,6 +295,8 @@
     </div>
 
     <div class="controls">
+        <button class="btn btn-notify" id="notifyBtn" onclick="toggleNotifications()">🔕 Сповіщення</button>
+        
         <button class="btn" onclick="document.getElementById('fileInput').click()">📤 Відкрити</button>
         <button class="btn" onclick="exportToFile()">📥 Зберегти</button>
         <button class="btn" onclick="openSettings()">🎨 Вигляд</button>
@@ -281,7 +315,16 @@
         <span id="widgetCountdown" style="color: var(--success); font-weight: 800; font-size: 1.1rem;">00 хв</span>
     </div>
     <a id="widgetLink" href="#" target="_blank" class="btn-primary btn" style="margin-top: 15px; justify-content: center; padding: 8px;">🎥 Приєднатися</a>
+    <div style="margin-top:10px;"><div class="progress-bar" id="activeProgressBar" style="height:4px; width:0; border-radius:2px;"></div></div>
 </div>
+
+<a href="https://sites.google.com/view/grivnacoin/%D0%B3%D0%BB%D0%B0%D0%B2%D0%B8%D0%B0-%D1%81%D1%82%D1%80%D0%B0%D0%BD%D0%B8%D1%86%D0%B0" target="_blank" class="ad-corner glass">
+    <div style="font-size: 2rem;">🪙</div>
+    <div style="display:flex; flex-direction: column;">
+        <span style="font-size: 0.7rem; opacity: 0.6; text-transform: uppercase; font-weight: 700;">Partner</span>
+        <span style="font-size: 1.1rem; font-weight: 800; color: #fbbf24;">GrivnaCoin</span>
+    </div>
+</a>
 
 <div class="modal-backdrop" id="modal">
     <div class="modal glass">
@@ -342,10 +385,14 @@
     let schedule = JSON.parse(localStorage.getItem('gh-schedule')) || {};
     let userSettings = JSON.parse(localStorage.getItem('gh-settings')) || { accent: '#38bdf8', bg: 'default' };
     
+    // Стан сповіщень
+    let notificationsEnabled = JSON.parse(localStorage.getItem('gh-notifications')) || false;
+
     // Стан
     let currentEditKey = null;
     let activeLessonGlobal = null;
-    let currentWeekIndex = 0; // 0 = Тиждень А, 1 = Тиждень Б
+    let currentWeekIndex = 0; 
+    let lastNotifiedLessonId = null;
 
     function init() { 
         migrateDataIfNeeded();
@@ -354,16 +401,207 @@
             document.getElementById('bgSelect').value = userSettings.bg || 'default';
         }
         
-        render(); // Малюємо 1 раз
+        checkPermissionStatus(); 
+        render(); 
         
-        // Оновлюємо таймер щосекунди
-        setInterval(updateWidgetTimerOnly, 1000); 
+        // --- ВИПРАВЛЕННЯ АВТООНОВЛЕННЯ ---
+        // Запуск таймера
+        setInterval(heartbeat, 1000);
+        
+        // Якщо користувач переключився на іншу вкладку, а потім повернувся - миттєво оновити
+        document.addEventListener("visibilitychange", () => {
+             if (document.visibilityState === 'visible') {
+                 heartbeat();
+             }
+        });
+        
+        // Перший запуск
+        heartbeat();
     }
 
-    // --- Логіка тижнів ---
+    // --- ГОЛОВНИЙ ЦИКЛ ОНОВЛЕННЯ (HEARTBEAT) ---
+    function heartbeat() {
+        const now = new Date();
+        const currentTime = now.getHours() * 60 + now.getMinutes();
+        const currentDay = (now.getDay() + 6) % 7; 
+        
+        let foundLesson = null;
+        
+        // Перевіряємо реальні уроки
+        for(let sIdx = 0; sIdx < 8; sIdx++) {
+            const key = `${currentWeekIndex}-${currentDay}-${sIdx}`;
+            const lesson = schedule[key];
+            
+            if(lesson && lesson.start && lesson.end) {
+                const s = timeToMin(lesson.start);
+                const e = timeToMin(lesson.end);
+                
+                if (currentTime >= s && currentTime < e) {
+                    foundLesson = lesson;
+                    foundLesson.startMin = s;
+                    foundLesson.endMin = e;
+                    foundLesson.uniqueId = key + '_' + lesson.start;
+                    break; 
+                }
+            }
+        }
+
+        // Логіка оновлення UI
+        if (foundLesson) {
+            // Якщо почався новий урок (або ми щойно відкрили сайт)
+            if (!activeLessonGlobal || activeLessonGlobal.uniqueId !== foundLesson.uniqueId) {
+                activeLessonGlobal = foundLesson;
+                render(); // Малює сітку і виділяє активний урок
+                
+                if (notificationsEnabled) {
+                    trySendNotification(foundLesson);
+                }
+            }
+            
+            // Оновлюємо таймер у віджеті
+            updateWidgetUI(foundLesson, currentTime);
+            
+            // Оновлюємо таймер на самій картці в сітці (щоб було видно прогрес)
+            updateCardUI(foundLesson, currentTime);
+        } else {
+            // Якщо уроку немає
+            if (activeLessonGlobal) {
+                activeLessonGlobal = null;
+                render(); // Прибираємо підсвітку
+                document.getElementById('activeWidget').classList.remove('visible');
+            }
+        }
+    }
+
+    function updateWidgetUI(lesson, currentTime) {
+        const w = document.getElementById('activeWidget');
+        w.classList.add('visible');
+        document.getElementById('widgetName').textContent = lesson.name;
+        document.getElementById('widgetTimes').textContent = `${lesson.start} - ${lesson.end}`;
+        
+        const remaining = lesson.endMin - currentTime;
+        document.getElementById('widgetCountdown').textContent = `${remaining} хв`;
+
+        const linkBtn = document.getElementById('widgetLink');
+        if(lesson.link) { linkBtn.style.display = 'flex'; linkBtn.href = lesson.link; }
+        else { linkBtn.style.display = 'none'; }
+
+        const progressBar = document.getElementById('activeProgressBar');
+        if(progressBar) {
+            const percent = ((currentTime - lesson.startMin) / (lesson.endMin - lesson.startMin)) * 100;
+            progressBar.style.width = `${percent}%`;
+        }
+    }
+    
+    // Додаткова функція для оновлення картки в сітці без повного перемальовування
+    function updateCardUI(lesson, currentTime) {
+        const card = document.getElementById('activeCard');
+        if(card) {
+            const bar = card.querySelector('.progress-bar');
+            const timer = document.getElementById('cardTimer');
+            if(bar && timer) {
+                const remaining = lesson.endMin - currentTime;
+                const percent = ((currentTime - lesson.startMin) / (lesson.endMin - lesson.startMin)) * 100;
+                bar.style.width = `${percent}%`;
+                timer.textContent = `⏳ ${remaining} хв`;
+            }
+        }
+    }
+
+    function trySendNotification(lesson) {
+        if (Notification.permission !== "granted") return;
+        
+        // Запобіжник повторів
+        if (lastNotifiedLessonId === lesson.uniqueId) return;
+
+        try {
+            const notification = new Notification(`🔔 Урок почався: ${lesson.name}`, {
+                body: `Клікніть, щоб приєднатися! (${lesson.start} - ${lesson.end})`,
+                icon: "data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📅</text></svg>",
+                tag: lesson.uniqueId
+            });
+            
+            notification.onclick = function() {
+                window.focus();
+                if(lesson.link) window.open(lesson.link, '_blank');
+                this.close();
+            };
+            
+            // Звук
+            const audio = new Audio('https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3');
+            audio.volume = 0.5;
+            audio.play().catch(e => console.log("Audio play requires user interaction first"));
+
+            lastNotifiedLessonId = lesson.uniqueId;
+        } catch (e) {
+            console.error("Помилка сповіщення:", e);
+        }
+    }
+
+    // --- ЛОГІКА ДОЗВОЛІВ ---
+    function checkPermissionStatus() {
+        if (!("Notification" in window)) {
+            const btn = document.getElementById('notifyBtn');
+            btn.innerHTML = "❌ Не підтримується";
+            return;
+        }
+        if (Notification.permission === "granted" && notificationsEnabled) {
+            setBtnState(true);
+        } else if (Notification.permission === "denied") {
+            setBtnState(false, true);
+        } else {
+            setBtnState(false);
+        }
+    }
+
+    function toggleNotifications() {
+        if (!("Notification" in window)) {
+            alert("Ваш браузер не підтримує сповіщення."); return;
+        }
+        
+        if (Notification.permission === "denied") {
+            alert("⚠️ Сповіщення заблоковані у налаштуваннях браузера.\nНатисніть на замочок 🔒 біля URL та дозвольте сповіщення."); return;
+        }
+
+        if (notificationsEnabled) {
+            notificationsEnabled = false;
+            localStorage.setItem('gh-notifications', 'false');
+            setBtnState(false);
+        } else {
+            Notification.requestPermission().then(permission => {
+                if (permission === "granted") {
+                    notificationsEnabled = true;
+                    localStorage.setItem('gh-notifications', 'true');
+                    setBtnState(true);
+                    new Notification("✅ Сповіщення увімкнено!", { body: "Тепер ви отримуватимете нагадування." });
+                } else {
+                    setBtnState(false);
+                }
+            });
+        }
+    }
+
+    function setBtnState(isOn, isDenied = false) {
+        const btn = document.getElementById('notifyBtn');
+        if (isDenied) {
+            btn.innerHTML = "🚫 Заблоковано";
+            btn.classList.remove('active');
+            btn.classList.add('denied');
+        } else if (isOn) {
+            btn.innerHTML = "🔔 Увімкнено";
+            btn.classList.add('active');
+            btn.classList.remove('denied');
+        } else {
+            btn.innerHTML = "🔕 Вимкнено";
+            btn.classList.remove('active');
+            btn.classList.remove('denied');
+        }
+    }
+
+    // --- СТАНДАРТНІ ФУНКЦІЇ ---
+
     function changeWeek(direction) {
         currentWeekIndex = (currentWeekIndex + direction + 2) % 2;
-        updateWeekLabel();
         render();
     }
 
@@ -387,7 +625,6 @@
         }
     }
 
-    // --- Файли ---
     function exportToFile() {
         const data = JSON.stringify(schedule, null, 2);
         const blob = new Blob([data], {type: "application/json"});
@@ -413,12 +650,10 @@
         reader.readAsText(file);
     }
 
-    // --- Рендер ---
     function render() {
         updateWeekLabel();
         const grid = document.getElementById('grid');
         grid.innerHTML = ''; 
-        activeLessonGlobal = null;
         
         const now = new Date();
         const currentTime = now.getHours() * 60 + now.getMinutes();
@@ -436,8 +671,6 @@
             }
             grid.appendChild(dayCol);
         });
-        
-        updateWidgetTimerOnly();
     }
 
     function createLessonCard(data, key, isToday, currentTime, index) {
@@ -446,7 +679,6 @@
         if(data) card.classList.add('has-data');
         card.style.animationDelay = `${index * 0.05}s`;
         
-        // Кнопка редагування
         const editBtnHTML = `<button class="edit-btn" onclick="event.stopPropagation(); openEditModal('${key}')">${data ? '⚙️' : '➕'}</button>`;
 
         if (!data) {
@@ -456,25 +688,25 @@
         }
 
         const start = timeToMin(data.start), end = timeToMin(data.end);
-        let progressHtml = '';
-        let timerHtml = ''; // HTML для таймера на картці
+        let isActive = false;
         
-        // Перевірка активності
-        if (isToday && currentTime >= start && currentTime < end) {
+        // Логіка підсвітки
+        if (activeLessonGlobal && activeLessonGlobal.uniqueId === (key + '_' + data.start)) {
+            isActive = true;
+        }
+
+        let progressHtml = '';
+        let timerHtml = ''; 
+
+        if (isActive) {
             card.classList.add('active');
             card.id = 'activeCard';
-            card.dataset.start = start;
-            card.dataset.end = end;
             
-            // Прогрес бар
             const percent = ((currentTime - start) / (end - start)) * 100;
-            progressHtml = `<div class="progress-container"><div class="progress-bar" id="activeProgressBar" style="width:${percent}%"></div></div>`;
+            progressHtml = `<div class="progress-container"><div class="progress-bar" style="width:${percent}%"></div></div>`;
             
-            // ТАЙМЕР НА КАРТЦІ (Зворотний відлік)
             const remaining = end - currentTime;
             timerHtml = `<div id="cardTimer" class="card-timer-badge">⏳ ${remaining} хв</div>`;
-
-            activeLessonGlobal = { ...data, remaining: remaining, startMin: start, endMin: end };
         }
 
         card.innerHTML = `
@@ -489,55 +721,6 @@
         `;
         card.onclick = () => { if(document.body.getAttribute('data-edit-mode') === 'true') openEditModal(key) };
         return card;
-    }
-
-    // --- Оновлення таймерів (на картці та в віджеті) ---
-    function updateWidgetTimerOnly() {
-        const now = new Date();
-        const currentTime = now.getHours() * 60 + now.getMinutes();
-        
-        const w = document.getElementById('activeWidget');
-        const cardTimer = document.getElementById('cardTimer'); // Елемент таймера на картці
-        
-        if (activeLessonGlobal) {
-            // Перевіряємо, чи урок ще триває
-            if (currentTime >= activeLessonGlobal.startMin && currentTime < activeLessonGlobal.endMin) {
-                w.classList.add('visible');
-                document.getElementById('widgetName').textContent = activeLessonGlobal.name;
-                document.getElementById('widgetTimes').textContent = `${activeLessonGlobal.start} - ${activeLessonGlobal.end}`;
-                
-                const remaining = activeLessonGlobal.endMin - currentTime;
-                
-                // Оновлюємо віджет
-                document.getElementById('widgetCountdown').textContent = `${remaining} хв`;
-                
-                // Оновлюємо таймер на картці!
-                if(cardTimer) {
-                    cardTimer.textContent = `⏳ ${remaining} хв`;
-                }
-
-                const linkBtn = document.getElementById('widgetLink');
-                if(activeLessonGlobal.link) { linkBtn.style.display = 'flex'; linkBtn.href = activeLessonGlobal.link; }
-                else { linkBtn.style.display = 'none'; }
-
-                // Оновлюємо прогрес-бар
-                const progressBar = document.getElementById('activeProgressBar');
-                if(progressBar) {
-                    const percent = ((currentTime - activeLessonGlobal.startMin) / (activeLessonGlobal.endMin - activeLessonGlobal.startMin)) * 100;
-                    progressBar.style.width = `${percent}%`;
-                }
-            } else {
-                // Урок закінчився
-                activeLessonGlobal = null;
-                w.classList.remove('visible');
-                render();
-            }
-        } else {
-            w.classList.remove('visible');
-            // Якщо раптом з'явився новий урок (настала хвилина старту) - можна перевірити:
-            // Але проста логіка - це раз на хвилину робити ререндер, або чекати ручної дії.
-            // Щоб зекономити ресурси, поки залишимо так.
-        }
     }
 
     function timeToMin(t) { if(!t) return 0; const [h, m] = t.split(':').map(Number); return h * 60 + m; }
@@ -566,7 +749,6 @@
         });
     }
 
-    // --- Редагування ---
     function openEditModal(key) {
         currentEditKey = key; 
         const data = schedule[key];
@@ -596,13 +778,17 @@
         localStorage.setItem('gh-schedule', JSON.stringify(schedule)); 
         render(); 
         closeModal('modal');
+        activeLessonGlobal = null; 
+        heartbeat(); 
     }
     
     function deleteLesson() { 
         delete schedule[currentEditKey]; 
         localStorage.setItem('gh-schedule', JSON.stringify(schedule)); 
+        activeLessonGlobal = null;
         render(); 
         closeModal('modal'); 
+        heartbeat(); 
     }
     
     function toggleEditMode() {
