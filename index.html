@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ultimate Schedule Pro</title>
+    <title>Ultimate Schedule Pro + Music</title>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
     
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📅</text></svg>">
@@ -11,12 +11,12 @@
     <style>
         :root {
             --bg-image: radial-gradient(circle at top right, #1e293b, #0f172a);
-            --card-bg: rgba(30, 41, 59, 0.5);
+            --card-bg: rgba(30, 41, 59, 0.6);
             --accent: #38bdf8;
             --danger: #ff4757;
             --success: #2ed573;
             --text: #f8fafc;
-            --glass-border: rgba(255, 255, 255, 0.08);
+            --glass-border: rgba(255, 255, 255, 0.1);
         }
 
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
@@ -37,23 +37,25 @@
 
         .glass {
             background: var(--card-bg);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
             border: 1px solid var(--glass-border);
             border-radius: 20px;
-            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.4);
         }
 
         header {
-            max-width: 1400px;
+            max-width: 1600px;
             margin: 0 auto 30px auto;
             display: flex;
             flex-direction: column;
-            gap: 20px;
+            gap: 15px;
             padding: 10px;
+            position: relative; 
+            z-index: 50; 
         }
 
-        @media(min-width: 768px) {
+        @media(min-width: 1100px) {
             header { flex-direction: row; justify-content: space-between; align-items: center; }
         }
 
@@ -62,9 +64,11 @@
             font-size: 1.8rem;
             letter-spacing: -1px;
             margin: 0;
+            white-space: nowrap;
             background: linear-gradient(to right, #fff, var(--accent));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
+            transition: --accent 0.3s;
         }
 
         .controls { display: flex; gap: 10px; flex-wrap: wrap; }
@@ -79,152 +83,170 @@
         }
         
         .week-btn {
-            background: transparent;
-            border: none;
-            color: var(--text);
-            font-size: 1.2rem;
-            padding: 8px 15px;
-            cursor: pointer;
-            border-radius: 10px;
-            transition: 0.2s;
+            background: transparent; border: none; color: var(--text);
+            font-size: 1.2rem; padding: 8px 15px; cursor: pointer;
+            border-radius: 10px; transition: 0.2s;
         }
         .week-btn:hover { background: rgba(255,255,255,0.1); }
         
         .week-label {
-            font-weight: 800;
-            padding: 0 15px;
-            min-width: 120px;
-            text-align: center;
-            color: var(--accent);
+            font-weight: 800; padding: 0 15px; min-width: 120px;
+            text-align: center; color: var(--accent); white-space: nowrap;
         }
 
-        .btn {
-            padding: 10px 18px;
-            border-radius: 14px;
-            border: 1px solid var(--glass-border);
-            cursor: pointer;
-            font-weight: 600;
-            font-size: 0.9rem;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            color: #fff;
-            background: rgba(255,255,255,0.05);
+        /* --- MUSIC PLAYER HEADER --- */
+        .music-bar {
+            display: flex; align-items: center; gap: 10px;
+            padding: 6px 12px; border-radius: 14px;
+            background: rgba(15, 23, 42, 0.8); border: 1px solid var(--glass-border);
+            position: relative;
+            transition: border-color 0.3s ease;
         }
         
-        .btn:hover { 
-            background: rgba(255,255,255,0.1);
-            transform: translateY(-2px);
+        .music-ctrl-btn {
+            background: transparent; border: none; color: #fff;
+            font-size: 1.1rem; cursor: pointer; padding: 5px;
+            border-radius: 50%; width: 32px; height: 32px;
+            display: flex; align-items: center; justify-content: center;
+            transition: 0.2s;
         }
+        .music-ctrl-btn:hover { background: rgba(255,255,255,0.1); color: var(--accent); }
+        
+        .track-display {
+            font-size: 0.85rem; max-width: 200px; overflow: hidden;
+            white-space: nowrap; text-overflow: ellipsis; cursor: pointer;
+            padding: 0 15px; border-left: 1px solid rgba(255,255,255,0.1);
+            border-right: 1px solid rgba(255,255,255,0.1);
+            transition: color 0.2s;
+            display: flex; align-items: center; gap: 5px;
+        }
+        .track-display:hover { color: var(--accent); }
+        .track-display::after { content: '🔽'; font-size: 0.7rem; opacity: 0.5; margin-left: 5px; }
+
+        /* Volume Slider Styling INSIDE Dropdown */
+        .vol-container-drop { 
+            display: flex; align-items: center; gap: 10px; 
+            padding: 10px; background: rgba(255,255,255,0.05); 
+            border-radius: 8px; margin-bottom: 10px;
+        }
+        input[type=range] {
+            -webkit-appearance: none; width: 100%; height: 4px;
+            background: rgba(255,255,255,0.2); border-radius: 2px;
+            outline: none; padding: 0; margin: 0; border: none;
+        }
+        input[type=range]::-webkit-slider-thumb {
+            -webkit-appearance: none; width: 14px; height: 14px;
+            border-radius: 50%; background: var(--accent); cursor: pointer;
+            transition: transform 0.1s;
+        }
+        input[type=range]::-webkit-slider-thumb:hover { transform: scale(1.2); }
+
+        /* Playlist Dropdown */
+        .playlist-dropdown {
+            position: absolute; top: 120%; left: 0; width: 100%; min-width: 280px;
+            background: #0f172a; 
+            border: 1px solid var(--glass-border); border-radius: 12px;
+            padding: 10px; display: none; z-index: 1000;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.8);
+            animation: fadeIn 0.2s ease;
+        }
+        .playlist-dropdown.show { display: block; }
+        
+        .track-list-item {
+            padding: 10px; border-radius: 8px; cursor: pointer; font-size: 0.85rem;
+            display: flex; justify-content: space-between; align-items: center;
+            border-bottom: 1px solid rgba(255,255,255,0.03);
+            transition: background 0.2s;
+        }
+        .track-list-item:hover { background: rgba(255,255,255,0.1); }
+        .track-list-item.active { 
+            color: var(--accent); font-weight: bold; 
+            background: rgba(255, 255, 255, 0.05);
+            border-left: 3px solid var(--accent);
+        }
+
+        /* --- Buttons --- */
+        .btn {
+            padding: 10px 18px; border-radius: 14px;
+            border: 1px solid var(--glass-border); cursor: pointer;
+            font-weight: 600; font-size: 0.9rem;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex; align-items: center; gap: 8px;
+            color: #fff; background: rgba(255,255,255,0.05);
+        }
+        .btn:hover { background: rgba(255,255,255,0.1); transform: translateY(-2px); border-color: var(--accent); }
         .btn-primary { background: var(--accent); color: #000; border: none; }
-        .btn-outline.active { background: var(--accent); color: #000; }
+        .btn-primary:hover { background: var(--accent); opacity: 0.9; }
+        .btn-outline.active { background: var(--accent); color: #000; border-color: var(--accent); }
         
         .btn-notify { border-color: rgba(255,255,255,0.2); }
         .btn-notify.active { 
-            background: rgba(46, 213, 115, 0.2);
-            color: #2ed573; 
-            border-color: #2ed573; 
-            box-shadow: 0 0 15px rgba(46, 213, 115, 0.2);
+            background: rgba(46, 213, 115, 0.2); color: #2ed573; 
+            border-color: #2ed573; box-shadow: 0 0 15px rgba(46, 213, 115, 0.2);
         }
-        .btn-notify.denied {
-            background: rgba(255, 71, 87, 0.2);
-            color: #ff4757;
-            border-color: #ff4757;
+        .btn-notify.denied { background: rgba(255, 71, 87, 0.2); color: #ff4757; border-color: #ff4757; }
+
+        /* --- Drag and Drop --- */
+        [data-edit-mode="true"] .lesson-card { cursor: grab; animation: shake 2s infinite ease-in-out; }
+        [data-edit-mode="true"] .lesson-card:active { cursor: grabbing; }
+        .lesson-card.dragging { opacity: 0.4; transform: scale(0.95); border: 2px dashed var(--accent); }
+        .lesson-card.drag-over { background: rgba(56, 189, 248, 0.1); border: 2px dashed #fff; transform: scale(1.05); }
+        @keyframes shake {
+            0% { transform: rotate(0deg); } 25% { transform: rotate(0.5deg); }
+            75% { transform: rotate(-0.5deg); } 100% { transform: rotate(0deg); }
         }
 
         .schedule-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-            gap: 25px;
-            max-width: 1600px;
-            margin: 0 auto;
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 25px; max-width: 1600px; margin: 0 auto;
+            position: relative; z-index: 10;
         }
 
         .day-column { padding: 10px; border-radius: 24px; transition: background 0.3s; }
-        .day-column.is-today { background: rgba(56, 189, 248, 0.05); outline: 1px solid rgba(56, 189, 248, 0.2); }
+        .day-column.is-today { background: rgba(255, 255, 255, 0.03); outline: 1px solid var(--accent); }
 
         .day-title {
-            font-size: 1.2rem;
-            font-weight: 800;
-            margin-bottom: 25px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            padding-left: 10px;
+            font-size: 1.2rem; font-weight: 800; margin-bottom: 25px;
+            display: flex; align-items: center; gap: 10px; padding-left: 10px;
         }
         .day-title::before { content: ''; width: 4px; height: 20px; background: var(--accent); border-radius: 4px; }
 
         .lesson-card {
-            margin-bottom: 16px;
-            padding: 20px;
-            position: relative;
+            margin-bottom: 16px; padding: 20px; position: relative;
             transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            border: 1px solid var(--glass-border);
-            border-left: 4px solid var(--glass-border);
+            border: 1px solid var(--glass-border); border-left: 4px solid var(--glass-border);
             animation: fadeIn 0.5s ease backwards; 
         }
-
-        .lesson-card.has-data {
-            border-left-color: var(--accent);
-            background: rgba(255, 255, 255, 0.03);
-        }
-
-        .lesson-card:hover {
-            border-color: rgba(56, 189, 248, 0.5);
-            background: rgba(255,255,255,0.08);
-            transform: scale(1.02);
-        }
-
+        .lesson-card.has-data { border-left-color: var(--accent); background: rgba(30, 41, 59, 0.4); }
+        .lesson-card:hover { border-color: var(--accent); background: rgba(255,255,255,0.08); transform: scale(1.02); }
         .lesson-card.active {
-            border-color: var(--success);
-            border-left-color: var(--success);
+            border-color: var(--success); border-left-color: var(--success);
             background: linear-gradient(135deg, rgba(46, 213, 115, 0.15) 0%, rgba(30, 41, 59, 0.9) 100%);
-            box-shadow: 0 10px 40px -10px rgba(46, 213, 115, 0.3);
+            box-shadow: 0 5px 20px -5px rgba(46, 213, 115, 0.2); /* Reduced shadow animation */
         }
 
         .time-badge {
-            font-size: 0.75rem;
-            background: rgba(0,0,0,0.3);
-            padding: 4px 10px;
-            border-radius: 8px;
-            color: var(--accent);
-            font-weight: 600;
-            margin-bottom: 12px;
-            display: inline-block;
+            font-size: 0.75rem; background: rgba(0,0,0,0.3); padding: 4px 10px;
+            border-radius: 8px; color: var(--accent); font-weight: 600;
+            margin-bottom: 12px; display: inline-block;
         }
 
         .card-timer-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 5px;
-            background: rgba(46, 213, 115, 0.25);
-            color: #2ed573;
-            padding: 4px 10px;
-            border-radius: 8px;
-            font-weight: 800;
-            font-size: 0.8rem;
-            margin-left: 8px;
-            border: 1px solid rgba(46, 213, 115, 0.4);
-            animation: pulse-green 2s infinite;
+            display: inline-flex; align-items: center; gap: 5px;
+            background: rgba(46, 213, 115, 0.25); color: #2ed573;
+            padding: 4px 10px; border-radius: 8px; font-weight: 800;
+            font-size: 0.8rem; margin-left: 8px;
+            border: 1px solid rgba(46, 213, 115, 0.4); 
+            animation: pulse-soft 3s infinite; /* Softer pulse */
         }
-
-        @keyframes pulse-green {
-            0% { box-shadow: 0 0 0 0 rgba(46, 213, 115, 0.4); }
-            70% { box-shadow: 0 0 0 6px rgba(46, 213, 115, 0); }
-            100% { box-shadow: 0 0 0 0 rgba(46, 213, 115, 0); }
+        @keyframes pulse-soft {
+            0% { opacity: 0.8; } 50% { opacity: 1; } 100% { opacity: 0.8; }
         }
 
         .lesson-name { font-weight: 700; font-size: 1.1rem; margin-bottom: 8px; display: block; }
-
         .lesson-link {
-            font-size: 0.85rem;
-            color: #94a3b8;
-            text-decoration: none;
-            display: flex;
-            align-items: center;
-            gap: 5px;
-            transition: color 0.2s;
+            font-size: 0.85rem; color: #94a3b8; text-decoration: none;
+            display: flex; align-items: center; gap: 5px; transition: color 0.2s;
         }
         .lesson-link:hover { color: var(--accent); }
 
@@ -232,58 +254,66 @@
         .progress-bar { height: 100%; background: var(--success); transition: width 1s linear; }
 
         .edit-btn {
-            position: absolute;
-            top: 10px; right: 10px; opacity: 0;
+            position: absolute; top: 10px; right: 10px; opacity: 0;
             background: var(--accent); border: none; padding: 8px;
-            border-radius: 10px; cursor: pointer; transition: 0.3s;
-            z-index: 5;
+            border-radius: 10px; cursor: pointer; transition: 0.3s; z-index: 5;
+            color: #000;
         }
         [data-edit-mode="true"] .edit-btn { opacity: 1; }
 
+        /* --- COMPACT DYNAMIC ISLAND (Modified) --- */
         .current-widget {
-            position: fixed;
-            bottom: 30px; left: 30px; width: 340px; z-index: 100;
-            padding: 20px; transform: translateX(-150%); transition: 0.6s cubic-bezier(0.4, 0, 0.2, 1.2);
+            position: fixed; bottom: 30px; left: 30px; 
+            width: auto; max-width: 350px; min-width: 250px;
+            z-index: 100;
+            padding: 12px 20px; 
+            border-radius: 40px; /* Capsule shape */
+            transform: translateX(0); 
+            transition: 0.6s cubic-bezier(0.4, 0, 0.2, 1.2);
+            display: flex; align-items: center; gap: 15px;
+            background: rgba(15, 23, 42, 0.95);
+            border: 1px solid var(--glass-border);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
         }
-        .current-widget.visible { transform: translateX(0); }
+        .current-widget.hidden { transform: translateX(-150%); }
 
+        .widget-content { display: flex; flex-direction: column; flex: 1; }
+        .widget-row { display: flex; justify-content: space-between; align-items: baseline; }
+        
+        #widgetName { font-size: 1rem; font-weight: 800; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 150px; }
+        #widgetCountdown { color: var(--success); font-weight: 800; font-size: 1rem; margin-left: 10px; }
+        .widget-btn-small { 
+            background: var(--accent); color: #000; text-decoration: none;
+            width: 36px; height: 36px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.2rem; transition: transform 0.2s;
+        }
+        .widget-btn-small:hover { transform: scale(1.1); }
+        
+        /* Ad Corner */
         .ad-corner {
-            position: fixed;
-            bottom: 30px;
-            right: 30px;
-            width: 200px;
-            z-index: 90;
-            padding: 15px;
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            text-decoration: none;
-            color: #fff;
-            transition: transform 0.3s ease, background 0.3s;
+            position: fixed; bottom: 30px; right: 30px; width: 200px; z-index: 90;
+            padding: 15px; display: flex; align-items: center; gap: 15px;
+            text-decoration: none; color: #fff; transition: transform 0.3s ease, background 0.3s;
             cursor: pointer;
         }
-        .ad-corner:hover {
-            transform: translateY(-5px);
-            background: rgba(255, 255, 255, 0.15);
-        }
+        .ad-corner:hover { transform: translateY(-5px); background: rgba(255, 255, 255, 0.15); }
 
         .modal-backdrop {
-            position: fixed;
-            inset: 0; background: rgba(0,0,0,0.7);
+            position: fixed; inset: 0; background: rgba(0,0,0,0.8);
             backdrop-filter: blur(8px); display: none; justify-content: center;
             align-items: center; z-index: 200; opacity: 0; transition: 0.3s;
         }
-        .modal { width: 90%; max-width: 480px; padding: 30px; transform: scale(0.9); transition: 0.3s; }
+        .modal { width: 90%; max-width: 480px; padding: 30px; transform: scale(0.9); transition: 0.3s; border: 1px solid var(--accent); }
         .modal-backdrop.open { opacity: 1; }
         .modal-backdrop.open .modal { transform: scale(1); }
 
-        input, select { width: 100%; background: rgba(15, 23, 42, 0.6); border: 1px solid var(--glass-border); color: #fff; padding: 14px; border-radius: 12px; margin-top: 5px; outline: none; }
+        input:not([type=range]), select { width: 100%; background: rgba(15, 23, 42, 0.8); border: 1px solid var(--glass-border); color: #fff; padding: 14px; border-radius: 12px; margin-top: 5px; outline: none; transition: border-color 0.2s; }
+        input:not([type=range]):focus, select:focus { border-color: var(--accent); }
+        
         #fileInput { display: none; }
         
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
 <body data-edit-mode="false">
@@ -297,9 +327,33 @@
         <button class="week-btn" onclick="changeWeek(1)">▶</button>
     </div>
 
+    <div class="music-bar glass">
+        <button class="music-ctrl-btn" onclick="changeTrack(-1)">⏮</button>
+        <button class="music-ctrl-btn" id="playHeaderBtn" onclick="togglePlay()">▶</button>
+        <button class="music-ctrl-btn" onclick="changeTrack(1)">⏭</button>
+        
+        <div class="track-display" id="headerTrackName" onclick="toggleHeaderPlaylist()">
+            Вибери музику 🎵
+        </div>
+
+        <div class="playlist-dropdown" id="headerPlaylist">
+            <div class="vol-container-drop">
+                <span style="font-size:0.9rem">🔊</span>
+                <input type="range" id="volSlider" min="0" max="1" step="0.05" oninput="setVolume(this.value)">
+                <span id="volValue" style="font-size:0.8rem; width:30px; text-align:right">50%</span>
+            </div>
+
+            <input type="text" style="width:100%; padding:8px; margin-bottom:10px; font-size:0.85rem;" placeholder="🔍 Пошук по списку..." oninput="filterMusic(this.value)">
+            <div id="trackList" style="max-height:200px; overflow-y:auto;"></div>
+            <div style="margin-top:10px; border-top:1px solid rgba(255,255,255,0.1); padding-top:5px;">
+                <input type="text" id="customUrl" placeholder="Посилання на mp3..." style="font-size:0.75rem; padding:8px;">
+                <button class="btn btn-primary" style="width:100%; margin-top:5px; font-size:0.8rem; padding:6px; justify-content:center;" onclick="addCustomTrack()">➕ Додати</button>
+            </div>
+        </div>
+    </div>
+
     <div class="controls">
         <button class="btn btn-notify" id="notifyBtn" onclick="toggleNotifications()">🔕 Сповіщення</button>
-        
         <button class="btn" onclick="document.getElementById('fileInput').click()">📤 Відкрити</button>
         <button class="btn" onclick="exportToFile()">📥 Зберегти</button>
         <button class="btn" onclick="openSettings()">🎨 Вигляд</button>
@@ -310,15 +364,17 @@
 
 <div class="schedule-grid" id="grid"></div>
 
-<div class="current-widget glass" id="activeWidget">
-    <div style="font-size: 0.7rem; text-transform: uppercase; color: var(--accent); font-weight: 800; margin-bottom: 10px;">Зараз триває</div>
-    <div id="widgetName" style="font-size: 1.2rem; font-weight: 800; margin-bottom: 10px;">Назва</div>
-    <div style="display: flex; justify-content: space-between; align-items: center;">
-        <span id="widgetTimes" style="font-family: monospace; opacity: 0.7;">08:30 - 09:15</span>
-        <span id="widgetCountdown" style="color: var(--success); font-weight: 800; font-size: 1.1rem;">00 хв</span>
+<div class="current-widget" id="activeWidget">
+    <div style="font-size: 1.5rem;">🔥</div>
+    <div class="widget-content">
+        <div class="widget-row">
+            <span id="widgetName">Немає уроку</span>
+            <span id="widgetCountdown"></span>
+        </div>
+        <div style="font-size: 0.75rem; opacity: 0.7; font-family: monospace;" id="widgetTimes">--:--</div>
+        <div style="margin-top:4px;"><div class="progress-bar" id="activeProgressBar" style="height:3px; width:0; border-radius:2px;"></div></div>
     </div>
-    <a id="widgetLink" href="#" target="_blank" class="btn-primary btn" style="margin-top: 15px; justify-content: center; padding: 8px;">🎥 Приєднатися</a>
-    <div style="margin-top:10px;"><div class="progress-bar" id="activeProgressBar" style="height:4px; width:0; border-radius:2px;"></div></div>
+    <a id="widgetLink" href="#" target="_blank" class="widget-btn-small" style="display:none;">🎥</a>
 </div>
 
 <a href="https://t.me/Donwloderfile_bot" target="_blank" class="ad-corner glass" style="bottom: 120px;">
@@ -392,20 +448,148 @@
     const days = ["Понеділок", "Вівторок", "Середа", "Четвер", "П'ятниця", "Субота", "Неділя"];
     const icons = ["⚡", "🔥", "💎", "🌟", "🍀", "🎉", "🎐"];
     
-    // Дані
+    // --- ДАНІ ---
     let schedule = JSON.parse(localStorage.getItem('gh-schedule')) || {};
-    let userSettings = JSON.parse(localStorage.getItem('gh-settings')) || { accent: '#38bdf8', bg: 'default' };
-    
-    // Стан сповіщень
-    let notificationsEnabled = JSON.parse(localStorage.getItem('gh-notifications')) || false;
+    let userSettings = JSON.parse(localStorage.getItem('gh-settings')) || { accent: '#38bdf8', bg: 'default', volume: 0.5 };
+    let musicData = JSON.parse(localStorage.getItem('gh-music')) || {
+        tracks: [
+            { title: "Lofi Study Beats 1", src: "https://cdn.pixabay.com/download/audio/2022/05/27/audio_1808fbf07a.mp3" },
+            { title: "Chill Vibes", src: "https://cdn.pixabay.com/download/audio/2022/03/24/audio_349d443209.mp3" },
+            { title: "Deep Focus", src: "https://cdn.pixabay.com/download/audio/2022/02/07/audio_172c9a962a.mp3" },
+            { title: "Late Night Code", src: "https://cdn.pixabay.com/download/audio/2022/11/22/audio_febc508520.mp3" }
+        ],
+        currentIndex: 0
+    };
 
-    // Стан
+    let notificationsEnabled = JSON.parse(localStorage.getItem('gh-notifications')) || false;
     let currentEditKey = null;
     let activeLessonGlobal = null;
-    // --- ЗМІНА: Завантаження збереженого тижня ---
     let currentWeekIndex = JSON.parse(localStorage.getItem('gh-current-week')) || 0; 
     let lastNotifiedLessonId = null;
 
+    // --- MUSIC PLAYER ---
+    const audioPlayer = new Audio();
+    let isPlaying = false;
+
+    function initAudio() {
+        if(musicData.tracks.length > 0) {
+            audioPlayer.src = musicData.tracks[musicData.currentIndex].src;
+            updatePlayerUI();
+        }
+        // Set Volume
+        audioPlayer.volume = userSettings.volume !== undefined ? userSettings.volume : 0.5;
+        document.getElementById('volSlider').value = audioPlayer.volume;
+        updateVolText(audioPlayer.volume);
+
+        audioPlayer.onended = () => changeTrack(1);
+        renderPlaylist();
+    }
+
+    function togglePlay() {
+        if(musicData.tracks.length === 0) return;
+        
+        if (isPlaying) {
+            audioPlayer.pause();
+        } else {
+            audioPlayer.play().catch(e => alert("Спочатку клікніть будь-де на сторінці"));
+        }
+        isPlaying = !isPlaying;
+        updatePlayerUI();
+    }
+
+    function changeTrack(dir) {
+        musicData.currentIndex = (musicData.currentIndex + dir + musicData.tracks.length) % musicData.tracks.length;
+        audioPlayer.src = musicData.tracks[musicData.currentIndex].src;
+        if(isPlaying) audioPlayer.play();
+        updatePlayerUI();
+        saveMusicData();
+        renderPlaylist();
+    }
+
+    function playTrack(index) {
+        musicData.currentIndex = index;
+        audioPlayer.src = musicData.tracks[index].src;
+        isPlaying = true;
+        audioPlayer.play();
+        updatePlayerUI();
+        saveMusicData();
+        renderPlaylist();
+    }
+
+    function setVolume(val) {
+        audioPlayer.volume = val;
+        userSettings.volume = val;
+        updateVolText(val);
+        saveSettings();
+    }
+
+    function updateVolText(val) {
+        document.getElementById('volValue').textContent = Math.round(val * 100) + '%';
+    }
+
+    function updatePlayerUI() {
+        const btn = document.getElementById('playHeaderBtn');
+        btn.textContent = isPlaying ? '⏸' : '▶';
+        const name = musicData.tracks[musicData.currentIndex] ? musicData.tracks[musicData.currentIndex].title : "Плейлист порожній";
+        document.getElementById('headerTrackName').textContent = name;
+    }
+
+    function toggleHeaderPlaylist() {
+        document.getElementById('headerPlaylist').classList.toggle('show');
+    }
+    
+    // Close playlist when clicking outside
+    document.addEventListener('click', function(event) {
+        const playlist = document.getElementById('headerPlaylist');
+        const headerName = document.getElementById('headerTrackName');
+        const customUrl = document.getElementById('customUrl');
+        
+        if (!playlist.contains(event.target) && !headerName.contains(event.target)) {
+            playlist.classList.remove('show');
+        }
+    });
+
+    function renderPlaylist(filter = "") {
+        const list = document.getElementById('trackList');
+        list.innerHTML = '';
+        musicData.tracks.forEach((track, idx) => {
+            if(track.title.toLowerCase().includes(filter.toLowerCase())) {
+                const item = document.createElement('div');
+                item.className = `track-list-item ${idx === musicData.currentIndex ? 'active' : ''}`;
+                item.innerHTML = `<span>${track.title}</span> <span style="font-size:0.7rem; color: #ff4757; margin-left:10px;" onclick="event.stopPropagation(); removeTrack(${idx})">🗑️</span>`;
+                item.onclick = (e) => { playTrack(idx); };
+                list.appendChild(item);
+            }
+        });
+    }
+
+    function filterMusic(val) { renderPlaylist(val); }
+
+    function addCustomTrack() {
+        const url = document.getElementById('customUrl').value;
+        if(url) {
+            musicData.tracks.push({ title: `Мій Трек ${musicData.tracks.length + 1}`, src: url });
+            document.getElementById('customUrl').value = '';
+            saveMusicData();
+            renderPlaylist();
+        }
+    }
+
+    function removeTrack(index) {
+        if(confirm("Видалити трек?")) {
+            musicData.tracks.splice(index, 1);
+            if(musicData.currentIndex >= index) musicData.currentIndex = Math.max(0, musicData.currentIndex - 1);
+            saveMusicData();
+            renderPlaylist();
+            updatePlayerUI();
+        }
+    }
+
+    function saveMusicData() {
+        localStorage.setItem('gh-music', JSON.stringify(musicData));
+    }
+
+    // --- MAIN INIT ---
     function init() { 
         migrateDataIfNeeded();
         applySettings(); 
@@ -415,28 +599,21 @@
         
         checkPermissionStatus();
         render(); 
+        initAudio();
         
-        // --- ВИПРАВЛЕННЯ АВТООНОВЛЕННЯ ---
-        // Запуск таймера
         setInterval(heartbeat, 1000);
-        // Якщо користувач переключився на іншу вкладку, а потім повернувся - миттєво оновити
         document.addEventListener("visibilitychange", () => {
-             if (document.visibilityState === 'visible') {
-                 heartbeat();
-             }
+             if (document.visibilityState === 'visible') heartbeat();
         });
-        // Перший запуск
         heartbeat();
     }
 
-    // --- ГОЛОВНИЙ ЦИКЛ ОНОВЛЕННЯ (HEARTBEAT) ---
     function heartbeat() {
         const now = new Date();
         const currentTime = now.getHours() * 60 + now.getMinutes();
         const currentDay = (now.getDay() + 6) % 7; 
         
         let foundLesson = null;
-        // Перевіряємо реальні уроки
         for(let sIdx = 0; sIdx < 8; sIdx++) {
             const key = `${currentWeekIndex}-${currentDay}-${sIdx}`;
             const lesson = schedule[key];
@@ -455,35 +632,31 @@
             }
         }
 
-        // Логіка оновлення UI
         if (foundLesson) {
-            // Якщо почався новий урок (або ми щойно відкрили сайт)
             if (!activeLessonGlobal || activeLessonGlobal.uniqueId !== foundLesson.uniqueId) {
                 activeLessonGlobal = foundLesson;
-                render(); // Малює сітку і виділяє активний урок
-                
-                if (notificationsEnabled) {
-                    trySendNotification(foundLesson);
-                }
+                render();
+                if (notificationsEnabled) trySendNotification(foundLesson);
             }
-            
-            // Оновлюємо таймер у віджеті
             updateWidgetUI(foundLesson, currentTime);
-            // Оновлюємо таймер на самій картці в сітці (щоб було видно прогрес)
             updateCardUI(foundLesson, currentTime);
         } else {
-            // Якщо уроку немає
+            // Reset widget if no lesson
+            const w = document.getElementById('activeWidget');
+            document.getElementById('widgetName').textContent = "Вільний час 💤";
+            document.getElementById('widgetTimes').textContent = "--:--";
+            document.getElementById('widgetCountdown').textContent = "";
+            document.getElementById('activeProgressBar').style.width = '0';
+            document.getElementById('widgetLink').style.display = 'none';
+            
             if (activeLessonGlobal) {
                 activeLessonGlobal = null;
-                render(); // Прибираємо підсвітку
-                document.getElementById('activeWidget').classList.remove('visible');
+                render();
             }
         }
     }
 
     function updateWidgetUI(lesson, currentTime) {
-        const w = document.getElementById('activeWidget');
-        w.classList.add('visible');
         document.getElementById('widgetName').textContent = lesson.name;
         document.getElementById('widgetTimes').textContent = `${lesson.start} - ${lesson.end}`;
         
@@ -500,7 +673,6 @@
         }
     }
     
-    // Додаткова функція для оновлення картки в сітці без повного перемальовування
     function updateCardUI(lesson, currentTime) {
         const card = document.getElementById('activeCard');
         if(card) {
@@ -517,11 +689,10 @@
 
     function trySendNotification(lesson) {
         if (Notification.permission !== "granted") return;
-        // Запобіжник повторів
         if (lastNotifiedLessonId === lesson.uniqueId) return;
         try {
             const notification = new Notification(`🔔 Урок почався: ${lesson.name}`, {
-                body: `Клікніть, щоб приєднатися! (${lesson.start} - ${lesson.end})`,
+                body: `${lesson.start} - ${lesson.end}`,
                 icon: "data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📅</text></svg>",
                 tag: lesson.uniqueId
             });
@@ -530,45 +701,26 @@
                 if(lesson.link) window.open(lesson.link, '_blank');
                 this.close();
             };
-            
-            // Звук
-            const audio = new Audio('https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3');
-            audio.volume = 0.5;
-            audio.play().catch(e => console.log("Audio play requires user interaction first"));
-
             lastNotifiedLessonId = lesson.uniqueId;
-        } catch (e) {
-            console.error("Помилка сповіщення:", e);
-        }
+        } catch (e) { console.error(e); }
     }
 
-    // --- ЛОГІКА ДОЗВОЛІВ ---
     function checkPermissionStatus() {
         if (!("Notification" in window)) {
-            const btn = document.getElementById('notifyBtn');
-            btn.innerHTML = "❌ Не підтримується";
+            document.getElementById('notifyBtn').innerHTML = "❌ Не підтримується";
             return;
         }
-        if (Notification.permission === "granted" && notificationsEnabled) {
-            setBtnState(true);
-        } else if (Notification.permission === "denied") {
-            setBtnState(false, true);
-        } else {
-            setBtnState(false);
-        }
+        if (Notification.permission === "granted" && notificationsEnabled) setBtnState(true);
+        else if (Notification.permission === "denied") setBtnState(false, true);
+        else setBtnState(false);
     }
 
     function toggleNotifications() {
-        if (!("Notification" in window)) {
-            alert("Ваш браузер не підтримує сповіщення.");
-            return;
-        }
-        
+        if (!("Notification" in window)) return;
         if (Notification.permission === "denied") {
-            alert("⚠️ Сповіщення заблоковані у налаштуваннях браузера.\nНатисніть на замочок 🔒 біля URL та дозвольте сповіщення.");
+            alert("Сповіщення заблоковані браузером.");
             return;
         }
-
         if (notificationsEnabled) {
             notificationsEnabled = false;
             localStorage.setItem('gh-notifications', 'false');
@@ -578,12 +730,8 @@
                 if (permission === "granted") {
                     notificationsEnabled = true;
                     localStorage.setItem('gh-notifications', 'true');
-                  
                     setBtnState(true);
-                    new Notification("✅ Сповіщення увімкнено!", { body: "Тепер ви отримуватимете нагадування." });
-                } else {
-                    setBtnState(false);
-                }
+                } else setBtnState(false);
             });
         }
     }
@@ -592,24 +740,18 @@
         const btn = document.getElementById('notifyBtn');
         if (isDenied) {
             btn.innerHTML = "🚫 Заблоковано";
-            btn.classList.remove('active');
-            btn.classList.add('denied');
+            btn.className = "btn btn-notify denied";
         } else if (isOn) {
             btn.innerHTML = "🔔 Увімкнено";
-            btn.classList.add('active');
-            btn.classList.remove('denied');
+            btn.className = "btn btn-notify active";
         } else {
             btn.innerHTML = "🔕 Вимкнено";
-            btn.classList.remove('active');
-            btn.classList.remove('denied');
+            btn.className = "btn btn-notify";
         }
     }
 
-    // --- СТАНДАРТНІ ФУНКЦІЇ ---
-
     function changeWeek(direction) {
         currentWeekIndex = (currentWeekIndex + direction + 2) % 2;
-        // --- ЗМІНА: Збереження вибраного тижня ---
         localStorage.setItem('gh-current-week', currentWeekIndex);
         render();
     }
@@ -623,25 +765,32 @@
         let changed = false;
         Object.keys(schedule).forEach(key => {
             if (/^\d+-\d+$/.test(key)) {
-                const newKey = `0-${key}`;
-                schedule[newKey] = schedule[key];
+                schedule[`0-${key}`] = schedule[key];
                 delete schedule[key];
                 changed = true;
-            
             }
         });
-        if (changed) {
-            localStorage.setItem('gh-schedule', JSON.stringify(schedule));
-        }
+        if (changed) localStorage.setItem('gh-schedule', JSON.stringify(schedule));
     }
 
+    // --- IMPORT / EXPORT WITH PASSWORD ---
     function exportToFile() {
-        const data = JSON.stringify(schedule, null, 2);
-        const blob = new Blob([data], {type: "application/json"});
+        const password = prompt("Введіть пароль для файлу (залиште порожнім, якщо не потрібен):");
+        
+        const fullData = {
+            schedule: schedule,
+            music: musicData,
+            settings: userSettings,
+            locked: password ? true : false,
+            password: password || null
+        };
+        
+        const dataStr = JSON.stringify(fullData, null, 2);
+        const blob = new Blob([dataStr], {type: "application/json"});
         const url = URL.createObjectURL(blob);
         const a = document.createElement('a');
         a.href = url;
-        a.download = "schedule_pro.json";
+        a.download = "schedule_pro_backup.json";
         a.click();
     }
 
@@ -651,15 +800,121 @@
         const reader = new FileReader();
         reader.onload = (e) => {
             try {
-                schedule = JSON.parse(e.target.result);
+                const json = JSON.parse(e.target.result);
+                
+                // Перевірка паролю
+                if (json.locked && json.password) {
+                    let attempts = 3;
+                    let authenticated = false;
+                    while (attempts > 0) {
+                        const pass = prompt(`Цей файл захищено паролем. Спроб: ${attempts}`);
+                        if (pass === json.password) {
+                            authenticated = true;
+                            break;
+                        }
+                        attempts--;
+                        if (attempts === 0) {
+                            alert("Вичерпано спроби. Доступ заборонено.");
+                            return;
+                        }
+                    }
+                    if (!authenticated) return; // Якщо натиснув Cancel
+                }
+
+                if(json.schedule) {
+                    schedule = json.schedule;
+                    if(json.music) musicData = json.music;
+                    if(json.settings) userSettings = json.settings;
+                } else {
+                    schedule = json; 
+                }
                 migrateDataIfNeeded();
                 localStorage.setItem('gh-schedule', JSON.stringify(schedule));
+                localStorage.setItem('gh-music', JSON.stringify(musicData));
+                localStorage.setItem('gh-settings', JSON.stringify(userSettings));
+                applySettings();
+                initAudio();
                 render();
+                alert("Дані успішно завантажено!");
             } catch(err) { alert("Помилка файлу"); }
         };
         reader.readAsText(file);
+        input.value = '';
     }
 
+    // --- DRAG AND DROP (FIXED TIME LOGIC) ---
+    let dragSrcEl = null;
+    let dragSrcKey = null;
+
+    function handleDragStart(e) {
+        this.style.opacity = '0.4';
+        dragSrcEl = this;
+        dragSrcKey = this.getAttribute('data-key');
+        e.dataTransfer.effectAllowed = 'move';
+        e.dataTransfer.setData('text/html', this.innerHTML);
+        this.classList.add('dragging');
+    }
+
+    function handleDragOver(e) {
+        if (e.preventDefault) e.preventDefault();
+        e.dataTransfer.dropEffect = 'move';
+        this.classList.add('drag-over');
+        return false;
+    }
+
+    function handleDragLeave(e) {
+        this.classList.remove('drag-over');
+    }
+
+    function handleDrop(e) {
+        if (e.stopPropagation) e.stopPropagation();
+        this.classList.remove('drag-over');
+
+        const destKey = this.getAttribute('data-key');
+        
+        if (dragSrcKey !== destKey) {
+            const srcData = schedule[dragSrcKey];
+            const destData = schedule[destKey];
+
+            const srcTime = srcData ? { start: srcData.start, end: srcData.end } : null;
+            const destTime = destData ? { start: destData.start, end: destData.end } : null;
+
+            if(destData) schedule[dragSrcKey] = destData;
+            else delete schedule[dragSrcKey];
+
+            if(srcData) schedule[destKey] = srcData;
+            else delete schedule[destKey];
+
+            // ВІДНОВЛЮЄМО ЧАС (логіка фіксації часу за слотом)
+            if (schedule[dragSrcKey]) {
+                if (srcTime) {
+                    schedule[dragSrcKey].start = srcTime.start;
+                    schedule[dragSrcKey].end = srcTime.end;
+                }
+            }
+            if (schedule[destKey]) {
+                if (destTime) {
+                    schedule[destKey].start = destTime.start;
+                    schedule[destKey].end = destTime.end;
+                }
+            }
+
+            localStorage.setItem('gh-schedule', JSON.stringify(schedule));
+            render();
+            const newCard = document.querySelector(`[data-key="${destKey}"]`);
+            if(newCard) newCard.classList.add('active');
+            setTimeout(() => render(), 500);
+        }
+        return false;
+    }
+
+    function handleDragEnd(e) {
+        this.style.opacity = '1';
+        this.classList.remove('dragging');
+        document.querySelectorAll('.lesson-card').forEach(col => col.classList.remove('drag-over'));
+    }
+
+    // --- RENDER ---
     function render() {
         updateWeekLabel();
         const grid = document.getElementById('grid');
@@ -668,6 +923,7 @@
         const now = new Date();
         const currentTime = now.getHours() * 60 + now.getMinutes();
         const currentDay = (now.getDay() + 6) % 7; 
+        const isEditMode = document.body.getAttribute('data-edit-mode') === 'true';
 
         days.forEach((day, dIdx) => {
             const isToday = dIdx === currentDay;
@@ -675,33 +931,40 @@
             dayCol.className = `day-column ${isToday ? 'is-today' : ''}`;
             dayCol.innerHTML = `<div class="day-title"><span>${icons[dIdx]}</span> ${day}</div>`;
             
-          
             for(let sIdx = 0; sIdx < 8; sIdx++) {
                 const key = `${currentWeekIndex}-${dIdx}-${sIdx}`;
-                dayCol.appendChild(createLessonCard(schedule[key], key, isToday, currentTime, sIdx));
+                dayCol.appendChild(createLessonCard(schedule[key], key, isToday, currentTime, sIdx, isEditMode));
             }
             grid.appendChild(dayCol);
         });
     }
 
-    function createLessonCard(data, key, isToday, currentTime, index) {
+    function createLessonCard(data, key, isToday, currentTime, index, isEditMode) {
         const card = document.createElement('div');
         card.className = 'lesson-card glass';
         if(data) card.classList.add('has-data');
+        card.setAttribute('data-key', key);
         card.style.animationDelay = `${index * 0.05}s`;
         
-        const editBtnHTML = `<button class="edit-btn" onclick="event.stopPropagation(); openEditModal('${key}')">${data ?
-            '⚙️' : '➕'}</button>`;
+        if (isEditMode) {
+            card.setAttribute('draggable', 'true');
+            card.addEventListener('dragstart', handleDragStart);
+            card.addEventListener('dragover', handleDragOver);
+            card.addEventListener('dragleave', handleDragLeave);
+            card.addEventListener('drop', handleDrop);
+            card.addEventListener('dragend', handleDragEnd);
+        }
+
+        const editBtnHTML = `<button class="edit-btn" onclick="event.stopPropagation(); openEditModal('${key}')">${data ? '⚙️' : '➕'}</button>`;
 
         if (!data) {
             card.innerHTML = `<div style="opacity:0.2; text-align:center; font-size:0.8rem">порожньо</div>${editBtnHTML}`;
-            card.onclick = () => { if(document.body.getAttribute('data-edit-mode') === 'true') openEditModal(key) };
+            card.onclick = () => { if(isEditMode) openEditModal(key) };
             return card;
         }
 
         const start = timeToMin(data.start), end = timeToMin(data.end);
         let isActive = false;
-        // Логіка підсвітки
         if (activeLessonGlobal && activeLessonGlobal.uniqueId === (key + '_' + data.start)) {
             isActive = true;
         }
@@ -724,12 +987,10 @@
                 ${timerHtml}
             </div>
             <span class="lesson-name">${data.name}</span>
-    
-            ${data.link ?
-            `<a href="${data.link}" target="_blank" class="lesson-link" onclick="event.stopPropagation()">🔗 Приєднатися</a>` : ''}
+            ${data.link ? `<a href="${data.link}" target="_blank" class="lesson-link" onclick="event.stopPropagation()">🔗 Приєднатися</a>` : ''}
             ${progressHtml}
         `;
-        card.onclick = () => { if(document.body.getAttribute('data-edit-mode') === 'true') openEditModal(key) };
+        card.onclick = () => { if(isEditMode) openEditModal(key) };
         return card;
     }
 
@@ -764,22 +1025,19 @@
         currentEditKey = key;
         const data = schedule[key];
         const slotIndex = parseInt(key.split('-')[2]);
-        
         const suggested = getSuggestedTimes(slotIndex);
         updateSubjectsList();
 
         document.getElementById('nameInp').value = data ? data.name : '';
         document.getElementById('startInp').value = data ? data.start : suggested.start;
         document.getElementById('endInp').value = data ? data.end : suggested.end;
-        document.getElementById('linkInp').value = data ?
-            data.link : '';
+        document.getElementById('linkInp').value = data ? data.link : '';
         
         const m = document.getElementById('modal'); m.style.display = 'flex';
         setTimeout(() => m.classList.add('open'), 10);
     }
 
-    function closeModal(id) { const m = document.getElementById(id); m.classList.remove('open'); setTimeout(() => m.style.display = 'none', 300);
-    }
+    function closeModal(id) { const m = document.getElementById(id); m.classList.remove('open'); setTimeout(() => m.style.display = 'none', 300); }
     
     function saveLesson() {
         schedule[currentEditKey] = { 
@@ -789,34 +1047,27 @@
             link: document.getElementById('linkInp').value 
         };
         localStorage.setItem('gh-schedule', JSON.stringify(schedule)); 
-        render(); 
-        closeModal('modal');
-        activeLessonGlobal = null; 
-        heartbeat(); 
+        render(); closeModal('modal'); activeLessonGlobal = null; heartbeat(); 
     }
     
     function deleteLesson() { 
         delete schedule[currentEditKey];
         localStorage.setItem('gh-schedule', JSON.stringify(schedule)); 
-        activeLessonGlobal = null;
-        render(); 
-        closeModal('modal'); 
-        heartbeat(); 
+        activeLessonGlobal = null; render(); closeModal('modal'); heartbeat(); 
     }
     
     function toggleEditMode() {
-        const mode = document.body.getAttribute('data-edit-mode') === 'false';
-        document.body.setAttribute('data-edit-mode', mode);
-        document.getElementById('toggleEdit').classList.toggle('active', mode);
+        const isEditing = document.body.getAttribute('data-edit-mode') === 'false';
+        document.body.setAttribute('data-edit-mode', isEditing);
+        document.getElementById('toggleEdit').classList.toggle('active', isEditing);
+        render();
     }
     
     function openSettings() { const m = document.getElementById('settingsModal');
         m.style.display = 'flex'; setTimeout(() => m.classList.add('open'), 10); }
-    function setAccent(c) { userSettings.accent = c; saveSettings();
-    }
+    function setAccent(c) { userSettings.accent = c; saveSettings(); }
     function changeBackground(v) { userSettings.bg = v; saveSettings(); }
-    function saveSettings() { localStorage.setItem('gh-settings', JSON.stringify(userSettings));
-        applySettings(); }
+    function saveSettings() { localStorage.setItem('gh-settings', JSON.stringify(userSettings)); applySettings(); }
     
     function applySettings() { 
         document.documentElement.style.setProperty('--accent', userSettings.accent);
