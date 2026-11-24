@@ -31,7 +31,7 @@ line-height: 1.5;
 transition: background 0.5s ease, color 0.5s ease;
 }
 
-/* --- IMPROVED ANIMATED BACKGROUNDS --- */
+/* --- ANIMATED BACKGROUNDS --- */
 @keyframes gradientShift {
 0% { background-position: 0% 50%; }
 50% { background-position: 100% 50%; }
@@ -45,8 +45,6 @@ transition: background 0.5s ease, color 0.5s ease;
 0%, 100% { transform: translate(-50%, -50%) scale(0.8); opacity: 0.3; filter: blur(40px); }
 50% { transform: translate(-50%, -50%) scale(1.3); opacity: 0.6; filter: blur(60px); }
 }
-
-/* ✨ Анімований градієнт - покращений */
 .bg-animated-gradient {
 background: linear-gradient(-45deg, #0f172a, #1e293b, #38bdf8, #1e293b, #0f172a) !important;
 background-size: 400% 400% !important;
@@ -62,8 +60,6 @@ pointer-events: none;
 z-index: -1;
 animation: gradientShift 20s ease infinite reverse;
 }
-
-/* 🌐 Кібер-сітка - покращена */
 .bg-cyber-grid {
 background-color: #0f172a !important;
 background-image:
@@ -83,8 +79,6 @@ pointer-events: none;
 z-index: -1;
 animation: gradientShift 25s linear infinite;
 }
-
-/* 🔮 Неоновий пульс - без змін */
 .bg-neon-pulse {
 background: #0f172a !important;
 position: relative;
@@ -114,7 +108,7 @@ border-radius: 20px;
 box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.4);
 }
 header {
-max-width: 1600px;
+max-width: 1760px;
 margin: 0 auto 15px auto;
 display: flex;
 flex-direction: column;
@@ -123,136 +117,54 @@ padding: 10px;
 position: relative;
 z-index: 50;
 }
-@media(min-width: 1100px) {
-header { flex-direction: row; justify-content: space-between; align-items: center; }
-}
 h1 {
 font-weight: 800;
-font-size: 1.8rem;
+font-size: 1.9rem;
 letter-spacing: -1px;
 margin: 0;
 white-space: nowrap;
+}
+h1 .logo-text {
 background: linear-gradient(to right, #fff, var(--accent));
 -webkit-background-clip: text;
+background-clip: text;
 -webkit-text-fill-color: transparent;
-transition: --accent 0.3s;
 }
-.controls { display: flex; gap: 10px; flex-wrap: wrap; }
 .week-switcher {
 display: flex;
 align-items: center;
 background: rgba(0,0,0,0.3);
-border-radius: 14px;
-padding: 4px;
+border-radius: 16px;
+padding: 5px;
 border: 1px solid var(--glass-border);
 }
 .week-btn {
 background: transparent;
 border: none; color: var(--text);
-font-size: 1.2rem; padding: 8px 15px; cursor: pointer;
-border-radius: 10px; transition: 0.2s;
+font-size: 1.4rem; padding: 10px 14px; cursor: pointer;
+border-radius: 12px; transition: 0.2s;
 }
 .week-btn:hover { background: rgba(255,255,255,0.1); }
 .week-label {
-font-weight: 800;
-padding: 0 15px; min-width: 120px;
+font-weight: 800; font-size: 1.05rem;
+padding: 0 10px; min-width: 0;
 text-align: center; color: var(--accent); white-space: nowrap;
 }
-/* --- MUSIC PLAYER HEADER --- */
-.music-bar {
-display: flex;
-align-items: center; gap: 10px;
-padding: 6px 12px; border-radius: 14px;
-background: rgba(15, 23, 42, 0.8); border: 1px solid var(--glass-border);
-position: relative;
-transition: border-color 0.3s ease;
-}
-.music-ctrl-btn {
-background: transparent;
-border: none; color: #fff;
-font-size: 1.1rem; cursor: pointer; padding: 5px;
-border-radius: 50%; width: 32px; height: 32px;
-display: flex; align-items: center;
-justify-content: center;
-transition: 0.2s;
-}
-.music-ctrl-btn:hover { background: rgba(255,255,255,0.1); color: var(--accent); }
-.track-display {
-font-size: 0.85rem;
-max-width: 200px; overflow: hidden;
-white-space: nowrap; text-overflow: ellipsis; cursor: pointer;
-padding: 0 15px; border-left: 1px solid rgba(255,255,255,0.1);
-border-right: 1px solid rgba(255,255,255,0.1);
-transition: color 0.2s;
-display: flex; align-items: center; gap: 5px;
-}
-.track-display:hover { color: var(--accent); }
-.track-display::after { content: '🔽'; font-size: 0.7rem; opacity: 0.5; margin-left: 5px; }
-.vol-container-drop {
-display: flex;
-align-items: center; gap: 10px;
-padding: 10px; background: rgba(255,255,255,0.05);
-border-radius: 8px; margin-bottom: 10px;
-}
-input[type=range] {
--webkit-appearance: none;
-width: 100%; height: 4px;
-background: rgba(255,255,255,0.2); border-radius: 2px;
-outline: none; padding: 0; margin: 0; border: none;
-}
-input[type=range]::-webkit-slider-thumb {
--webkit-appearance: none;
-width: 14px; height: 14px;
-border-radius: 50%; background: var(--accent); cursor: pointer;
-transition: transform 0.1s;
-}
-input[type=range]::-webkit-slider-thumb:hover { transform: scale(1.2); }
-.playlist-dropdown {
-position: absolute;
-top: 120%; left: 0; width: 100%; min-width: 280px;
-background: #0f172a;
-border: 1px solid var(--glass-border); border-radius: 12px;
-padding: 10px; display: none;
-z-index: 1000;
-box-shadow: 0 15px 40px rgba(0,0,0,0.8);
-animation: fadeIn 0.2s ease;
-}
-.playlist-dropdown.show { display: block; }
-.track-list-item {
-padding: 10px;
-border-radius: 8px; cursor: pointer; font-size: 0.85rem;
-display: flex; justify-content: space-between; align-items: center;
-border-bottom: 1px solid rgba(255,255,255,0.03);
-transition: background 0.2s;
-}
-.track-list-item:hover { background: rgba(255,255,255,0.1); }
-.track-list-item.active {
-color: var(--accent);
-font-weight: bold;
-background: rgba(255, 255, 255, 0.05);
-border-left: 3px solid var(--accent);
-}
+
 /* --- Buttons --- */
 .btn {
-padding: 10px 18px;
+padding: 12px 20px;
 border-radius: 14px;
 border: 1px solid var(--glass-border); cursor: pointer;
-font-weight: 600; font-size: 0.9rem;
+font-weight: 600; font-size: 0.95rem; font-family: inherit;
 transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-display: flex; align-items: center; gap: 8px;
+display: flex; align-items: center; justify-content: center; gap: 8px;
 color: #fff; background: rgba(255,255,255,0.05);
 }
 .btn:hover { background: rgba(255,255,255,0.1); transform: translateY(-2px); border-color: var(--accent); }
 .btn-primary { background: var(--accent); color: #000; border: none; }
 .btn-primary:hover { background: var(--accent); opacity: 0.9; }
-.btn-outline.active { background: var(--accent); color: #000; border-color: var(--accent); }
-#historyBtn { transition: all 0.3s ease; }
-#historyBtn.active { box-shadow: 0 0 15px var(--accent); border-color: var(--accent); background: var(--accent); color: #000; }
-#statsBtn { transition: all 0.3s ease; }
-#statsBtn.active { box-shadow: 0 0 15px var(--accent); border-color: var(--accent); background: var(--accent); color: #000; }
-.btn-notify { border-color: rgba(255,255,255,0.2); }
-.btn-notify.active { background: rgba(46, 213, 115, 0.2); color: #2ed573; border-color: #2ed573; box-shadow: 0 0 15px rgba(46, 213, 115, 0.2); }
-.btn-notify.denied { background: rgba(255, 71, 87, 0.2); color: #ff4757; border-color: #ff4757; }
+
 /* --- Drag and Drop --- */
 [data-edit-mode="true"] .lesson-card { cursor: grab; animation: shake 2s infinite ease-in-out; }
 [data-edit-mode="true"] .lesson-card:active { cursor: grabbing; }
@@ -262,49 +174,32 @@ color: #fff; background: rgba(255,255,255,0.05);
 0% { transform: rotate(0deg); } 25% { transform: rotate(0.5deg); }
 75% { transform: rotate(-0.5deg); } 100% { transform: rotate(0deg); }
 }
-/* --- HISTORY SIDEBAR --- */
-#history-sidebar {
-position: fixed;
-right: -380px; top: 0; width: 350px; height: 100vh;
+
+/* --- SIDEBARS --- */
+#history-sidebar, #stats-sidebar {
+position: fixed; top: 0; height: 100vh;
 background: rgba(15, 23, 42, 0.95); border-left: 1px solid var(--glass-border);
 backdrop-filter: blur(15px);
 transition: right 0.3s ease-in-out;
 padding: 20px; z-index: 9999; color: var(--text);
 box-shadow: -5px 0 25px rgba(0,0,0,0.7); overflow-y: auto;
 }
-#history-sidebar.open { right: 0; }
+#history-sidebar { right: -450px; width: min(350px, 100vw); }
+#stats-sidebar { right: -520px; width: min(420px, 100vw); }
+#history-sidebar.open, #stats-sidebar.open { right: 0; }
+.sidebar-close { background: transparent; border: none; color: white; cursor: pointer; font-size: 1.4em; padding: 6px 10px; border-radius: 10px; }
+.sidebar-close:hover { background: rgba(255,255,255,0.1); }
 #history-list { list-style: none; padding: 0; margin-top: 15px; }
 .history-dev-news { border-left: 3px solid var(--accent); background: rgba(56, 189, 248, 0.1); margin-bottom: 8px; padding: 12px; border-radius: 8px; font-size: 0.9em; font-weight: 600; }
 .history-user-log { border-left: 3px solid var(--success); background: rgba(255, 255, 255, 0.05); margin-bottom: 8px; padding: 10px; border-radius: 8px; font-size: 0.85em; opacity: 0.9; }
-/* --- STATS SIDEBAR --- */
-#stats-sidebar {
-position: fixed;
-right: -450px; top: 0; width: 420px; height: 100vh;
-background: rgba(15, 23, 42, 0.95); border-left: 1px solid var(--glass-border);
-backdrop-filter: blur(15px);
-transition: right 0.3s ease-in-out;
-padding: 20px; z-index: 9999; color: var(--text);
-box-shadow: -5px 0 25px rgba(0,0,0,0.7); overflow-y: auto;
-}
-#stats-sidebar.open { right: 0; }
 .stats-section { margin-bottom: 25px; }
 .stats-section h3 { color: var(--accent); margin-bottom: 15px; font-size: 1.1rem; }
-.stat-card {
-background: rgba(255,255,255,0.05);
-border-radius: 12px; padding: 15px; margin-bottom: 10px;
-}
-.stat-bar-container {
-background: rgba(255,255,255,0.1);
-border-radius: 6px; height: 8px; margin-top: 8px; overflow: hidden;
-}
-.stat-bar {
-height: 100%; border-radius: 6px;
-transition: width 0.5s ease;
-}
+.stat-card { background: rgba(255,255,255,0.05); border-radius: 12px; padding: 15px; margin-bottom: 10px; }
+.stat-bar-container { background: rgba(255,255,255,0.1); border-radius: 6px; height: 8px; margin-top: 8px; overflow: hidden; }
+.stat-bar { height: 100%; border-radius: 6px; transition: width 0.5s ease; }
 .stat-value { font-size: 1.5rem; font-weight: 800; color: var(--accent); }
 .stat-label { font-size: 0.85rem; opacity: 0.7; }
-.mood-emoji { font-size: 2rem; cursor: pointer; transition: transform 0.2s; padding: 10px; }
-.mood-emoji:hover { transform: scale(1.2); }
+
 .schedule-grid {
 display: grid;
 grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
@@ -324,6 +219,7 @@ padding: 20px; position: relative;
 transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 border: 1px solid var(--glass-border); border-left: 4px solid var(--glass-border);
 animation: fadeIn 0.5s ease backwards;
+overflow: hidden;
 }
 .lesson-card.has-data { border-left-color: var(--accent); background: rgba(30, 41, 59, 0.4); }
 .lesson-card:hover { border-color: var(--accent); background: rgba(255,255,255,0.08); transform: scale(1.02); }
@@ -344,23 +240,26 @@ display: inline-flex;
 align-items: center; gap: 5px;
 background: rgba(46, 213, 115, 0.25); color: #2ed573;
 padding: 4px 10px; border-radius: 8px; font-weight: 800; font-size: 0.8rem;
-margin-left: 8px; border: 1px solid rgba(46, 213, 115, 0.4);
+margin-left: 8px; margin-bottom: 12px; border: 1px solid rgba(46, 213, 115, 0.4);
 animation: pulse-soft 3s infinite;
 }
 @keyframes pulse-soft { 0% { opacity: 0.8; } 50% { opacity: 1; } 100% { opacity: 0.8; } }
-.lesson-name { font-weight: 700; font-size: 1.1rem; margin-bottom: 8px; display: block; }
+.lesson-name { font-weight: 700; font-size: 1.1rem; margin-bottom: 8px; display: block; overflow-wrap: anywhere; }
 .lesson-link { font-size: 0.85rem; color: #94a3b8; text-decoration: none; display: flex; align-items: center; gap: 5px; transition: color 0.2s; }
 .lesson-link:hover { color: var(--accent); }
 .progress-container { position: absolute; bottom: 0; left: 0; width: 100%; height: 4px; background: rgba(255,255,255,0.05); overflow: hidden; }
 .progress-bar { height: 100%; background: var(--success); transition: width 1s linear; }
+
 .edit-btn {
 position: absolute;
 top: 10px; right: 10px; opacity: 0;
-background: var(--accent); border: none; padding: 8px;
+pointer-events: none;
+background: var(--accent); border: none; padding: 8px 10px;
 border-radius: 10px; cursor: pointer; transition: 0.3s; z-index: 5;
-color: #000;
+color: #000; font-size: 1rem;
 }
-[data-edit-mode="true"] .edit-btn { opacity: 1; }
+[data-edit-mode="true"] .edit-btn { opacity: 1; pointer-events: auto; }
+
 .current-widget {
 position: fixed;
 bottom: 30px; left: 30px; width: auto; max-width: 350px; min-width: 250px;
@@ -369,16 +268,15 @@ transition: 0.6s cubic-bezier(0.4, 0, 0.2, 1.2); display: flex; align-items: cen
 background: rgba(15, 23, 42, 0.95);
 border: 1px solid var(--glass-border); box-shadow: 0 10px 30px rgba(0,0,0,0.5);
 }
-.current-widget.hidden { transform: translateX(-150%); }
-.widget-content { display: flex; flex-direction: column; flex: 1; }
+.widget-content { display: flex; flex-direction: column; flex: 1; min-width: 0; }
 .widget-row { display: flex; justify-content: space-between; align-items: baseline; }
 #widgetName { font-size: 1rem; font-weight: 800; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 150px; }
-#widgetCountdown { color: var(--success); font-weight: 800; font-size: 1rem; margin-left: 10px; }
+#widgetCountdown { color: var(--success); font-weight: 800; font-size: 1rem; margin-left: 10px; white-space: nowrap; }
 .widget-btn-small {
 background: var(--accent);
 color: #000; text-decoration: none;
-width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
-font-size: 1.2rem;
+width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
+font-size: 1.2rem; flex-shrink: 0;
 transition: transform 0.2s;
 }
 .widget-btn-small:hover { transform: scale(1.1); }
@@ -394,122 +292,187 @@ position: fixed;
 inset: 0; background: rgba(0,0,0,0.8); backdrop-filter: blur(8px); display: none; justify-content: center;
 align-items: center; z-index: 200; opacity: 0; transition: 0.3s;
 }
-.modal { width: 90%; max-width: 480px; padding: 30px; transform: scale(0.9); transition: 0.3s; border: 1px solid var(--accent); }
+.modal { width: 90%; max-width: 480px; padding: 30px; max-height: 90vh; overflow-y: auto; transform: scale(0.9); transition: 0.3s; border: 1px solid var(--accent); }
 .modal-backdrop.open { opacity: 1; }
 .modal-backdrop.open .modal { transform: scale(1); }
-input:not([type=range], #yt-link-input), select {
-width: 100%;
+input:not([type=range]), select {
+width: 100%; font-family: inherit; font-size: 1rem;
 background: rgba(15, 23, 42, 0.8); border: 1px solid var(--glass-border);
 color: #fff; padding: 14px; border-radius: 12px; margin-top: 5px; outline: none;
 transition: border-color 0.2s;
 }
-input:not([type=range], #yt-link-input):focus, select:focus { border-color: var(--accent); }
+input:not([type=range]):focus, select:focus { border-color: var(--accent); }
+.swatch { width: 42px; height: 42px; border-radius: 12px; cursor: pointer; border: 2px solid transparent; transition: transform .2s; }
+.swatch:hover { transform: scale(1.12); border-color: #fff; }
 #fileInput { display: none; }
 @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
 /* --- MOOD POPUP --- */
 #mood-popup {
 position: fixed;
 bottom: 100px; left: 50%;
 transform: translateX(-50%) translateY(100px);
-background: rgba(15, 23, 42, 0.95);
-border: 1px solid var(--glass-border);
+background: rgba(15, 23, 42, 0.97);
+border: 1px solid var(--accent);
 border-radius: 20px;
 padding: 20px 30px;
+width: min(92vw, 400px);
 z-index: 10000;
 display: none;
 opacity: 0;
 transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 backdrop-filter: blur(15px);
-box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+box-shadow: 0 10px 40px rgba(0,0,0,0.6);
 }
-#mood-popup.show {
-display: block;
-opacity: 1;
-transform: translateX(-50%) translateY(0);
-}
-#mood-popup h3 {
-margin: 0 0 15px 0;
-text-align: center;
-font-size: 1.1rem;
-color: var(--text);
-}
-.mood-options {
-display: flex;
-justify-content: center;
-gap: 15px;
-}
+#mood-popup.show { display: block; opacity: 1; transform: translateX(-50%) translateY(0); }
+#mood-popup h3 { margin: 0 0 15px 0; text-align: center; font-size: 1.1rem; color: var(--text); overflow-wrap: anywhere; }
+.mood-options { display: flex; justify-content: center; gap: 15px; flex-wrap: wrap; }
 .mood-option {
-font-size: 2.5rem;
-cursor: pointer;
-transition: all 0.2s;
-padding: 10px;
-border-radius: 12px;
-background: rgba(255,255,255,0.05);
+font-size: 2.5rem; cursor: pointer; transition: all 0.2s;
+padding: 10px; border-radius: 12px; background: rgba(255,255,255,0.05);
 }
-.mood-option:hover {
-transform: scale(1.2);
-background: rgba(255,255,255,0.15);
+.mood-option:hover { transform: scale(1.2); background: rgba(255,255,255,0.15); }
+.mood-skip { margin: 14px auto 0; background: rgba(255,71,87,.15); border-color: rgba(255,71,87,.5); }
+
+/* --- HEADER LAYOUT & EXPANDING TOOLBAR (БІЛЬШІ КНОПКИ) --- */
+.header-row { display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:14px 18px; width:100%; }
+.header-left { display:flex; align-items:center; gap:18px; flex-wrap:wrap; min-width:0; }
+.header-menu-track { position:relative; flex:1; min-width:56px; display:flex; align-items:center; justify-content:flex-end; gap:8px; padding:0; margin-left:8px; }
+.menu-actions {
+  display:flex; align-items:center; justify-content:flex-end; gap:8px; flex-wrap:nowrap;
+  flex:0 1 auto; min-width:0; max-width:0; max-height:54px; opacity:0; overflow:hidden;
+  transform:translateX(24px); pointer-events:none;
+  transition:max-width .58s cubic-bezier(.16,1,.3,1),opacity .25s ease,transform .48s cubic-bezier(.16,1,.3,1);
 }
-.mood-option.selected {
-background: var(--accent);
-transform: scale(1.1);
+.header-menu-track.expanded .menu-actions { max-width:1800px; max-height:400px; flex-wrap:wrap; opacity:1; transform:translateX(0); pointer-events:auto; overflow:visible; }
+.toolbar-btn {
+  box-sizing:border-box; flex:0 0 auto; height:48px; min-width:0; padding:0 13px;
+  display:inline-flex; align-items:center; justify-content:center; gap:7px;
+  border-radius:14px; border:1px solid rgba(255,255,255,.14);
+  background:rgba(255,255,255,.07); color:#f8fafc;
+  font:700 14px/1 'Plus Jakarta Sans',sans-serif; white-space:nowrap; cursor:pointer;
+  opacity:0; transform:translateY(9px) scale(.94);
+  transition:background .22s ease,border-color .22s ease,color .22s ease,transform .28s ease,box-shadow .22s ease,opacity .25s ease;
+}
+.toolbar-btn .ico { font-size: 19px; line-height: 1; }
+.header-menu-track.expanded .toolbar-btn { opacity:1; transform:translateY(0) scale(1); }
+.header-menu-track.expanded .toolbar-btn:nth-child(1) { transition-delay:.04s; }
+.header-menu-track.expanded .toolbar-btn:nth-child(2) { transition-delay:.08s; }
+.header-menu-track.expanded .toolbar-btn:nth-child(3) { transition-delay:.12s; }
+.header-menu-track.expanded .toolbar-btn:nth-child(4) { transition-delay:.16s; }
+.header-menu-track.expanded .toolbar-btn:nth-child(5) { transition-delay:.20s; }
+.header-menu-track.expanded .toolbar-btn:nth-child(6) { transition-delay:.24s; }
+.header-menu-track.expanded .toolbar-btn:nth-child(7) { transition-delay:.28s; }
+.header-menu-track.expanded .toolbar-btn:nth-child(8) { transition-delay:.32s; }
+.toolbar-btn:hover { color:var(--accent); background:rgba(255,255,255,.14); border-color:var(--accent); transform:translateY(-2px) scale(1.04); box-shadow:0 6px 18px rgba(0,0,0,.28); }
+.toolbar-btn:active { transform: scale(.97); }
+.toolbar-btn.active { color:#07111e; background:var(--accent); border-color:var(--accent); box-shadow:0 0 15px var(--accent); }
+.toolbar-btn.notify-toolbar { min-width:0; }
+.toolbar-btn.btn-notify.active { color:#2ed573; background:rgba(46,213,115,.16); border-color:#2ed573; box-shadow:0 0 15px rgba(46,213,115,.25); }
+.toolbar-btn.btn-notify.denied { color:#ff4757; background:rgba(255,71,87,.16); border-color:#ff4757; box-shadow:none; }
+
+/* --- BURGER --- */
+.burger-btn {
+  flex:0 0 54px; width:54px; height:54px; z-index:2;
+  background:rgba(255,255,255,.08); border:1px solid var(--glass-border); border-radius:16px;
+  display:flex; flex-direction:column; justify-content:center; align-items:center; gap:7px; cursor:pointer;
+  transition:all .3s cubic-bezier(.4,0,.2,1); padding:0;
+}
+.burger-btn:hover { background:rgba(255,255,255,.12); border-color:var(--accent); transform:scale(1.06); box-shadow:0 0 15px rgba(56,189,248,.3); }
+.burger-line { width:26px; height:3px; background:#fff; border-radius:2px; transition:all .3s cubic-bezier(.4,0,.2,1); }
+.burger-btn.active .burger-line:nth-child(1) { transform:translateY(10px) rotate(45deg); background:var(--accent); }
+.burger-btn.active .burger-line:nth-child(2) { opacity:0; transform:scaleX(0); }
+.burger-btn.active .burger-line:nth-child(3) { transform:translateY(-10px) rotate(-45deg); background:var(--accent); }
+.header-menu-track.expanded .burger-btn { border-color:var(--accent); background:rgba(255,255,255,.12); box-shadow:0 0 16px rgba(56,189,248,.25); }
+.streak-badge { background:rgba(255,140,0,.28); color:#ffb04a; border-radius:9px; padding:3px 9px; font-size:14px; font-weight:800; }
+
+/* --- STREAK --- */
+.streak-hero { text-align:center; margin:10px 0 18px; }
+.streak-flame { font-size:3.2rem; line-height:1; filter:drop-shadow(0 0 14px rgba(255,140,0,.55)); animation:flicker 2.4s ease-in-out infinite; display:inline-block; }
+.streak-flame.out { filter:grayscale(1); opacity:.45; animation:none; }
+@keyframes flicker { 0%,100% { transform:scale(1); } 50% { transform:scale(1.08); } }
+.streak-big { font-size:2.6rem; font-weight:800; color:var(--accent); line-height:1.1; }
+.restore-row { display:flex; gap:10px; justify-content:center; margin:10px 0 6px; }
+.restore-shield { width:50px; height:50px; border-radius:14px; display:flex; align-items:center; justify-content:center; font-size:1.6rem; background:rgba(56,189,248,.12); border:1px solid var(--accent); transition:.3s; }
+.restore-shield.used { filter:grayscale(1); opacity:.3; border-color:var(--glass-border); }
+.streak-info { font-size:.8rem; opacity:.65; text-align:center; margin:12px 0 0; }
+#streak-toast {
+  position:fixed; top:20px; left:50%; transform:translate(-50%,-90px); z-index:10001;
+  max-width:min(92vw,440px); padding:14px 22px; border-radius:16px; text-align:center;
+  background:rgba(15,23,42,.97); border:1px solid var(--accent); font-weight:700; font-size:.95rem;
+  box-shadow:0 10px 40px rgba(0,0,0,.5); opacity:0; pointer-events:none;
+  transition:transform .4s cubic-bezier(.16,1,.3,1), opacity .3s;
+}
+#streak-toast.show { transform:translate(-50%,0); opacity:1; }
+.card-top { display:flex; align-items:center; flex-wrap:wrap; gap:0 6px; }
+
+/* Меню в окремому рядку на вузьких екранах (кнопки тепер більші) */
+@media(max-width:1100px) {
+  .header-menu-track { flex:1 1 100%; margin:0; align-items:flex-start; flex-direction:row-reverse; }
+  .menu-actions { justify-content:flex-start; flex:1 1 auto; }
+  .header-menu-track.expanded .menu-actions { max-width:calc(100% - 66px); }
+}
+@media(max-width:700px) {
+  body { padding:14px; padding-bottom:260px; }
+  .current-widget { left:10px; right:10px; bottom:12px; max-width:none; min-width:0; }
+  .ad-corner { right:10px; width:auto; max-width:calc(100vw - 20px); padding:10px; bottom:78px !important; }
+  .ad-corner span { white-space:nowrap; }
+  .ad-corner[style*="bottom: 120px"] { bottom:150px !important; }
+  .schedule-grid { grid-template-columns:1fr; gap:16px; }
+  #mood-popup { bottom: 90px; }
+}
+@media(max-width:520px) {
+  .toolbar-btn { min-width:50px; width:50px; height:50px; padding:0; }
+  .toolbar-btn.notify-toolbar { min-width:50px; }
+  .toolbar-btn span:not(.ico) { display:none; }
+  .toolbar-btn.streak-toolbar { width:auto; padding:0 12px; }
+  h1 { font-size:1.5rem; }
+  .week-label { min-width:0; padding:0 8px; font-size:.9rem; }
 }
 </style>
 </head>
 <body data-edit-mode="false">
 <header>
-<h1>📅 SchedulePro</h1>
+<div class="header-row">
+<div class="header-left">
+<h1><span class="logo-ico">📅</span> <span class="logo-text">SchedulePro</span></h1>
 <div class="week-switcher">
-<button class="week-btn" onclick="changeWeek(-1)">◀</button>
+<button class="week-btn" onclick="changeWeek(-1)" aria-label="Попередній тиждень">◀</button>
 <div class="week-label" id="currentWeekLabel">Тиждень А</div>
-<button class="week-btn" onclick="changeWeek(1)">▶</button>
-</div>
-<div class="music-bar glass">
-<button class="music-ctrl-btn" onclick="changeTrack(-1)">⏮</button>
-<button class="music-ctrl-btn" id="playHeaderBtn" onclick="togglePlay()">▶</button>
-<button class="music-ctrl-btn" onclick="changeTrack(1)">⏭</button>
-<div class="track-display" id="headerTrackName" onclick="toggleHeaderPlaylist()">Вибери музику 🎵</div>
-<div class="playlist-dropdown" id="headerPlaylist">
-<div class="vol-container-drop">
-<span style="font-size:0.9rem">🔊</span>
-<input type="range" id="volSlider" min="0" max="1" step="0.05" oninput="setVolume(this.value)">
-<span id="volValue" style="font-size:0.8rem; width:30px; text-align:right">50%</span>
-</div>
-<input type="text" style="width:100%; padding:8px; margin-bottom:10px; font-size:0.85rem; border-radius:8px; border:1px solid var(--glass-border); background:rgba(0,0,0,0.3); color:white; outline:none;" placeholder="🔍 Пошук по списку..." oninput="filterMusic(this.value)">
-<div id="trackList" style="max-height:200px; overflow-y:auto;"></div>
-<div style="margin-top:10px; border-top:1px solid rgba(255,255,255,0.1); padding-top:10px;">
-<input type="text" id="customUrl" placeholder="Посилання на mp3 або YouTube..." style="width:100%; padding:8px; border-radius:8px; border:1px solid var(--glass-border); background:rgba(0,0,0,0.3); color:white; font-size:0.75rem; outline:none;">
-<div style="display:flex; gap:5px; margin-top:5px;">
-<button class="btn btn-primary" style="flex:1; font-size:0.8rem; padding:6px; justify-content:center;" onclick="addCustomTrack()">➕ Додати / Увімкнути</button>
-<button class="btn" style="background: var(--danger); font-size:0.8rem; padding:6px; justify-content:center; display:none;" id="stopYtBtn" onclick="stopYT()">⏹</button>
+<button class="week-btn" onclick="changeWeek(1)" aria-label="Наступний тиждень">▶</button>
 </div>
 </div>
+<div class="header-menu-track" id="headerMenuTrack">
+<nav class="menu-actions" id="menuActions" aria-label="Керування розкладом">
+<button class="toolbar-btn streak-toolbar" id="streakBtn" onclick="openStreak(); toggleBurgerMenu(false)" title="Серія"><span class="ico">🔥</span> <b class="streak-badge" id="streakBadge">0</b><span>Серія</span></button>
+<button class="toolbar-btn" id="historyBtn" onclick="toggleHistory(); toggleBurgerMenu(false)" title="Історія"><span class="ico">📜</span><span>Історія</span></button>
+<button class="toolbar-btn" id="toggleEdit" onclick="toggleEditMode(); toggleBurgerMenu(false)" title="Редагування"><span class="ico">✏️</span><span>Ред.</span></button>
+<button class="toolbar-btn" id="statsBtn" onclick="toggleStats(); toggleBurgerMenu(false)" title="Статистика"><span class="ico">📊</span><span>Статистика</span></button>
+<button class="toolbar-btn" onclick="openSettings(); toggleBurgerMenu(false)" title="Вигляд"><span class="ico">🎨</span><span>Вигляд</span></button>
+<button class="toolbar-btn" onclick="exportToFile(); toggleBurgerMenu(false)" title="Зберегти файл"><span class="ico">📥</span><span>Зберегти</span></button>
+<button class="toolbar-btn" onclick="document.getElementById('fileInput').click(); toggleBurgerMenu(false)" title="Відкрити файл"><span class="ico">📤</span><span>Відкрити</span></button>
+<button class="toolbar-btn notify-toolbar" id="notifyBtn" onclick="toggleNotifications(); toggleBurgerMenu(false)" title="Сповіщення"><span class="ico">🔔</span><span>Сповіщення</span></button>
+</nav>
+<button class="burger-btn" id="burgerBtn" type="button" aria-label="Відкрити меню" aria-controls="menuActions" aria-expanded="false" onclick="toggleBurgerMenu()">
+<div class="burger-line"></div><div class="burger-line"></div><div class="burger-line"></div>
+</button>
 </div>
 </div>
-<div class="controls">
-<button class="btn btn-notify" id="notifyBtn" onclick="toggleNotifications()">🔕 Сповіщ.</button>
-<button class="btn" onclick="document.getElementById('fileInput').click()">📤 Відкрити (Файл)</button>
-<button class="btn" onclick="exportToFile()">📥 Зберегти (Файл)</button>
-<button class="btn" onclick="openSettings()">🎨 Вигляд</button>
-<button class="btn" id="statsBtn" onclick="toggleStats()">📊 Статистика</button>
-<button class="btn btn-outline" id="toggleEdit" onclick="toggleEditMode()">✏️ Ред.</button>
-<button class="btn btn-primary" id="historyBtn" onclick="toggleHistory()">📜 Історія</button>
-</div>
-<input type="file" id="fileInput" accept=".json" onchange="importFromFile(this)">
+<input type="file" id="fileInput" accept=".json,.txt" onchange="importFromFile(this)">
 </header>
-<div id="yt-container" style="display: none;"></div>
+
 <div id="history-sidebar">
 <h2 style="margin-top: 0; display: flex; justify-content: space-between; align-items: center;">
 Історія змін
-<button onclick="toggleHistory()" style="background: transparent; border: none; color: white; cursor: pointer; font-size: 1.2em;">✖</button>
+<button class="sidebar-close" onclick="toggleHistory()">✖</button>
 </h2>
-<ul id="history-list">
-</ul>
+<ul id="history-list"></ul>
 </div>
+
 <div id="stats-sidebar">
 <h2 style="margin-top: 0; display: flex; justify-content: space-between; align-items: center;">
 📊 Аналітика тижня
-<button onclick="toggleStats()" style="background: transparent; border: none; color: white; cursor: pointer; font-size: 1.2em;">✖</button>
+<button class="sidebar-close" onclick="toggleStats()">✖</button>
 </h2>
 <div class="stats-section">
 <h3>⏱️ Загальний час навчання</h3>
@@ -518,27 +481,17 @@ transform: scale(1.1);
 <div class="stat-label">Цього тижня</div>
 </div>
 </div>
-<div class="stats-section">
-<h3>🔥 Найпродуктивніші дні</h3>
-<div id="productiveDays"></div>
-</div>
-<div class="stats-section">
-<h3>😴 Предмети, що втомлюють</h3>
-<div id="tiringSubjects"></div>
-</div>
-<div class="stats-section">
-<h3>📈 Час по предметах</h3>
-<div id="subjectTimeStats"></div>
-</div>
-<div class="stats-section">
-<h3>😊 Настрій після уроків</h3>
-<div id="moodStats"></div>
-</div>
+<div class="stats-section"><h3>🔥 Найпродуктивніші дні</h3><div id="productiveDays"></div></div>
+<div class="stats-section"><h3>😴 Предмети, що втомлюють</h3><div id="tiringSubjects"></div></div>
+<div class="stats-section"><h3>📈 Час по предметах</h3><div id="subjectTimeStats"></div></div>
+<div class="stats-section"><h3>😊 Настрій після уроків</h3><div id="moodStats"></div></div>
 <div style="margin-top:20px;">
 <button class="btn" style="width:100%; background:var(--danger);" onclick="clearStatsData()">🗑️ Очистити статистику</button>
 </div>
 </div>
+
 <div class="schedule-grid" id="grid"></div>
+
 <div class="current-widget" id="activeWidget">
 <div style="font-size: 1.5rem;">🔥</div>
 <div class="widget-content">
@@ -549,32 +502,37 @@ transform: scale(1.1);
 <div style="font-size: 0.75rem; opacity: 0.7; font-family: monospace;" id="widgetTimes">--:--</div>
 <div style="margin-top:4px;"><div class="progress-bar" id="activeProgressBar" style="height:3px; width:0; border-radius:2px;"></div></div>
 </div>
-<a id="widgetLink" href="#" target="_blank" class="widget-btn-small" style="display:none;">🎥</a>
+<a id="widgetLink" href="#" target="_blank" rel="noopener" class="widget-btn-small" style="display:none;">🎥</a>
 </div>
+
 <!-- MOOD POPUP -->
 <div id="mood-popup">
-<h3>Як пройшов урок?</h3>
+<h3 id="moodTitle">Як пройшов урок?</h3>
 <div class="mood-options">
-<div class="mood-option" onclick="submitMood(3)">🤩</div>
-<div class="mood-option" onclick="submitMood(2)">😐</div>
-<div class="mood-option" onclick="submitMood(1)">🥱</div>
+<div class="mood-option" onclick="submitMood(3)" title="Супер">🤩</div>
+<div class="mood-option" onclick="submitMood(2)" title="Нормально">😐</div>
+<div class="mood-option" onclick="submitMood(1)" title="Втомливо">🥱</div>
 </div>
+<button class="btn mood-skip" onclick="skipLesson()">❌ Прогуляв(ла)</button>
 </div>
-<a href="https://t.me/Donwloderfile_bot" target="_blank" class="ad-corner glass" style="bottom: 120px;">
+
+<a href="https://t.me/Donwloderfile_bot" target="_blank" rel="noopener" class="ad-corner glass" style="bottom: 120px;">
 <div style="font-size: 2rem;">🎧</div>
 <div style="display:flex; flex-direction: column;">
 <span style="font-size: 0.7rem; opacity: 0.6; text-transform: uppercase; font-weight: 700;">Telegram Bot</span>
 <span style="font-size: 1.1rem; font-weight: 800; color: #38bdf8;">Music Downloader</span>
 </div>
 </a>
-<a href="https://sites.google.com/view/grivnacoin/%D0%B3%D0%BB%D0%B0%D0%B2%D0%B8%D0%B0-%D1%81%D1%82%D1%80%D0%B0%D0%BD%D0%B8%D1%86%D0%B0" target="_blank" class="ad-corner glass">
-<div style="font-size: 2rem;">🪙</div>
+
+<a href="https://sites.google.com/view/grivnacoin/%D0%B3%D0%BB%D0%B0%D0%B2%D0%B8%D0%B0-%D1%81%D1%82%D1%80%D0%B0%D0%BD%D0%B8%D1%86%D0%B0" target="_blank" rel="noopener" class="ad-corner glass">
+<div style="font-size: 2rem;">💰</div>
 <div style="display:flex; flex-direction: column;">
 <span style="font-size: 0.7rem; opacity: 0.6; text-transform: uppercase; font-weight: 700;">Partner</span>
 <span style="font-size: 1.1rem; font-weight: 800; color: #fbbf24;">GrivnaCoin</span>
 </div>
 </a>
-<div class="modal-backdrop" id="modal">
+
+<div class="modal-backdrop" id="modal" onclick="if(event.target===this)closeModal('modal')">
 <div class="modal glass">
 <h2 style="margin-top:0">Налаштування уроку</h2>
 <div style="display:grid; gap:15px;">
@@ -596,19 +554,38 @@ transform: scale(1.1);
 </div>
 </div>
 </div>
+
+<div class="modal-backdrop" id="streakModal" onclick="if(event.target===this)closeModal('streakModal')">
+<div class="modal glass">
+<h2 style="margin:0 0 5px 0">🔥 Серія відвідувань</h2>
+<div class="streak-hero">
+<div class="streak-flame" id="streakFlame">🔥</div>
+<div class="streak-big" id="streakBig">0</div>
+<div class="stat-label" id="streakNameShow"></div>
+<div class="stat-label" id="streakBest"></div>
 </div>
-<div class="modal-backdrop" id="settingsModal">
+<label style="font-size:0.8rem; opacity:0.6">Ім'я серії</label>
+<input type="text" id="streakNameInp" maxlength="24" placeholder="Наприклад: Вогник" oninput="renameStreak(this.value)">
+<div style="margin-top:18px; text-align:center; font-weight:700;">🛡️ Відновлення <span id="streakRestoresText"></span></div>
+<div class="restore-row" id="streakRestores"></div>
+<p class="streak-info">+1 за кожен урок, на якому ти був. Якщо прогуляв — серія гасне, але відновлення її рятує. Усі 3 відновлення повертаються щопонеділка.</p>
+<button class="btn btn-primary" style="width:100%; margin-top:20px;" onclick="closeModal('streakModal')">Готово</button>
+</div>
+</div>
+<div id="streak-toast"></div>
+
+<div class="modal-backdrop" id="settingsModal" onclick="if(event.target===this)closeModal('settingsModal')">
 <div class="modal glass">
 <h2>Стилізація</h2>
 <div style="display:grid; gap:20px;">
 <div>
 <label>Колір теми</label>
-<div style="display:flex; gap:10px; margin-top:10px;">
-<div style="width:35px; height:35px; border-radius:10px; background:#38bdf8; cursor:pointer;" onclick="setAccent('#38bdf8')"></div>
-<div style="width:35px; height:35px; border-radius:10px; background:#2ed573; cursor:pointer;" onclick="setAccent('#2ed573')"></div>
-<div style="width:35px; height:35px; border-radius:10px; background:#ffa502; cursor:pointer;" onclick="setAccent('#ffa502')"></div>
-<div style="width:35px; height:35px; border-radius:10px; background:#ff4757; cursor:pointer;" onclick="setAccent('#ff4757')"></div>
-<div style="width:35px; height:35px; border-radius:10px; background:#a29bfe; cursor:pointer;" onclick="setAccent('#a29bfe')"></div>
+<div style="display:flex; gap:12px; margin-top:10px; flex-wrap:wrap;">
+<div class="swatch" style="background:#38bdf8;" onclick="setAccent('#38bdf8')"></div>
+<div class="swatch" style="background:#2ed573;" onclick="setAccent('#2ed573')"></div>
+<div class="swatch" style="background:#ffa502;" onclick="setAccent('#ffa502')"></div>
+<div class="swatch" style="background:#ff4757;" onclick="setAccent('#ff4757')"></div>
+<div class="swatch" style="background:#a29bfe;" onclick="setAccent('#a29bfe')"></div>
 </div>
 </div>
 <div>
@@ -627,68 +604,194 @@ transform: scale(1.1);
 <button class="btn btn-primary" style="width:100%; margin-top:30px;" onclick="closeModal('settingsModal')">Готово</button>
 </div>
 </div>
+
 <script>
 // =========================================================================
 // 📢 ТУТ ПИСАТИ НОВИНИ ДЛЯ ІСТОРІЇ (ПРОСТО ДОДАВАЙТЕ НОВІ РЯДКИ В МАСИВ)
 // =========================================================================
 const DEV_NEWS = [
 "✨ Оновлення: Додано Mood Tracker та Аналітику! Тепер ви можете оцінювати уроки та бачити статистику!",
-"✨ Оновлення: Файли збереження тепер зашифровані! Ніхто не підгляне пароль, виправлено систему музики та додано історію дій! Приємного використання, якщо є питанн пропозиції звертайтеся в телеграм канал.",
-"✨ Оновлення: Додано 3 анімовані фони: Анімований градієнт, Кібер-сітка та Неоновий пульс! Обирай у налаштуваннях вигляду та кастомізуй свій робочий простір."
+"✨ Оновлення: Файли збереження тепер зашифровані! Ніхто не підгляне пароль, додано історію дій! Приємного використання, якщо є питанн пропозиції звертайтеся в телеграм канал.",
+"✨ Оновлення: Додано 3 анімовані фони: Анімований градієнт, Кібер-сітка та Неоновий пульс! Обирай у налаштуваннях вигляду та кастомізуй свій робочий простір.",
+"🔥 Оновлення: Додано серію відвідувань з 3 відновленнями (повертаються щопонеділка) та власним іменем! Музичний плеєр видалено, а меню зверху стало компактнішим.",
+"🔔 Оновлення: Більші кнопки меню, сповіщення про початок і кінець уроку, виправлено помилки статистики та захист від некоректних даних."
 ];
 // =========================================================================
 const days = ["Понеділок", "Вівторок", "Середа", "Четвер", "П'ятниця", "Субота", "Неділя"];
 const icons = ["⚡", "🔥", "💎", "🌟", "🍀", "🎉", "🎐"];
 const SECRET_KEY = "NMT_2026_PRO";
-// --- ФУНКЦІЇ ШИФРУВАННЯ ФАЙЛІВ ---
+
+// --- Безпека: екранування HTML і перевірка посилань ---
+function esc(s) {
+return String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+}
+function safeLink(u) {
+u = String(u || '').trim();
+if (!u) return '';
+if (!/^[a-z][a-z0-9+.-]*:/i.test(u)) u = 'https://' + u;
+return /^https?:\/\//i.test(u) ? u : '';
+}
+function loadJSON(key, fallback) {
+try { const v = JSON.parse(localStorage.getItem(key)); return v == null ? fallback : v; } catch (e) { return fallback; }
+}
+
+// --- ШИФРУВАННЯ ФАЙЛІВ (v2 — працює з будь-якими символами, старі файли теж читаються) ---
 function encryptData(text) {
-let encrypted = "";
-for (let i = 0; i < text.length; i++) {
-encrypted += String.fromCharCode(text.charCodeAt(i) ^ SECRET_KEY.charCodeAt(i % SECRET_KEY.length));
+const bytes = new TextEncoder().encode(text);
+const key = new TextEncoder().encode(SECRET_KEY);
+let bin = '';
+for (let i = 0; i < bytes.length; i++) bin += String.fromCharCode(bytes[i] ^ key[i % key.length]);
+return 'v2:' + btoa(bin);
 }
-return btoa(unescape(encodeURIComponent(encrypted)));
+function decryptData(raw) {
+raw = raw.trim();
+if (raw.startsWith('v2:')) {
+const bin = atob(raw.slice(3));
+const key = new TextEncoder().encode(SECRET_KEY);
+const bytes = new Uint8Array(bin.length);
+for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i) ^ key[i % key.length];
+return new TextDecoder().decode(bytes);
 }
-function decryptData(b64) {
-let str = decodeURIComponent(escape(atob(b64)));
-let decrypted = "";
-for (let i = 0; i < str.length; i++) {
-decrypted += String.fromCharCode(str.charCodeAt(i) ^ SECRET_KEY.charCodeAt(i % SECRET_KEY.length));
+// старий формат
+const str = decodeURIComponent(escape(atob(raw)));
+let out = '';
+for (let i = 0; i < str.length; i++) out += String.fromCharCode(str.charCodeAt(i) ^ SECRET_KEY.charCodeAt(i % SECRET_KEY.length));
+return out;
 }
-return decrypted;
-}
-// ---------------------------------
-let schedule = JSON.parse(localStorage.getItem('gh-schedule')) || {};
-let userSettings = JSON.parse(localStorage.getItem('gh-settings')) || { accent: '#38bdf8', bg: 'default', volume: 0.5 };
-let editHistoryLog = JSON.parse(localStorage.getItem('gh-edit-history')) || [];
-let musicData = JSON.parse(localStorage.getItem('gh-music')) || {
-tracks: [
-{ title: "Lofi Study Beats 1", src: "https://cdn.pixabay.com/download/audio/2022/05/27/audio_1808fbf07a.mp3" },
-{ title: "Chill Vibes", src: "https://cdn.pixabay.com/download/audio/2022/03/24/audio_349d443209.mp3" }
-],
-currentIndex: 0
-};
-let notificationsEnabled = JSON.parse(localStorage.getItem('gh-notifications')) || false;
+
+let schedule = loadJSON('gh-schedule', {});
+let userSettings = loadJSON('gh-settings', { accent: '#38bdf8', bg: 'default' });
+let editHistoryLog = loadJSON('gh-edit-history', []);
+let notificationsEnabled = loadJSON('gh-notifications', false);
 let currentEditKey = null;
 let activeLessonGlobal = null;
-let currentWeekIndex = JSON.parse(localStorage.getItem('gh-current-week')) || 0;
-let lastNotifiedLessonId = null;
+let currentWeekIndex = loadJSON('gh-current-week', 0) === 1 ? 1 : 0;
+let lastRenderDay = -1;
+
 // --- MOOD & STATS DATA ---
-let moodData = JSON.parse(localStorage.getItem('gh-mood-data')) || { entries: [] };
-let statsData = JSON.parse(localStorage.getItem('gh-stats-data')) || { weeklyHours: {}, subjectHours: {}, moodRatings: {} };
-let completedLessons = JSON.parse(localStorage.getItem('gh-completed-lessons')) || [];
+let moodData = loadJSON('gh-mood-data', { entries: [] });
+let statsData = loadJSON('gh-stats-data', { weeklyHours: {}, subjectHours: {}, moodRatings: {} });
+let completedLessons = loadJSON('gh-completed-lessons', []);
 let pendingMoodLesson = null;
+
+// --- STREAK (СЕРІЯ) ---
+const MAX_RESTORES = 3;
+function defaultStreak() { return { name: 'Моя серія', count: 0, best: 0, restores: MAX_RESTORES, weekKey: '', since: Date.now(), log: {} }; }
+let streakData = Object.assign(defaultStreak(), loadJSON('gh-streak', {}));
+let hideMoodTimer = null;
+let toastTimer = null;
+function saveStreak() {
+const keys = Object.keys(streakData.log).sort();
+while (keys.length > 300) delete streakData.log[keys.shift()];
+localStorage.setItem('gh-streak', JSON.stringify(streakData));
+}
+if (!localStorage.getItem('gh-streak')) saveStreak();
+function dateStr(d) { return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`; }
+function streakWeekKey() {
+const d = new Date(); d.setHours(0, 0, 0, 0);
+d.setDate(d.getDate() - ((d.getDay() + 6) % 7));
+return dateStr(d);
+}
+function refreshRestores() {
+const wk = streakWeekKey();
+if (streakData.weekKey !== wk) {
+streakData.weekKey = wk; streakData.restores = MAX_RESTORES;
+saveStreak(); renderStreakUI();
+}
+}
+function showStreakToast(msg) {
+const t = document.getElementById('streak-toast'); if (!t) return;
+t.textContent = msg; t.classList.add('show');
+clearTimeout(toastTimer);
+toastTimer = setTimeout(() => t.classList.remove('show'), 4200);
+}
+function renderStreakUI() {
+const badge = document.getElementById('streakBadge');
+if (badge) badge.textContent = streakData.count;
+const btn = document.getElementById('streakBtn');
+if (btn) btn.title = `${streakData.name}: ${streakData.count}`;
+const big = document.getElementById('streakBig'); if (!big) return;
+big.textContent = streakData.count;
+const flame = document.getElementById('streakFlame');
+flame.textContent = streakData.count > 0 ? '🔥' : '💨';
+flame.classList.toggle('out', streakData.count === 0);
+document.getElementById('streakNameShow').textContent = streakData.name;
+document.getElementById('streakBest').textContent = `Рекорд: ${streakData.best}`;
+document.getElementById('streakRestoresText').textContent = `${streakData.restores}/${MAX_RESTORES}`;
+let h = '';
+for (let i = 0; i < MAX_RESTORES; i++) h += `<div class="restore-shield ${i < streakData.restores ? '' : 'used'}">🛡️</div>`;
+document.getElementById('streakRestores').innerHTML = h;
+}
+function openStreak() {
+document.getElementById('streakNameInp').value = streakData.name;
+renderStreakUI();
+openModal('streakModal');
+}
+function renameStreak(v) {
+streakData.name = v.trim().slice(0, 24) || 'Моя серія';
+saveStreak(); renderStreakUI();
+}
+function recordAttended(l) {
+streakData.count++;
+if (streakData.count > streakData.best) streakData.best = streakData.count;
+streakData.log[l.dateId] = 'ok';
+saveStreak(); renderStreakUI();
+showStreakToast(`🔥 ${streakData.name}: ${streakData.count}`);
+}
+function recordSkipped(l) {
+let msg;
+if (streakData.count === 0) {
+streakData.log[l.dateId] = 'skip'; msg = `💨 Урок пропущено`;
+} else if (streakData.restores > 0) {
+streakData.restores--; streakData.log[l.dateId] = 'saved';
+msg = `🛡️ Відновлення врятувало «${streakData.name}»! Залишилось: ${streakData.restores}`;
+} else {
+const lost = streakData.count; streakData.count = 0; streakData.log[l.dateId] = 'skip';
+msg = `💨 «${streakData.name}» згасла (було ${lost})`;
+}
+saveStreak(); renderStreakUI(); showStreakToast(msg);
+}
+// Шукає завершені сьогодні уроки, які ще не оцінені, і показує вікно «Як пройшов урок?»
+function checkPendingLessons(currentTime, currentDay) {
+if (pendingMoodLesson) return;
+const today = dateStr(new Date());
+const since = new Date(streakData.since || Date.now());
+const sinceMin = dateStr(since) === today ? since.getHours() * 60 + since.getMinutes() : -1;
+for (let sIdx = 0; sIdx < 8; sIdx++) {
+const key = `${currentWeekIndex}-${currentDay}-${sIdx}`;
+const l = schedule[key];
+if (!l || !l.name || !l.start || !l.end) continue;
+const st = timeToMin(l.start), e = timeToMin(l.end);
+if (e <= st || e > currentTime || e <= sinceMin) continue;
+const dateId = `${today}_${key}_${l.start}`;
+if (streakData.log[dateId]) continue;
+showMoodPopup({ name: l.name, uniqueId: key + '_' + l.start, dateId: dateId, startMin: st, endMin: e });
+return;
+}
+}
+
+function toggleBurgerMenu(force) {
+const track = document.getElementById('headerMenuTrack');
+const btn = document.getElementById('burgerBtn');
+const shouldOpen = typeof force === 'boolean' ? force : !track.classList.contains('expanded');
+track.classList.toggle('expanded', shouldOpen);
+btn.classList.toggle('active', shouldOpen);
+btn.setAttribute('aria-expanded', String(shouldOpen));
+btn.setAttribute('aria-label', shouldOpen ? 'Згорнути меню' : 'Відкрити меню');
+}
+
 function logHistory(action) {
 const time = new Date().toLocaleTimeString('uk-UA');
 editHistoryLog.unshift(`[${time}] ${action}`);
-if(editHistoryLog.length > 50) editHistoryLog.pop();
+if (editHistoryLog.length > 50) editHistoryLog.pop();
 localStorage.setItem('gh-edit-history', JSON.stringify(editHistoryLog));
 renderHistory();
 }
 function renderHistory() {
 const list = document.getElementById('history-list');
 let html = '';
-DEV_NEWS.forEach(news => { html += `<li class="history-dev-news">📢 ${news}</li>`; });
-editHistoryLog.forEach(item => { html += `<li class="history-user-log">📝 ${item}</li>`; });
+DEV_NEWS.forEach(news => { html += `<li class="history-dev-news">📢 ${esc(news)}</li>`; });
+editHistoryLog.forEach(item => { html += `<li class="history-user-log">📝 ${esc(item)}</li>`; });
 if (!html) html = "<li>Історія порожня</li>";
 list.innerHTML = html;
 }
@@ -696,24 +799,17 @@ function toggleHistory() {
 const sidebar = document.getElementById('history-sidebar');
 const btn = document.getElementById('historyBtn');
 sidebar.classList.toggle('open');
-if(sidebar.classList.contains('open')) {
-btn.classList.add('active');
-renderHistory();
-} else {
-btn.classList.remove('active');
+if (sidebar.classList.contains('open')) { btn.classList.add('active'); renderHistory(); }
+else btn.classList.remove('active');
 }
-}
+
 // --- STATS SIDEBAR ---
 function toggleStats() {
 const sidebar = document.getElementById('stats-sidebar');
 const btn = document.getElementById('statsBtn');
 sidebar.classList.toggle('open');
-if(sidebar.classList.contains('open')) {
-btn.classList.add('active');
-renderStats();
-} else {
-btn.classList.remove('active');
-}
+if (sidebar.classList.contains('open')) { btn.classList.add('active'); renderStats(); }
+else btn.classList.remove('active');
 }
 function renderStats() {
 renderTotalHours();
@@ -722,41 +818,25 @@ renderTiringSubjects();
 renderSubjectTimeStats();
 renderMoodStats();
 }
-function getWeekKey() {
-const now = new Date();
-const startOfWeek = new Date(now);
-startOfWeek.setDate(now.getDate() - now.getDay() + 1);
-return `${startOfWeek.getFullYear()}-W${getWeekNumber(startOfWeek)}`;
-}
-function getWeekNumber(d) {
-d = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));
-d.setUTCDate(d.getUTCDate() + 4 - (d.getUTCDay()||7));
-var yearStart = new Date(Date.UTC(d.getUTCFullYear(),0,1));
-var weekNo = Math.ceil((((d - yearStart) / 86400000) + 1)/7);
-return weekNo;
-}
+function getWeekKey() { return streakWeekKey(); }
 function renderTotalHours() {
-const weekKey = getWeekKey();
-const totalMinutes = statsData.weeklyHours[weekKey] || 0;
-const hours = Math.floor(totalMinutes / 60);
-const mins = totalMinutes % 60;
-document.getElementById('totalHours').textContent = `${hours}год ${mins}хв`;
+const totalMinutes = statsData.weeklyHours[getWeekKey()] || 0;
+document.getElementById('totalHours').textContent = `${Math.floor(totalMinutes / 60)}год ${totalMinutes % 60}хв`;
 }
 function renderProductiveDays() {
 const container = document.getElementById('productiveDays');
 const dayHours = {};
 days.forEach((day, idx) => {
 dayHours[idx] = 0;
-for(let sIdx = 0; sIdx < 8; sIdx++) {
-const key = `${currentWeekIndex}-${idx}-${sIdx}`;
-const lesson = schedule[key];
-if(lesson && lesson.start && lesson.end) {
+for (let sIdx = 0; sIdx < 8; sIdx++) {
+const lesson = schedule[`${currentWeekIndex}-${idx}-${sIdx}`];
+if (lesson && lesson.start && lesson.end) {
 const duration = timeToMin(lesson.end) - timeToMin(lesson.start);
-dayHours[idx] += duration;
+if (duration > 0) dayHours[idx] += duration;
 }
 }
 });
-const sortedDays = Object.entries(dayHours).sort((a, b) => b[1] - a[1]).slice(0, 3);
+const sortedDays = Object.entries(dayHours).filter(e => e[1] > 0).sort((a, b) => b[1] - a[1]).slice(0, 3);
 let html = '';
 sortedDays.forEach(([dayIdx, minutes]) => {
 const hours = (minutes / 60).toFixed(1);
@@ -767,9 +847,7 @@ html += `
 <span>${days[dayIdx]}</span>
 <span style="color:var(--accent); font-weight:600;">${hours} год</span>
 </div>
-<div class="stat-bar-container">
-<div class="stat-bar" style="width:${barWidth}%; background:var(--accent);"></div>
-</div>
+<div class="stat-bar-container"><div class="stat-bar" style="width:${barWidth}%; background:var(--accent);"></div></div>
 </div>`;
 });
 container.innerHTML = html || '<div class="stat-card">Немає даних</div>';
@@ -778,14 +856,12 @@ function renderTiringSubjects() {
 const container = document.getElementById('tiringSubjects');
 const subjectMood = {};
 moodData.entries.forEach(entry => {
-if(!subjectMood[entry.subject]) subjectMood[entry.subject] = { total: 0, count: 0 };
+if (!subjectMood[entry.subject]) subjectMood[entry.subject] = { total: 0, count: 0 };
 subjectMood[entry.subject].total += entry.mood;
 subjectMood[entry.subject].count += 1;
 });
 const subjectAvg = Object.entries(subjectMood).map(([subj, data]) => ({
-subject: subj,
-avgMood: data.total / data.count,
-count: data.count
+subject: subj, avgMood: data.total / data.count, count: data.count
 })).sort((a, b) => a.avgMood - b.avgMood).slice(0, 5);
 let html = '';
 subjectAvg.forEach(item => {
@@ -794,13 +870,8 @@ const barWidth = (item.avgMood / 3) * 100;
 const barColor = item.avgMood >= 2.5 ? 'var(--success)' : item.avgMood >= 1.5 ? '#ffa502' : 'var(--danger)';
 html += `
 <div class="stat-card">
-<div style="display:flex; justify-content:space-between;">
-<span>${item.subject}</span>
-<span>${moodEmoji}</span>
-</div>
-<div class="stat-bar-container">
-<div class="stat-bar" style="width:${barWidth}%; background:${barColor};"></div>
-</div>
+<div style="display:flex; justify-content:space-between;"><span>${esc(item.subject)}</span><span>${moodEmoji}</span></div>
+<div class="stat-bar-container"><div class="stat-bar" style="width:${barWidth}%; background:${barColor};"></div></div>
 <div style="font-size:0.75rem; opacity:0.6; margin-top:5px;">${item.count} оцінок</div>
 </div>`;
 });
@@ -809,11 +880,12 @@ container.innerHTML = html || '<div class="stat-card">Немає оцінок</d
 function renderSubjectTimeStats() {
 const container = document.getElementById('subjectTimeStats');
 const subjectTime = {};
-Object.values(schedule).forEach(lesson => {
-if(lesson && lesson.name && lesson.start && lesson.end) {
+Object.keys(schedule).forEach(key => {
+if (!key.startsWith(`${currentWeekIndex}-`)) return; // лише обраний тиждень
+const lesson = schedule[key];
+if (lesson && lesson.name && lesson.start && lesson.end) {
 const duration = timeToMin(lesson.end) - timeToMin(lesson.start);
-if(!subjectTime[lesson.name]) subjectTime[lesson.name] = 0;
-subjectTime[lesson.name] += duration;
+if (duration > 0) subjectTime[lesson.name] = (subjectTime[lesson.name] || 0) + duration;
 }
 });
 const sorted = Object.entries(subjectTime).sort((a, b) => b[1] - a[1]);
@@ -824,13 +896,8 @@ const hours = (minutes / 60).toFixed(1);
 const barWidth = (minutes / maxTime) * 100;
 html += `
 <div class="stat-card">
-<div style="display:flex; justify-content:space-between;">
-<span>${subject}</span>
-<span style="color:var(--accent);">${hours} год/тижд</span>
-</div>
-<div class="stat-bar-container">
-<div class="stat-bar" style="width:${barWidth}%; background:var(--accent);"></div>
-</div>
+<div style="display:flex; justify-content:space-between;"><span>${esc(subject)}</span><span style="color:var(--accent);">${hours} год/тижд</span></div>
+<div class="stat-bar-container"><div class="stat-bar" style="width:${barWidth}%; background:var(--accent);"></div></div>
 </div>`;
 });
 container.innerHTML = html || '<div class="stat-card">Немає даних</div>';
@@ -838,36 +905,24 @@ container.innerHTML = html || '<div class="stat-card">Немає даних</div
 function renderMoodStats() {
 const container = document.getElementById('moodStats');
 const moodCounts = { 1: 0, 2: 0, 3: 0 };
-moodData.entries.forEach(entry => {
-moodCounts[entry.mood] = (moodCounts[entry.mood] || 0) + 1;
-});
+moodData.entries.forEach(entry => { moodCounts[entry.mood] = (moodCounts[entry.mood] || 0) + 1; });
 const total = moodCounts[1] + moodCounts[2] + moodCounts[3];
 const avgMood = total > 0 ? ((moodCounts[1] * 1 + moodCounts[2] * 2 + moodCounts[3] * 3) / total).toFixed(2) : 0;
-let html = `
+container.innerHTML = `
 <div class="stat-card">
 <div style="display:flex; justify-content:space-around; text-align:center;">
-<div>
-<div style="font-size:2rem;">🥱</div>
-<div style="font-size:0.85rem;">${moodCounts[1]}</div>
-</div>
-<div>
-<div style="font-size:2rem;">😐</div>
-<div style="font-size:0.85rem;">${moodCounts[2]}</div>
-</div>
-<div>
-<div style="font-size:2rem;">🤩</div>
-<div style="font-size:0.85rem;">${moodCounts[3]}</div>
-</div>
+<div><div style="font-size:2rem;">🥱</div><div style="font-size:0.85rem;">${moodCounts[1]}</div></div>
+<div><div style="font-size:2rem;">😐</div><div style="font-size:0.85rem;">${moodCounts[2]}</div></div>
+<div><div style="font-size:2rem;">🤩</div><div style="font-size:0.85rem;">${moodCounts[3]}</div></div>
 </div>
 <div style="margin-top:15px; text-align:center;">
 <div class="stat-label">Середній настрій</div>
 <div class="stat-value">${avgMood > 0 ? avgMood : '—'}/3</div>
 </div>
 </div>`;
-container.innerHTML = html;
 }
 function clearStatsData() {
-if(confirm('Ви впевнені? Це видалить всю статистику та оцінки настрою!')) {
+if (confirm('Ви впевнені? Це видалить всю статистику та оцінки настрою!')) {
 moodData = { entries: [] };
 statsData = { weeklyHours: {}, subjectHours: {}, moodRatings: {} };
 completedLessons = [];
@@ -878,145 +933,60 @@ renderStats();
 logHistory('Очищено статистику');
 }
 }
+function refreshStatsIfOpen() {
+if (document.getElementById('stats-sidebar').classList.contains('open')) renderStats();
+}
+
 // --- MOOD POPUP ---
 function showMoodPopup(lesson) {
+clearTimeout(hideMoodTimer);
 pendingMoodLesson = lesson;
+document.getElementById('moodTitle').textContent = `Як пройшов урок «${lesson.name}»?`;
 const popup = document.getElementById('mood-popup');
-popup.classList.add('show');
-setTimeout(() => {
 popup.style.display = 'block';
-}, 10);
+requestAnimationFrame(() => requestAnimationFrame(() => popup.classList.add('show')));
 }
 function hideMoodPopup() {
 const popup = document.getElementById('mood-popup');
 popup.classList.remove('show');
-setTimeout(() => {
-popup.style.display = 'none';
-}, 400);
 pendingMoodLesson = null;
+hideMoodTimer = setTimeout(() => { popup.style.display = 'none'; }, 400);
 }
 function submitMood(mood) {
-if(pendingMoodLesson) {
-moodData.entries.push({
-date: new Date().toISOString(),
-subject: pendingMoodLesson.name,
-mood: mood,
-lessonKey: pendingMoodLesson.uniqueId
-});
+if (!pendingMoodLesson) return;
+const l = pendingMoodLesson;
+moodData.entries.push({ date: new Date().toISOString(), subject: l.name, mood: mood, lessonKey: l.uniqueId });
 localStorage.setItem('gh-mood-data', JSON.stringify(moodData));
-logHistory(`Оцінено настрій: ${pendingMoodLesson.name} - ${mood}/3`);
+updateStatsAfterLesson(l);
+recordAttended(l);
+logHistory(`Оцінено настрій: ${l.name} - ${mood}/3`);
+hideMoodPopup();
+refreshStatsIfOpen();
 }
+function skipLesson() {
+if (!pendingMoodLesson) return;
+const l = pendingMoodLesson;
+recordSkipped(l);
+logHistory(`Пропущено урок: ${l.name}`);
 hideMoodPopup();
 }
-// --- MP3 / YOUTUBE PLAYER ---
-const audioPlayer = new Audio();
-let isPlaying = false;
-function initAudio() {
-if(musicData.tracks.length > 0) {
-audioPlayer.src = musicData.tracks[musicData.currentIndex].src;
-updatePlayerUI();
-}
-audioPlayer.volume = userSettings.volume !== undefined ? userSettings.volume : 0.5;
-document.getElementById('volSlider').value = audioPlayer.volume;
-updateVolText(audioPlayer.volume);
-audioPlayer.onended = () => changeTrack(1);
-renderPlaylist();
-}
-function togglePlay() {
-if(musicData.tracks.length === 0) return;
-if (isPlaying) audioPlayer.pause();
-else audioPlayer.play().catch(e => alert("Спочатку клікніть будь-де на сторінці"));
-isPlaying = !isPlaying;
-updatePlayerUI();
-}
-function changeTrack(dir) {
-musicData.currentIndex = (musicData.currentIndex + dir + musicData.tracks.length) % musicData.tracks.length;
-audioPlayer.src = musicData.tracks[musicData.currentIndex].src;
-if(isPlaying) audioPlayer.play();
-updatePlayerUI(); saveMusicData(); renderPlaylist();
-}
-function playTrack(index) {
-musicData.currentIndex = index;
-audioPlayer.src = musicData.tracks[index].src;
-isPlaying = true; audioPlayer.play(); updatePlayerUI(); saveMusicData(); renderPlaylist();
-}
-function setVolume(val) { audioPlayer.volume = val; userSettings.volume = val; updateVolText(val); saveSettings(); }
-function updateVolText(val) { document.getElementById('volValue').textContent = Math.round(val * 100) + '%'; }
-function updatePlayerUI() {
-document.getElementById('playHeaderBtn').textContent = isPlaying ? '⏸' : '▶';
-document.getElementById('headerTrackName').textContent = musicData.tracks[musicData.currentIndex] ? musicData.tracks[musicData.currentIndex].title : "Плейлист порожній";
-}
-function toggleHeaderPlaylist() { document.getElementById('headerPlaylist').classList.toggle('show'); }
-document.addEventListener('click', function(event) {
-const playlist = document.getElementById('headerPlaylist');
-const headerName = document.getElementById('headerTrackName');
-if (!playlist.contains(event.target) && !headerName.contains(event.target)) {
-playlist.classList.remove('show');
-}
-});
-function renderPlaylist(filter = "") {
-const list = document.getElementById('trackList'); list.innerHTML = '';
-musicData.tracks.forEach((track, idx) => {
-if(track.title.toLowerCase().includes(filter.toLowerCase())) {
-const item = document.createElement('div');
-item.className = `track-list-item ${idx === musicData.currentIndex ? 'active' : ''}`;
-item.innerHTML = `<span>${track.title}</span> <span style="font-size:0.7rem; color: #ff4757; margin-left:10px;" onclick="event.stopPropagation(); removeTrack(${idx})">🗑️</span>`;
-item.onclick = (e) => { playTrack(idx); };
-list.appendChild(item);
-}
-});
-}
-function filterMusic(val) { renderPlaylist(val); }
-function addCustomTrack() {
-const url = document.getElementById('customUrl').value.trim();
-if(!url) return;
-const ytMatch = url.match(/(?:youtu\.be\/|youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/);
-if (ytMatch) {
-const videoId = ytMatch[1];
-document.getElementById('yt-container').innerHTML = `<iframe width="10" height="10" src="https://www.youtube.com/embed/${videoId}?autoplay=1&enablejsapi=1" allow="autoplay"></iframe>`;
-logHistory("Увімкнено YouTube відео з плеєра");
-if (typeof isPlaying !== 'undefined' && isPlaying) togglePlay();
-document.getElementById('customUrl').value = '';
-document.getElementById('stopYtBtn').style.display = 'block';
-document.getElementById('headerTrackName').textContent = "▶ YouTube Аудіо";
-return;
-}
-musicData.tracks.push({ title: `Власний трек ${musicData.tracks.length + 1}`, src: url });
-document.getElementById('customUrl').value = '';
-saveMusicData();
-renderPlaylist();
-logHistory("Додано новий MP3 трек");
-}
-function stopYT() {
-document.getElementById('yt-container').innerHTML = '';
-document.getElementById('stopYtBtn').style.display = 'none';
-updatePlayerUI();
-logHistory("YouTube зупинено");
-}
-function removeTrack(index) {
-if(confirm("Видалити трек?")) {
-musicData.tracks.splice(index, 1);
-if(musicData.currentIndex >= index) musicData.currentIndex = Math.max(0, musicData.currentIndex - 1);
-saveMusicData(); renderPlaylist(); updatePlayerUI();
-logHistory("Видалено MP3 трек");
-}
-}
-function saveMusicData() { localStorage.setItem('gh-music', JSON.stringify(musicData)); }
-document.addEventListener('keydown', function(event) {
+
+document.addEventListener('keydown', function (event) {
 if (event.key === 'Escape') {
-stopYT();
-const sidebar = document.getElementById('history-sidebar');
-sidebar.classList.remove('open');
+toggleBurgerMenu(false);
+document.getElementById('history-sidebar').classList.remove('open');
 document.getElementById('historyBtn').classList.remove('active');
-const statsSidebar = document.getElementById('stats-sidebar');
-statsSidebar.classList.remove('open');
+document.getElementById('stats-sidebar').classList.remove('open');
 document.getElementById('statsBtn').classList.remove('active');
-hideMoodPopup();
+['modal', 'streakModal', 'settingsModal'].forEach(id => {
+if (document.getElementById(id).classList.contains('open')) closeModal(id);
+});
 }
 });
+
 // Автозаповнення посилання
 document.addEventListener('DOMContentLoaded', () => {
-document.getElementById('nameInp').addEventListener('input', function() {
+document.getElementById('nameInp').addEventListener('input', function () {
 const val = this.value.trim().toLowerCase();
 const linkInp = document.getElementById('linkInp');
 if (!val || linkInp.value.trim() !== "") return;
@@ -1028,14 +998,83 @@ break;
 }
 });
 });
+
+// --- СПОВІЩЕННЯ ПРО УРОКИ ---
+function sendBrowserNotification(title, body, tag, link) {
+if (!notificationsEnabled || !("Notification" in window) || Notification.permission !== "granted") return;
+try {
+const n = new Notification(title, {
+body: body,
+icon: "data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📅</text></svg>",
+tag: tag,
+vibrate: [200, 100, 200]
+});
+n.onclick = function () { window.focus(); const l = safeLink(link); if (l) window.open(l, '_blank', 'noopener'); this.close(); };
+} catch (e) {}
+}
+function alreadyNotified(tag) {
+try {
+if (sessionStorage.getItem('gh-notified-' + tag)) return true;
+sessionStorage.setItem('gh-notified-' + tag, '1');
+} catch (e) {}
+return false;
+}
+// --- ЗВУК ПОЧАТКУ УРОКУ (Web Audio, без зовнішніх файлів) ---
+let audioCtx = null;
+function getAudioCtx() {
+const AC = window.AudioContext || window.webkitAudioContext;
+if (!AC) return null;
+if (!audioCtx) { try { audioCtx = new AC(); } catch (e) { return null; } }
+return audioCtx;
+}
+// Браузери блокують звук до першої взаємодії зі сторінкою — розблоковуємо при першому кліку/дотику
+function unlockAudio() {
+const ctx = getAudioCtx();
+if (ctx && ctx.state === 'suspended') ctx.resume().catch(() => {});
+}
+['click', 'touchstart', 'keydown'].forEach(ev => document.addEventListener(ev, unlockAudio, { passive: true }));
+function playLessonStartSound() {
+const ctx = getAudioCtx();
+if (!ctx) return;
+const run = () => {
+const t0 = ctx.currentTime + 0.05;
+// Три ноти вгору: до - мі - соль
+[[523.25, 0], [659.25, 0.18], [783.99, 0.36]].forEach(([freq, delay]) => {
+const osc = ctx.createOscillator();
+const gain = ctx.createGain();
+osc.type = 'sine';
+osc.frequency.value = freq;
+const t = t0 + delay;
+gain.gain.setValueAtTime(0.0001, t);
+gain.gain.exponentialRampToValueAtTime(0.35, t + 0.03);
+gain.gain.exponentialRampToValueAtTime(0.0001, t + 0.7);
+osc.connect(gain); gain.connect(ctx.destination);
+osc.start(t); osc.stop(t + 0.75);
+});
+};
+if (ctx.state === 'suspended') ctx.resume().then(run).catch(() => {}); else run();
+}
+function notifyLessonStart(lesson) {
+if (alreadyNotified('start-' + lesson.uniqueId + '-' + dateStr(new Date()))) return;
+playLessonStartSound();
+showStreakToast(`🔔 Урок почався: ${lesson.name} (${lesson.start} — ${lesson.end})`);
+sendBrowserNotification(`🔔 Урок почався: ${lesson.name}`, `${lesson.start} - ${lesson.end}`, 'start-' + lesson.uniqueId, lesson.link);
+}
+function notifyLessonEnd(lesson) {
+if (alreadyNotified('end-' + lesson.uniqueId + '-' + dateStr(new Date()))) return;
+showStreakToast(`✅ Урок «${lesson.name}» завершено. Оціни його!`);
+sendBrowserNotification(`✅ Урок завершено: ${lesson.name}`, 'Відкрий розклад і оціни урок', 'end-' + lesson.uniqueId);
+}
+
 // --- MAIN INIT ---
 function init() {
 migrateDataIfNeeded();
 applySettings();
-if(document.getElementById('bgSelect')) document.getElementById('bgSelect').value = userSettings.bg || 'default';
+if (document.getElementById('bgSelect')) document.getElementById('bgSelect').value = userSettings.bg || 'default';
 checkPermissionStatus();
 render();
-initAudio();
+refreshRestores();
+renderStreakUI();
 renderHistory();
 setInterval(heartbeat, 1000);
 document.addEventListener("visibilitychange", () => { if (document.visibilityState === 'visible') heartbeat(); });
@@ -1045,55 +1084,49 @@ function heartbeat() {
 const now = new Date();
 const currentTime = now.getHours() * 60 + now.getMinutes();
 const currentDay = (now.getDay() + 6) % 7;
+if (lastRenderDay !== currentDay) { lastRenderDay = currentDay; render(); } // новий день — оновити підсвітку «сьогодні»
+refreshRestores();
+if (document.body.getAttribute('data-edit-mode') !== 'true') checkPendingLessons(currentTime, currentDay);
 let foundLesson = null;
-for(let sIdx = 0; sIdx < 8; sIdx++) {
+for (let sIdx = 0; sIdx < 8; sIdx++) {
 const key = `${currentWeekIndex}-${currentDay}-${sIdx}`;
 const lesson = schedule[key];
-if(lesson && lesson.start && lesson.end) {
+if (lesson && lesson.start && lesson.end) {
 const s = timeToMin(lesson.start);
 const e = timeToMin(lesson.end);
 if (currentTime >= s && currentTime < e) {
-foundLesson = lesson;
-foundLesson.startMin = s; foundLesson.endMin = e;
-foundLesson.uniqueId = key + '_' + lesson.start; break;
+// копія, щоб службові поля не потрапляли в збережений розклад
+foundLesson = Object.assign({}, lesson, { startMin: s, endMin: e, uniqueId: key + '_' + lesson.start });
+break;
 }
 }
 }
 if (foundLesson) {
 if (!activeLessonGlobal || activeLessonGlobal.uniqueId !== foundLesson.uniqueId) {
+if (activeLessonGlobal && currentTime >= activeLessonGlobal.endMin) notifyLessonEnd(activeLessonGlobal);
 activeLessonGlobal = foundLesson;
 render();
-if (notificationsEnabled) trySendNotification(foundLesson);
+notifyLessonStart(foundLesson);
 }
 updateWidgetUI(foundLesson, currentTime); updateCardUI(foundLesson, currentTime);
 } else {
-// Check if lesson just ended - show mood popup
-if (activeLessonGlobal) {
-const justEnded = activeLessonGlobal.endMin <= currentTime && currentTime < activeLessonGlobal.endMin + 5;
-if (justEnded && !completedLessons.includes(activeLessonGlobal.uniqueId)) {
-showMoodPopup(activeLessonGlobal);
-completedLessons.push(activeLessonGlobal.uniqueId);
-localStorage.setItem('gh-completed-lessons', JSON.stringify(completedLessons));
-// Update stats
-updateStatsAfterLesson(activeLessonGlobal);
-}
-}
 document.getElementById('widgetName').textContent = "Вільний час 💤";
 document.getElementById('widgetTimes').textContent = "--:--";
 document.getElementById('widgetCountdown').textContent = "";
 document.getElementById('activeProgressBar').style.width = '0';
 document.getElementById('widgetLink').style.display = 'none';
-if (activeLessonGlobal) { activeLessonGlobal = null; render(); }
+if (activeLessonGlobal) {
+if (currentTime >= activeLessonGlobal.endMin) notifyLessonEnd(activeLessonGlobal);
+activeLessonGlobal = null; render();
+}
 }
 }
 function updateStatsAfterLesson(lesson) {
 const weekKey = getWeekKey();
 const duration = lesson.endMin - lesson.startMin;
-// Update weekly hours
-if(!statsData.weeklyHours[weekKey]) statsData.weeklyHours[weekKey] = 0;
+if (!statsData.weeklyHours[weekKey]) statsData.weeklyHours[weekKey] = 0;
 statsData.weeklyHours[weekKey] += duration;
-// Update subject hours
-if(!statsData.subjectHours[lesson.name]) statsData.subjectHours[lesson.name] = 0;
+if (!statsData.subjectHours[lesson.name]) statsData.subjectHours[lesson.name] = 0;
 statsData.subjectHours[lesson.name] += duration;
 localStorage.setItem('gh-stats-data', JSON.stringify(statsData));
 }
@@ -1103,48 +1136,36 @@ document.getElementById('widgetTimes').textContent = `${lesson.start} - ${lesson
 const remaining = lesson.endMin - currentTime;
 document.getElementById('widgetCountdown').textContent = `${remaining} хв`;
 const linkBtn = document.getElementById('widgetLink');
-if(lesson.link) { linkBtn.style.display = 'flex'; linkBtn.href = lesson.link; }
+const link = safeLink(lesson.link);
+if (link) { linkBtn.style.display = 'flex'; linkBtn.href = link; }
 else linkBtn.style.display = 'none';
 const progressBar = document.getElementById('activeProgressBar');
-if(progressBar) {
+if (progressBar) {
 const percent = ((currentTime - lesson.startMin) / (lesson.endMin - lesson.startMin)) * 100;
 progressBar.style.width = `${percent}%`;
 }
 }
 function updateCardUI(lesson, currentTime) {
 const card = document.getElementById('activeCard');
-if(card) {
+if (card) {
 const bar = card.querySelector('.progress-bar');
 const timer = document.getElementById('cardTimer');
-if(bar && timer) {
+if (bar && timer) {
 const remaining = lesson.endMin - currentTime;
 const percent = ((currentTime - lesson.startMin) / (lesson.endMin - lesson.startMin)) * 100;
 bar.style.width = `${percent}%`; timer.textContent = `⏳ ${remaining} хв`;
 }
 }
 }
-function trySendNotification(lesson) {
-if (Notification.permission !== "granted") return;
-if (lastNotifiedLessonId === lesson.uniqueId) return;
-try {
-const notification = new Notification(`🔔 Урок почався: ${lesson.name}`, {
-body: `${lesson.start} - ${lesson.end}`,
-icon: "data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📅</text></svg>",
-tag: lesson.uniqueId
-});
-notification.onclick = function() { window.focus(); if(lesson.link) window.open(lesson.link, '_blank'); this.close(); };
-lastNotifiedLessonId = lesson.uniqueId;
-} catch (e) {}
-}
 function checkPermissionStatus() {
-if (!("Notification" in window)) { document.getElementById('notifyBtn').innerHTML = "❌ Не підтримується"; return; }
+if (!("Notification" in window)) { document.getElementById('notifyBtn').innerHTML = "<span class='ico'>❌</span><span>Не підтримується</span>"; return; }
 if (Notification.permission === "granted" && notificationsEnabled) setBtnState(true);
 else if (Notification.permission === "denied") setBtnState(false, true);
 else setBtnState(false);
 }
 function toggleNotifications() {
 if (!("Notification" in window)) return;
-if (Notification.permission === "denied") { alert("Сповіщення заблоковані браузером."); return; }
+if (Notification.permission === "denied") { alert("Сповіщення заблоковані браузером. Дозвольте їх у налаштуваннях сайту."); return; }
 if (notificationsEnabled) {
 notificationsEnabled = false;
 localStorage.setItem('gh-notifications', 'false'); setBtnState(false);
@@ -1152,19 +1173,22 @@ localStorage.setItem('gh-notifications', 'false'); setBtnState(false);
 Notification.requestPermission().then(permission => {
 if (permission === "granted") {
 notificationsEnabled = true; localStorage.setItem('gh-notifications', 'true'); setBtnState(true);
-} else setBtnState(false);
+showStreakToast('🔔 Сповіщення увімкнено');
+} else setBtnState(false, permission === "denied");
 });
 }
 }
 function setBtnState(isOn, isDenied = false) {
 const btn = document.getElementById('notifyBtn');
-if (isDenied) { btn.innerHTML = "🚫 Заблоковано"; btn.className = "btn btn-notify denied"; }
-else if (isOn) { btn.innerHTML = "🔔 Увімкнено"; btn.className = "btn btn-notify active"; }
-else { btn.innerHTML = "🔕 Вимкнено"; btn.className = "btn btn-notify"; }
+btn.className = "toolbar-btn notify-toolbar btn-notify" + (isOn ? " active" : "") + (isDenied ? " denied" : "");
+if (isDenied) btn.innerHTML = "<span class='ico'>🚫</span><span>Заблоковано</span>";
+else if (isOn) btn.innerHTML = "<span class='ico'>🔔</span><span>Увімкнено</span>";
+else btn.innerHTML = "<span class='ico'>🔕</span><span>Вимкнено</span>";
 }
 function changeWeek(direction) {
 currentWeekIndex = (currentWeekIndex + direction + 2) % 2;
-localStorage.setItem('gh-current-week', currentWeekIndex); render();
+localStorage.setItem('gh-current-week', currentWeekIndex);
+activeLessonGlobal = null; render(); heartbeat(); refreshStatsIfOpen();
 }
 function updateWeekLabel() {
 const labels = ["Тиждень А (Перший)", "Тиждень Б (Другий)"];
@@ -1177,28 +1201,31 @@ if (/^\d+-\d+$/.test(key)) { schedule[`0-${key}`] = schedule[key]; delete schedu
 });
 if (changed) localStorage.setItem('gh-schedule', JSON.stringify(schedule));
 }
-// --- ОНОВЛЕНИЙ ЕКСПОРТ (ШИФРУВАННЯ ФАЙЛУ) ---
+
 function exportToFile() {
 const password = prompt("Введіть пароль для файлу (залиште порожнім, якщо не потрібен):");
+if (password === null) return; // натиснули «Скасувати»
 const fullData = {
 schedule: schedule,
-music: musicData,
+streakData: streakData,
 settings: userSettings,
 moodData: moodData,
 statsData: statsData,
 locked: !!password,
 password: password || null
 };
-const dataStr = JSON.stringify(fullData, null, 2);
-const encryptedStr = encryptData(dataStr); // Шифруємо весь JSON
-const blob = new Blob([encryptedStr], {type: "text/plain"});
+const encryptedStr = encryptData(JSON.stringify(fullData, null, 2));
+const blob = new Blob([encryptedStr], { type: "text/plain" });
 const a = document.createElement('a');
 a.href = URL.createObjectURL(blob);
 a.download = "schedule_pro_backup.json";
+document.body.appendChild(a);
 a.click();
+a.remove();
+setTimeout(() => URL.revokeObjectURL(a.href), 2000);
 logHistory("Експортовано зашифрований файл бекапу");
 }
-// --- ОНОВЛЕНИЙ ІМПОРТ (РОЗШИФРУВАННЯ ФАЙЛУ) ---
+
 function importFromFile(input) {
 const file = input.files[0];
 if (!file) return;
@@ -1207,74 +1234,74 @@ reader.onload = (e) => {
 try {
 const fileContent = e.target.result;
 let json;
-// Спроба розшифрувати файл (для нових зашифрованих файлів)
-try {
-const decryptedStr = decryptData(fileContent);
-json = JSON.parse(decryptedStr);
-} catch(decryptionErr) {
-// Якщо не вийшло, можливо це старий, не зашифрований файл
-json = JSON.parse(fileContent);
-}
+try { json = JSON.parse(decryptData(fileContent)); }
+catch (decryptionErr) { json = JSON.parse(fileContent); }
 if (json.locked && json.password) {
 let attempts = 3;
 let authenticated = false;
 while (attempts > 0) {
 const pass = prompt(`Цей файл захищено паролем. Спроб: ${attempts}`);
+if (pass === null) return;
 if (pass === json.password) { authenticated = true; break; }
 attempts--;
 if (attempts === 0) { alert("Вичерпано спроби. Доступ заборонено."); return; }
 }
 if (!authenticated) return;
 }
-if(json.schedule) { schedule = json.schedule;
-if(json.music) musicData = json.music;
-if(json.settings) userSettings = json.settings;
-if(json.moodData) moodData = json.moodData;
-if(json.statsData) statsData = json.statsData; }
-else { schedule = json; }
+if (json.schedule) {
+schedule = json.schedule;
+if (json.settings) userSettings = json.settings;
+if (json.moodData) moodData = json.moodData;
+if (json.statsData) statsData = json.statsData;
+if (json.streakData) streakData = Object.assign(defaultStreak(), json.streakData);
+} else { schedule = json; }
 migrateDataIfNeeded();
 localStorage.setItem('gh-schedule', JSON.stringify(schedule));
-localStorage.setItem('gh-music', JSON.stringify(musicData));
+localStorage.setItem('gh-streak', JSON.stringify(streakData));
 localStorage.setItem('gh-settings', JSON.stringify(userSettings));
 localStorage.setItem('gh-mood-data', JSON.stringify(moodData));
 localStorage.setItem('gh-stats-data', JSON.stringify(statsData));
-applySettings(); initAudio(); render(); logHistory("Імпортовано дані з файлу"); alert("Дані успішно завантажено!");
-} catch(err) {
+activeLessonGlobal = null;
+applySettings(); renderStreakUI(); render();
+document.getElementById('bgSelect').value = userSettings.bg || 'default';
+logHistory("Імпортовано дані з файлу"); alert("Дані успішно завантажено!");
+} catch (err) {
 alert("Помилка файлу. Можливо він пошкоджений.");
 }
 };
 reader.readAsText(file); input.value = '';
 }
+
 // --- DRAG AND DROP ---
 let dragSrcEl = null;
 let dragSrcKey = null;
 function handleDragStart(e) { this.style.opacity = '0.4'; dragSrcEl = this; dragSrcKey = this.getAttribute('data-key'); e.dataTransfer.effectAllowed = 'move';
-e.dataTransfer.setData('text/html', this.innerHTML); this.classList.add('dragging'); }
+e.dataTransfer.setData('text/plain', dragSrcKey); this.classList.add('dragging'); }
 function handleDragOver(e) { if (e.preventDefault) e.preventDefault(); e.dataTransfer.dropEffect = 'move'; this.classList.add('drag-over'); return false; }
 function handleDragLeave(e) { this.classList.remove('drag-over'); }
 function handleDrop(e) {
 if (e.stopPropagation) e.stopPropagation();
+if (e.preventDefault) e.preventDefault();
 this.classList.remove('drag-over');
 const destKey = this.getAttribute('data-key');
-if (dragSrcKey !== destKey) {
+if (dragSrcKey && dragSrcKey !== destKey) {
 const srcData = schedule[dragSrcKey];
 const destData = schedule[destKey];
 const srcTime = srcData ? { start: srcData.start, end: srcData.end } : null;
 const destTime = destData ? { start: destData.start, end: destData.end } : null;
-if(destData) schedule[dragSrcKey] = destData; else delete schedule[dragSrcKey];
-if(srcData) schedule[destKey] = srcData; else delete schedule[destKey];
+if (destData) schedule[dragSrcKey] = destData; else delete schedule[dragSrcKey];
+if (srcData) schedule[destKey] = srcData; else delete schedule[destKey];
 if (schedule[dragSrcKey] && srcTime) { schedule[dragSrcKey].start = srcTime.start; schedule[dragSrcKey].end = srcTime.end; }
 if (schedule[destKey] && destTime) { schedule[destKey].start = destTime.start; schedule[destKey].end = destTime.end; }
 localStorage.setItem('gh-schedule', JSON.stringify(schedule));
-logHistory("Змінено порядок уроків (Drag&Drop)"); render();
-const newCard = document.querySelector(`[data-key="${destKey}"]`);
-if(newCard) newCard.classList.add('active');
-setTimeout(() => render(), 500);
+logHistory("Змінено порядок уроків (Drag&Drop)");
+activeLessonGlobal = null; render(); heartbeat();
 }
 return false;
 }
 function handleDragEnd(e) { this.style.opacity = '1';
 this.classList.remove('dragging'); document.querySelectorAll('.lesson-card').forEach(col => col.classList.remove('drag-over')); }
+
 // --- RENDER ---
 function render() {
 updateWeekLabel();
@@ -1286,7 +1313,7 @@ days.forEach((day, dIdx) => {
 const isToday = dIdx === currentDay; const dayCol = document.createElement('div');
 dayCol.className = `day-column ${isToday ? 'is-today' : ''}`;
 dayCol.innerHTML = `<div class="day-title"><span>${icons[dIdx]}</span> ${day}</div>`;
-for(let sIdx = 0; sIdx < 8; sIdx++) {
+for (let sIdx = 0; sIdx < 8; sIdx++) {
 const key = `${currentWeekIndex}-${dIdx}-${sIdx}`;
 dayCol.appendChild(createLessonCard(schedule[key], key, isToday, currentTime, sIdx, isEditMode));
 }
@@ -1296,14 +1323,14 @@ grid.appendChild(dayCol);
 function createLessonCard(data, key, isToday, currentTime, index, isEditMode) {
 const card = document.createElement('div');
 card.className = 'lesson-card glass';
-if(data) card.classList.add('has-data');
+if (data) card.classList.add('has-data');
 card.setAttribute('data-key', key); card.style.animationDelay = `${index * 0.05}s`;
 if (isEditMode) {
 card.setAttribute('draggable', 'true'); card.addEventListener('dragstart', handleDragStart); card.addEventListener('dragover', handleDragOver);
 card.addEventListener('dragleave', handleDragLeave); card.addEventListener('drop', handleDrop); card.addEventListener('dragend', handleDragEnd);
 }
 const editBtnHTML = `<button class="edit-btn" onclick="event.stopPropagation(); openEditModal('${key}')">${data ? '⚙️' : '➕'}</button>`;
-if (!data) { card.innerHTML = `<div style="opacity:0.2; text-align:center; font-size:0.8rem">порожньо</div>${editBtnHTML}`; card.onclick = () => { if(isEditMode) openEditModal(key) }; return card; }
+if (!data) { card.innerHTML = `<div style="opacity:0.2; text-align:center; font-size:0.8rem">порожньо</div>${editBtnHTML}`; card.onclick = () => { if (isEditMode) openEditModal(key); }; return card; }
 const start = timeToMin(data.start), end = timeToMin(data.end);
 let isActive = false;
 if (activeLessonGlobal && activeLessonGlobal.uniqueId === (key + '_' + data.start)) isActive = true;
@@ -1315,21 +1342,22 @@ const percent = ((currentTime - start) / (end - start)) * 100;
 progressHtml = `<div class="progress-container"><div class="progress-bar" style="width:${percent}%"></div></div>`;
 const remaining = end - currentTime; timerHtml = `<div id="cardTimer" class="card-timer-badge">⏳ ${remaining} хв</div>`;
 }
+const link = safeLink(data.link);
 card.innerHTML = `
 ${editBtnHTML}
-<div style="display:flex; align-items:center;">
-<div class="time-badge">${data.start} — ${data.end}</div>
+<div class="card-top">
+<div class="time-badge">${esc(data.start)} — ${esc(data.end)}</div>
 ${timerHtml}
 </div>
-<span class="lesson-name">${data.name}</span>
-${data.link ? `<a href="${data.link}" target="_blank" class="lesson-link" onclick="event.stopPropagation()">🔗 Приєднатися</a>` : ''}
+<span class="lesson-name">${esc(data.name)}</span>
+${link ? `<a href="${esc(link)}" target="_blank" rel="noopener" class="lesson-link" onclick="event.stopPropagation()">🔗 Приєднатися</a>` : ''}
 ${progressHtml}
 `;
-card.onclick = () => { if(isEditMode) openEditModal(key) }; return card;
+card.onclick = () => { if (isEditMode) openEditModal(key); }; return card;
 }
-function timeToMin(t) { if(!t) return 0; const [h, m] = t.split(':').map(Number); return h * 60 + m; }
+function timeToMin(t) { if (!t) return 0; const [h, m] = t.split(':').map(Number); return (h || 0) * 60 + (m || 0); }
 function getSuggestedTimes(slotIndex) {
-for(let d = 0; d < 7; d++) {
+for (let d = 0; d < 7; d++) {
 const checkKey = `${currentWeekIndex}-${d}-${slotIndex}`;
 if (schedule[checkKey] && schedule[checkKey].start) return { start: schedule[checkKey].start, end: schedule[checkKey].end };
 }
@@ -1338,33 +1366,39 @@ return { start: '08:30', end: '09:15' };
 function updateSubjectsList() {
 const list = document.getElementById('subjectsList');
 list.innerHTML = ''; const subjects = new Set();
-Object.values(schedule).forEach(item => { if(item.name) subjects.add(item.name); });
+Object.values(schedule).forEach(item => { if (item && item.name) subjects.add(item.name); });
 subjects.forEach(subj => { const opt = document.createElement('option'); opt.value = subj; list.appendChild(opt); });
 }
+function openModal(id) { const m = document.getElementById(id); m.style.display = 'flex'; setTimeout(() => m.classList.add('open'), 10); }
 function openEditModal(key) {
 currentEditKey = key;
 const data = schedule[key]; const slotIndex = parseInt(key.split('-')[2]); const suggested = getSuggestedTimes(slotIndex);
 updateSubjectsList();
 document.getElementById('nameInp').value = data ? data.name : '';
 document.getElementById('startInp').value = data ? data.start : suggested.start;
-document.getElementById('endInp').value = data ? data.end : suggested.end; document.getElementById('linkInp').value = data ? data.link : '';
-const m = document.getElementById('modal'); m.style.display = 'flex'; setTimeout(() => m.classList.add('open'), 10);
+document.getElementById('endInp').value = data ? data.end : suggested.end;
+document.getElementById('linkInp').value = data ? (data.link || '') : '';
+openModal('modal');
 }
 function closeModal(id) { const m = document.getElementById(id); m.classList.remove('open'); setTimeout(() => m.style.display = 'none', 300); }
 function saveLesson() {
-const lessonName = document.getElementById('nameInp').value;
-schedule[currentEditKey] = { name: lessonName, start: document.getElementById('startInp').value, end: document.getElementById('endInp').value, link: document.getElementById('linkInp').value };
+const lessonName = document.getElementById('nameInp').value.trim();
+const start = document.getElementById('startInp').value;
+const end = document.getElementById('endInp').value;
+if (!lessonName) { alert('Введіть назву предмета.'); return; }
+if (!start || !end) { alert('Вкажіть час початку та кінця.'); return; }
+if (timeToMin(end) <= timeToMin(start)) { alert('Кінець уроку має бути пізніше за початок.'); return; }
+schedule[currentEditKey] = { name: lessonName, start: start, end: end, link: document.getElementById('linkInp').value.trim() };
 localStorage.setItem('gh-schedule', JSON.stringify(schedule));
 logHistory(`Додано/Змінено урок: ${lessonName}`);
-render(); closeModal('modal');
-activeLessonGlobal = null; heartbeat();
+activeLessonGlobal = null; render(); closeModal('modal'); heartbeat(); refreshStatsIfOpen();
 }
 function deleteLesson() {
 const data = schedule[currentEditKey];
-if(data) logHistory(`Видалено урок: ${data.name}`);
+if (data) logHistory(`Видалено урок: ${data.name}`);
 delete schedule[currentEditKey];
 localStorage.setItem('gh-schedule', JSON.stringify(schedule));
-activeLessonGlobal = null; render(); closeModal('modal'); heartbeat();
+activeLessonGlobal = null; render(); closeModal('modal'); heartbeat(); refreshStatsIfOpen();
 }
 function toggleEditMode() {
 const isEditing = document.body.getAttribute('data-edit-mode') === 'false';
@@ -1372,25 +1406,24 @@ document.body.setAttribute('data-edit-mode', isEditing);
 document.getElementById('toggleEdit').classList.toggle('active', isEditing);
 render();
 }
-function openSettings() { const m = document.getElementById('settingsModal'); m.style.display = 'flex'; setTimeout(() => m.classList.add('open'), 10); }
+function openSettings() { openModal('settingsModal'); }
 function setAccent(c) { userSettings.accent = c; saveSettings(); }
 function changeBackground(v) { userSettings.bg = v; saveSettings(); }
 function saveSettings() { localStorage.setItem('gh-settings', JSON.stringify(userSettings)); applySettings(); }
 function applySettings() {
-// Видаляємо класи анімованих фонів
 document.body.classList.remove('bg-animated-gradient', 'bg-cyber-grid', 'bg-neon-pulse');
-document.documentElement.style.setProperty('--accent', userSettings.accent);
-if(userSettings.bg === 'gradient') {
+document.documentElement.style.setProperty('--accent', userSettings.accent || '#38bdf8');
+if (userSettings.bg === 'gradient') {
 document.body.classList.add('bg-animated-gradient');
-} else if(userSettings.bg === 'grid') {
+} else if (userSettings.bg === 'grid') {
 document.body.classList.add('bg-cyber-grid');
-} else if(userSettings.bg === 'neon') {
+} else if (userSettings.bg === 'neon') {
 document.body.classList.add('bg-neon-pulse');
 } else {
 let bg = 'radial-gradient(circle at top right, #1e293b, #0f172a)';
-if(userSettings.bg === 'sunset') bg = 'linear-gradient(135deg, #2c3e50, #000000)';
-if(userSettings.bg === 'forest') bg = 'linear-gradient(135deg, #134e5e, #1e293b)';
-if(userSettings.bg === 'black') bg = '#000';
+if (userSettings.bg === 'sunset') bg = 'linear-gradient(135deg, #2c3e50, #000000)';
+if (userSettings.bg === 'forest') bg = 'linear-gradient(135deg, #134e5e, #1e293b)';
+if (userSettings.bg === 'black') bg = '#000';
 document.documentElement.style.setProperty('--bg-image', bg);
 }
 }
